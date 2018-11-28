@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/28 14:16:07 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/28 14:34:43 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ typedef struct s_symbol t_symbol;
 typedef struct s_arch t_arch;
 
 typedef union   u_u_sec {
-    t_section      *sc;
+    t_section      *sc32;
     t_section_64   *sc64;
 }               t_u_sec;
 
@@ -146,6 +146,7 @@ struct s_mach_o {
     t_mach_o                *next;
 
     uint64_t                nsects;
+    uint8_t                 current_sect;
 
     t_symtab_command        *st;
 
