@@ -47,7 +47,7 @@ static int check_archive_ptrs(t_file *file, void **ptr, t_ar_hdr **hdr, size_t *
         return EXIT_FAILURE;
     if (ft_atoi((*hdr)->ar_size) <= 0)
         return (EXIT_FAILURE);
-    if (add_ofile(file, *ptr, *ptr) == EXIT_FAILURE)
+    if (add_ofile(file, *ptr, (void *)(*hdr)) == EXIT_FAILURE)
         return EXIT_FAILURE;
     *ar_size = ft_atoi((*hdr)->ar_size);
     return EXIT_SUCCESS;
