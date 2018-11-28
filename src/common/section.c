@@ -31,7 +31,8 @@ int get_secs(t_file *file, t_mach_o *m, void *seg, uint32_t nsects)
         : ptr_check_msg((void *)file->end, seg + sizeof(t_segment_command), sizeof(t_section), "section");
     if (!ptr)
         return (EXIT_FAILURE);
-    while (++(m->current_sect) < curr_nsects)
+    // m->current_sect--;
+    while (m->current_sect < curr_nsects)
     {
         if (ptr == NULL)
             return (EXIT_FAILURE);
@@ -39,6 +40,7 @@ int get_secs(t_file *file, t_mach_o *m, void *seg, uint32_t nsects)
         ptr = m->m64
             ? ptr_check_msg(file->end, ptr + sizeof(t_section_64), sizeof(t_section_64), "next section 64")
             : ptr_check_msg(file->end, ptr + sizeof(t_section), sizeof(t_section), "next section 32");
+        m->current_sect++;
     }
 	return EXIT_SUCCESS;
 }

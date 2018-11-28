@@ -94,13 +94,11 @@ t_mach_o *init_mach_o(t_file *file, void *data, size_t size)
 	m->st = NULL;
 	m->offset = m->m64 ? sizeof(t_mach_header_64) : sizeof(t_mach_header);
 	m->nsects = 0x00000000;
-	m->current_sect = 0;
+	m->current_sect = 1;
 	m->text_sect = NULL;
 	m->next = NULL;
 	if (fill_mach(file, m) == EXIT_FAILURE)
 		return NULL;
-	print_nsecs(m);
-	exit(0);
 	return m;
 }
 
