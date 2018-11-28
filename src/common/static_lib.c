@@ -20,10 +20,10 @@ static char	    *get_ar_name(const char *name)
 	return (ft_strstr(name, ARFMAG) + len);
 }
 
-// TODO: I don't like the name of this struct
-static t_ofile get_ofile(t_file *file, const void *ptr, const t_ar_hdr *header)
+int add_ofile(t_file *file, void *ptr, const t_ar_hdr *header)
 {
     t_ofile o;
+    t_mach_o *m;
 
     o.hdr = header;
     o.name_size = (size_t)get_size(o.hdr->ar_name);
@@ -32,21 +32,10 @@ static t_ofile get_ofile(t_file *file, const void *ptr, const t_ar_hdr *header)
     o.addr = ptr 
         + sizeof(t_ar_hdr) 
         + o.name_size;
-    return o;
-}
-
-int add_ofile(t_file *file, void *ptr, const t_ar_hdr *header)
-{
-    t_ofile o;
-    t_mach_o *m;
-    int result;
-
-    o = get_ofile(file, ptr, header);
     if (!(m = init_mach_o(file, o.addr, o.size - o.name_size)))
         return EXIT_FAILURE;
     m->ofile = o;
-    result = add_mach(&(file->mach), m);
-    return result;
+    return(add_mach(&(file->mach), m));
 }
 
 int handle_archive(t_file *file)
