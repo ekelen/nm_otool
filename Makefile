@@ -37,10 +37,8 @@ CC = gcc
 CFLAGS = -Werror -Wextra -w -g $(INC)
 
 SRC_COMMON += error.c
-
 SRC_COMMON += fat.c
 SRC_COMMON += mach.c
-SRC_NM += main.c
 SRC_COMMON += init.c
 SRC_COMMON += util.c
 SRC_COMMON += section.c
@@ -49,6 +47,9 @@ SRC_COMMON += symbol.c
 SRC_COMMON += parse_commands.c
 SRC_COMMON += parse_symtab.c
 SRC_COMMON += print.c
+
+SRC_NM += main.c
+SRC_NM += print_nm.c
 
 SRC_OTOOL += main.c
 

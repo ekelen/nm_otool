@@ -1,16 +1,12 @@
 #include <nm_otool.h>
 #include <assert.h>
 
-void print_symbol(t_symbol *symbol)
+void print_symbol(t_symbol *s)
 {
-	if ((symbol->print & 1) & SHOW_VALUE)
-	{
-			ft_printf(symbol->m64 ? "%016llx " : "%08llx ", symbol->n_value);
-	}
+	if ((s->print & 1) & SHOW_VALUE)
+		ft_printf(s->m64 ? "%016llx " : "%08llx ", s->n_value);
 	else
-	{
-			ft_printf(symbol->m64 ? "%016c " : "%08c ", ' ');
-	}
+		ft_printf(s->m64 ? "%016c " : "%08c ", ' ');
 	return;
 }
 
@@ -19,7 +15,7 @@ void print_in_order(t_symbol *head, t_symbol *current)
     if (!current)
         return;
     print_in_order(head, current->left);
-	if ((current->print & 32) & SHOW_ANY)
+	if ((current->print & SHOW_ANY_MASK) & SHOW_ANY)
 	{
 		if ((current->print & 16) & SHOW_VAL_COL)
 			print_symbol(current);
@@ -41,19 +37,6 @@ void print_nsecs(t_mach_o *m)
     ft_printf("DATA  ::  %zu\n", (m->nsects & DATA_SECT) >> 8);
 }
 
-// void print_secs(t_sec *curr)
-// {
-//     if (!curr)
-//         return;
-//     else
-//     {
-//         ft_printf("%d sectname  ::  %s\n", curr->index, curr->sc.sc->sectname);
-//         ft_printf("%d curr->segname  ::  %s\n", curr->index, curr->sc.sc->segname);
-// 		ft_putendl("");
-//         print_secs(curr->next);
-//     }
-// }
-
 void print_meta_fat(t_file *file, t_mach_o *m)
 {
 	ft_putendl("");
@@ -73,14 +56,6 @@ static int free_symbols(t_symbol *curr)
     free_symbols(curr->left);
     free_symbols(curr->right);
     free((void*)curr);
-}
-
-static int free_sections(t_sec *curr)
-{
-    if (!curr)
-        return EXIT_SUCCESS;
-    free_sections(curr->next);
-    free(curr);
 }
 
 void print_meta_single(t_file *file, t_mach_o *m)

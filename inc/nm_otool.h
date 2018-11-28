@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/28 16:40:43 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/28 22:09:51 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@
 # include <mach/machine.h>
 # include <stdbool.h>
 
-#include "nm.h"
-
 # define HOST_CPU CPU_TYPE_X86_64
 # define AR_HDR_SIZE sizeof(t_ar_hdr)
 
@@ -49,7 +47,6 @@ typedef struct load_command         t_load_command;
 typedef struct symtab_command       t_symtab_command;
 typedef struct ranlib               t_ranlib;
 typedef struct ar_hdr               t_ar_hdr;
-
 
 typedef struct s_mach_o t_mach_o;
 typedef struct s_ofile t_ofile;
@@ -170,8 +167,6 @@ struct s_mach_o {
     uint64_t				(*swap64)(uint64_t x);
 };
 
-
-
 struct  s_file {
 	bool					m64;
 	bool					is_fat;
@@ -187,7 +182,7 @@ struct  s_file {
     uint64_t				(*swap64)(uint64_t x);
     size_t                  offset;
 
-    t_mach_o                *mach;
+    t_mach_o                *mach;  
 
     void                    (*print_meta)(t_file *file, t_mach_o *m);
     // void                    (*print_otool_meta)(t_file *file, t_mach_o *m);
@@ -223,23 +218,18 @@ int parse_symtab(t_file *file, t_mach_o *m, const struct load_command *cmd);
 
 // symbol.c
 int add_symbol(t_file *file, t_mach_o *m, t_symtab_command *st, const void *nptr);
+int cmp_name_reverse(t_symbol *sym1, t_symbol *sym2);
+int cmp_name(t_symbol *sym1, t_symbol *sym2);
+
 
 // section.c
 int get_secs(t_file *file, t_mach_o *m, void *seg, uint32_t nsects);
-t_sec *find_sect(t_sec *curr, uint8_t i);
 
 // init.c
 t_file              *init_file(void *data, off_t size, char *argname, uint32_t flags);
 
 //print.c
-void print_in_order(t_symbol *head, t_symbol *current);
 void print_nsecs(t_mach_o *m);
-void print_secs(t_sec *curr);
-
-void print_meta_statlib(t_file *file, t_mach_o *m);
-void print_meta_single(t_file *file, t_mach_o *m);
-void print_meta_fat(t_file *file, t_mach_o *m);
-void print_symbols(t_file *file);
 
 //error.c
 int error(const char *arg, int err);

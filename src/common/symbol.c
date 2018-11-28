@@ -1,6 +1,15 @@
 #include <nm_otool.h>
 #include <assert.h>
 
+static int free_symbols(t_symbol *curr)
+{
+    if (!curr)
+        return EXIT_SUCCESS;
+    free_symbols(curr->left);
+    free_symbols(curr->right);
+    free((void*)curr);
+}
+
 char parse_section_type(uint64_t nsects, uint8_t n_sect)
 {
     if (n_sect == NO_SECT)
@@ -164,7 +173,6 @@ static int fill_symbol_data(uint32_t flags, t_mach_o *m, t_symtab_command *st, t
 		nl.nl64 = (t_nlist_64 *)(s->nptr);
 	else
 		nl.nl32 = (t_nlist *)(s->nptr);
-
 	if (!(s->nom = get_sym_name(m, st, nl)))
         return EXIT_FAILURE;
 	s->n_value = s->m64 ? m->swap64(nl.nl64->n_value) : (uint64_t)(m->swap32(nl.nl32->n_value));
