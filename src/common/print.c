@@ -102,7 +102,6 @@ void print_machs(t_file *file, t_mach_o *m)
         print_in_order(m->symbols, m->symbols);
 		free_symbols(m->symbols);
 		m->symbols = NULL;
-		m->secs = NULL;
     }
     print_machs(file, m->next);
 }

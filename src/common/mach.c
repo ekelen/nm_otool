@@ -89,7 +89,6 @@ t_mach_o *init_mach_o(t_file *file, void *data, size_t size)
 	}
 	m->magic = magic;
 	m->m64 = magic & 1;
-	m->secs = NULL;
 	m->symbols = NULL;
 	m->st = NULL;
 	m->offset = m->m64 ? sizeof(t_mach_header_64) : sizeof(t_mach_header);

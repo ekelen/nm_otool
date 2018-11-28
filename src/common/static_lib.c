@@ -10,7 +10,7 @@ static int		get_size(char *name)
 	return (x);
 }
 
-static char	    *get_ar_name(char *name)
+static char	    *get_ar_name(const char *name)
 {
 	int		len;
 
@@ -20,7 +20,7 @@ static char	    *get_ar_name(char *name)
 
 // TODO: Cleanup/rmv heap alloc
 // Also I don't like the name of this struct
-static t_ofile *init_ofile(t_file *file, void *ptr, t_ar_hdr *header)
+static t_ofile *init_ofile(t_file *file, void *ptr, const t_ar_hdr *header)
 {
     t_ofile *o;
     
@@ -36,6 +36,27 @@ static t_ofile *init_ofile(t_file *file, void *ptr, t_ar_hdr *header)
         + sizeof(struct ar_hdr) 
         + o->member_name_size;
     return o;
+}
+
+// TODO: I don't like the name of this struct
+static t_ofile init_o(t_file *file, void *ptr, t_ar_hdr *header)
+{
+    t_ofile o;
+    return o;
+    // t_ofile *o;
+    
+    // int result_init_ofile;
+    // if (!(o = (t_ofile *)malloc(sizeof(t_ofile))))
+    //     return NULL;
+    
+    // o->member_ar_hdr = header;
+    // o->member_name_size = (size_t)get_size(o->member_ar_hdr->ar_name);
+    // o->member_size = (uint32_t)ft_atoi(o->member_ar_hdr->ar_size);
+    // o->member_name = (const char *)get_ar_name(o->member_ar_hdr->ar_name);
+    // o->member_addr = (void*)ptr 
+    //     + sizeof(struct ar_hdr) 
+    //     + o->member_name_size;
+    // return o;
 }
 
 int add_ofile(t_file *file, void *ptr, t_ar_hdr *header)
