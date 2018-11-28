@@ -1,0 +1,23 @@
+{
+    "files.associations": {
+        "libft.h": "c",
+        "__tuple": "c",
+        "assert.h": "c",
+        "ios": "cpp",
+        "__bit_reference": "c",
+        "__functional_base": "c",
+        "algorithm": "c",
+        "atomic": "c",
+        "bitset": "c",
+        "chrono": "c",
+        "functional": "c",
+        "iterator": "c",
+        "limits": "c",
+        "memory": "c",
+        "ratio": "c",
+        "system_error": "c",
+        "tuple": "c",
+        "type_traits": "c"
+    },
+    "search.useIgnoreFiles": false
+}

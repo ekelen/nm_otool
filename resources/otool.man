@@ -1,0 +1,196 @@
+LLVM-OTOOL(1)							 LLVM-OTOOL(1)
+
+
+
+NAME
+       llvm-otool - the otool-compatible command line parser for llvm-objdump
+
+SYNOPSIS
+       llvm-otool [ option ...	] [ file ...  ]
+
+DESCRIPTION
+       The  command  line  shim  llvm-otool  takes all the same options as the
+       original otool(1) command and executes an  equivalent  objdump(1)  com-
+       mand.   Its  use  is  to  ease  the  change over of the original use of
+       otool(1) to the llvm based open source objdump(1) command with the sim-
+       ilar functionality.
+
+       The original implementation of otool(1) can now be found as otool-clas-
+       sic(1) and typically will be run by using "xcrun otool-classic".
+
+       -show-objdump-command
+	      Print the objdump(1) command that llvm-otool(1) will execute.
+
+NOTES FOR SPECIFIC OPTIONS
+       -l     This always implies the -h  option,  as  the  objdump(1)	option
+	      -private-headers	prints both the mach header and load commands.
+
+       -S     To display the contents of the  `__.SYMDEF'  archive  file,  use
+	      llvm-nm(1) with the -print-armap option.
+
+GENERAL NOTES
+       Many  of the older options in otool(1) are obsolete as they print parts
+       of the object file that are no longer in use.   When  used  with  llvm-
+       otool(1) a line is printed that states the option and the functionality
+       is obsolete.  If no valid equivalent options are given then usage  mes-
+       sage from objdump(1) will be printed when executed.
+
+       The  archive  member  syntax of arguments of the form libx.a(foo.o), is
+       not supported.  Which is the same as if the -m option is always used.
+
+       When doing disassembly the default is to not print the opcode bytes  of
+       the  instructions even for 32-bit ARM.  To get the opcode bytes printed
+       for ARM the otool(1) option -j needs to be used.
+
+       There are some white space differences in the output  of  the  otool(1)
+       and  objdump(1)	commands  in some cases.  As the objdump(1) command is
+       not meant to produce the exact same output as  otool(1)	in  all  cases
+       where the functionality is very similar.
+
+SPECIFIC TRANSLATIONS OF OPTIONS
+       Below  is  the  list  of  otool(1)  options and the specific objdump(1)
+       option to print the same information.  To use these options  with  obj-
+       dump(1)	the -macho option must be used.  The default for objdump(1) is
+       as if the verbose, -v option is always used.  To  get  the  non-verbose
+       output the objdump(1) -non-verbose option is used.
+
+       -a     The  objdump(1)  -archive-headers will print the archive header,
+	      if the file is an archive.  To get the offsets  to  the  archive
+	      headers that would be printed with the otool(1) -aV options, the
+	      objdump(1) -archive-member-offsets can be added.
+
+       -S     There is no objdump(1) option to display	the  contents  of  the
+	      `__.SYMDEF' file, if the file is an archive.  For that use llvm-
+	      nm(1) with the -print-armap option.
+
+       -f     The objdump(1) option to display the universal headers is  -uni-
+	      versal-headers.
+
+       -h     The  objdump(1)  option  to display the Mach header is -private-
+	      header.
+
+       -l     The objdump(1) option to display the load commands is  -private-
+	      headers which also always displays the Mach header.
+
+       -L     The  objdump(1)  option to display the names and version numbers
+	      of the shared libraries that the object file uses,  as  well  as
+	      the  shared  library  ID	if  the  file  is  a shared library is
+	      -dylibs-used.
+
+       -D     The objdump(1) option to display just  the  install  name  of  a
+	      shared library is -dylib-id.
+
+       -s segname sectname
+	      The  objdump(1)  option  to  display the contents of the section
+	      (segname,sectname) is -section [segname,]sectname where the seg-
+	      name  is optional and all segments will be searched for a match-
+	      ing sectname.
+
+       -t     The  objdump(1)  option  to  display   the   contents   of   the
+	      (__TEXT,__text)  section	is  to	use the -section __TEXT,__text
+	      option.  If disassembly is  wanted  as  with  the  -tv  otool(1)
+	      options  then  the  objdump(1) -disassemble is used.  By default
+	      objdump(1) also symbolically disassembles the  operands  as  the
+	      otool(1)	-tV  options  will do.	If this is not wanted then the
+	      objdump(1) -no-symbolic-operands option can be used.
+
+       -d     The  objdump(1)  option  to  display   the   contents   of   the
+	      (__DATA,__data)  section	is  to	use the -section __DATA,__data
+	      option.
+
+       -o     The objdump(1) option to display the contents of the __OBJC seg-
+	      ment used by the Objective-C run-time system is -objc-meta-data.
+
+       -r     The objdump(1) option to display the relocation entries  is  -r.
+	      Note  that  the  default	relocation  entry  format is different
+	      between objdump(1) and otool(1).	When -r is combined  with  the
+	      -macho option, objdump(1) will display the relocation entries in
+	      the classic otool(1) format.
+
+       -I     The objdump(1) option to display the indirect  symbol  table  is
+	      -indirect-symbols.
+
+       -G     The  objdump(1)  option  to  display  the  data in code table is
+	      -data-in-code.
+
+       -C     The objdump(1) option to display the linker  optimization  hints
+	      is -link-opt-hints.
+
+       -P     The   objdump(1)	 option  to  print  the  info  plist  section,
+	      (__TEXT,__info_plist), as strings is -info-plist.
+
+       -p name
+	      The objdump(1) option to start the disassembly from symbol  name
+	      is -dis-symname name.
+
+       -v     For objdump(1) verbose output is the default and to get the non-
+	      verbose the option -non-verbose is used.
+
+       -V     For objdump(1) displaying the disassembled operands symbolically
+	      is the default and to get non-symbolic operands with disassembly
+	      the option -no-symbolic-operands is used.
+
+       -X     The objdump(1) option to not print leading addresses or  headers
+	      with disassembly of sections is -no-leading-addr.
+
+       -mcpu=arg
+	      The objdump(1) option when doing disassembly using the llvm dis-
+	      assembler to use the cpu arg.  is the same -mcpu=arg option.
+
+       -arch arch_type
+	      The objdump(1) options to specifies the architectures to operate
+	      on are the same -arch arch_type options.
+
+       -j     The  objdump(1) prints the opcode bytes of the instructions when
+	      doing disassembly by default and is turned off with  the	option
+	      -no-show-raw-insn.
+
+       --version
+	      The  objdump(1)  option  to  display  the  llvm-otool(1) version
+	      information and the objdump(1) version information  is  -version
+	      (with one leading dash).
+
+OBSOLETE OPTIONS
+       -c     There  is  no  objdump(1) option to display the argument strings
+	      (argv[] and envp[]) from a core file.
+
+       -T     There is no objdump(1) option to display the table  of  contents
+	      for  a dynamically linked shared library, as this table is obso-
+	      lete and no longer produced by the tools.
+
+       -R     There is no objdump(1) option to display the reference table  of
+	      a  dynamically  linked shared library, as this table is obsolete
+	      and no longer produced by the tools.
+
+       -M     There is no objdump(1) option to display the module table  of  a
+	      dynamically linked shared library, as this table is obsolete and
+	      no longer produced by the tools.
+
+       -H     There is no objdump(1) option to display the two-level namespace
+	      hints table, as this table is obsolete and no longer produced by
+	      the tools.
+
+       -i     There is no objdump(1) option to display the shared library ini-
+	      tialization  table, as this table is obsolete and no longer pro-
+	      duced by the tools.
+
+       -q     There is no objdump(1) option to use the llvm disassembler  when
+	      doing disassembly as this is the default.
+
+       -Q     There  is  no objdump(1) option to use the otool(1) disassembler
+	      when doing disassembly as only the llvm disassembler is used.
+
+       -function_offsets
+	      There is no objdump(1) option when doing	disassembly  to  print
+	      the decimal offset from the last label printed.
+
+       -m     There  is no objdump(1) option to not assume to the archive(mem-
+	      ber) syntax as that is the  default.   And  the  archive(member)
+	      syntax is not supported as file arguments with objdump(1).
+
+SEE ALSO
+       otool-classic(1), llvm-objdump(1)
+
+
+
+Apple Inc.			 July 31, 2018			 LLVM-OTOOL(1)

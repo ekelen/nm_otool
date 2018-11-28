@@ -1,0 +1,9 @@
+*.o
+*.a
+*.exe
+
+ft_nm
+ft_otool
+
+*.txt
+*.diff
