@@ -21,6 +21,7 @@ static char	    *get_ar_name(const char *name)
 	return (ft_strstr(name, ARFMAG) + len);
 }
 
+// store ar_hdr info along with each mach-o in archive
 int add_ofile(t_file *file, void *ptr, const void *header)
 {
     t_ofile o;
@@ -39,16 +40,17 @@ int add_ofile(t_file *file, void *ptr, const void *header)
     return(add_mach(&(file->mach), m));
 }
 
-static int update_archive_ptrs(t_file *file, void **ptr, t_ar_hdr **hdr, size_t *ar_size)
+// Look through an archive header
+static int check_archive_ptrs(t_file *file, void **ptr, t_ar_hdr **hdr, size_t *ar_size)
 {
-    if (!(*hdr = (t_ar_hdr *)ptr_check_msg(file->end, *ptr, sizeof(struct ar_hdr), "ar_hdr")))
+    if (!(*hdr = (t_ar_hdr *)ptr_check_msg(file->end, *ptr, AR_HDR_SIZE, "ar_hdr")))
         return EXIT_FAILURE;
     if (ft_atoi((*hdr)->ar_size) <= 0)
         return (EXIT_FAILURE);
-    if (add_ofile(file, *ptr, ((void *)&hdr)) == EXIT_FAILURE)
+    if (add_ofile(file, *ptr, *ptr) == EXIT_FAILURE)
         return EXIT_FAILURE;
-
-    
+    *ar_size = ft_atoi((*hdr)->ar_size);
+    return EXIT_SUCCESS;
 }
 
 int handle_archive(t_file *file)
@@ -56,29 +58,18 @@ int handle_archive(t_file *file)
     struct ar_hdr	*header;
     void            *ptr;
     size_t          ar_size;
-    int             i;
 
-    if (!(header = (t_ar_hdr *)ptr_check_msg(file->end, (void*)file->data + file->offset, sizeof(t_ar_hdr), "archive header")))
-        return EXIT_FAILURE;
+    if (!(header = (t_ar_hdr *)ptr_check_msg(file->end, file->data + file->offset, sizeof(t_ar_hdr), "archive header")))
+        return (EXIT_FAILURE);
     ar_size = (size_t)ft_atoi(header->ar_size);
-    if (!(ptr = ptr_check_msg(file->end, (void*)header + ar_size + sizeof(struct ar_hdr), 0, "first ptr")))
-        return EXIT_FAILURE;
-    // if (!(header = (struct ar_hdr *)ptr_check_msg(file->end, ptr, sizeof(struct ar_hdr), "second header")))
-    //     return EXIT_FAILURE;
-    // ptr = header;
-    i = -1;
+    if (!(ptr = ptr_check_msg(file->end, (void*)header + ar_size + AR_HDR_SIZE, 0, "first ptr")))
+        return (EXIT_FAILURE);
     while (ptr < file->end) // TODO: Seems rickety
 	{
-		if (!(header = (t_ar_hdr *)ptr_check_msg(file->end, ptr, sizeof(struct ar_hdr), "ar_hdr")))
-        {
-        	return EXIT_FAILURE;
-        }
-		if (ft_atoi(header->ar_size) <= 0)
-			return (EXIT_FAILURE);
-        if (add_ofile(file, ptr, (void *)header) == EXIT_FAILURE)
-            return EXIT_FAILURE;
-        if (!(ptr = ptr_check_msg(file->end, ptr + ft_atoi(header->ar_size) + sizeof(struct ar_hdr), 0, "new ptr")))
-            return EXIT_FAILURE;
+        if (check_archive_ptrs(file, &ptr, &header, &ar_size) == EXIT_FAILURE)
+            return (EXIT_FAILURE);
+        if (!(ptr = ptr_check_msg(file->end, ptr + ar_size + AR_HDR_SIZE, 0, "new ptr")))
+            return (EXIT_FAILURE);
 	}
-    return EXIT_SUCCESS;
+    return (EXIT_SUCCESS);
 }
