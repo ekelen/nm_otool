@@ -59,12 +59,13 @@ int handle_archive(t_file *file)
     void            *ptr;
     size_t          ar_size;
 
-    if (!(header = (t_ar_hdr *)ptr_check_msg(file->end, file->data + file->offset, sizeof(t_ar_hdr), "archive header")))
+    ptr = file->data + file->offset;
+    if (!(header = (t_ar_hdr *)ptr_check_msg(file->end, ptr, AR_HDR_SIZE, "archive header")))
         return (EXIT_FAILURE);
     ar_size = (size_t)ft_atoi(header->ar_size);
-    if (!(ptr = ptr_check_msg(file->end, (void*)header + ar_size + AR_HDR_SIZE, 0, "first ptr")))
+    if (!(ptr = ptr_check_msg(file->end, ptr + ar_size + AR_HDR_SIZE, 0, "first ptr")))
         return (EXIT_FAILURE);
-    while (ptr < file->end) // TODO: Seems rickety
+    while (ptr < file->end)
 	{
         if (check_archive_ptrs(file, &ptr, &header, &ar_size) == EXIT_FAILURE)
             return (EXIT_FAILURE);

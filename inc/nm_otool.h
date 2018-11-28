@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/28 16:33:45 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/28 16:40:43 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 #include "nm.h"
 
 # define HOST_CPU CPU_TYPE_X86_64
-# define AR_HDR_SIZE 60l
+# define AR_HDR_SIZE sizeof(t_ar_hdr)
 
 typedef struct mach_header          t_mach_header;
 typedef struct mach_header_64       t_mach_header_64;
