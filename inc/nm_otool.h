@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/28 14:55:24 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/28 15:47:22 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,11 +129,20 @@ struct s_arch {
     uint64_t                size;
 };
 
+// ofile.h
+// TODO: Too verbose
+struct s_ofile {
+    const char *addr;      	    /* pointer to the member contents */
+    uint32_t size;           /* actual size of the member (not rounded)*/
+    const t_ar_hdr *hdr;   /* pointer to the ar_hdr for this member */
+    const char *name;		            /* name of this member */
+    uint32_t name_size;      /* size of the member name */
+};
+
 // TODO: Remove redundant fields
 struct s_mach_o {
     uint32_t                flags;
     uint32_t                magic;
-    t_sec                   *secs;
     t_symbol                *symbols;
     bool                    m64;
     bool                    swap;
@@ -154,21 +163,13 @@ struct s_mach_o {
 
     t_arch                  arch;
     cpu_type_t              cputype;
-    t_ofile                 *ofile;
+    t_ofile                 ofile;
 
     uint32_t				(*swap32)(uint32_t x);
     uint64_t				(*swap64)(uint64_t x);
 };
 
-// ofile.h
-// TODO: Too verbose
-struct s_ofile {
-    char *member_addr;      	    /* pointer to the member contents */
-    uint32_t member_size;           /* actual size of the member (not rounded)*/
-    struct ar_hdr *member_ar_hdr;   /* pointer to the ar_hdr for this member */
-    char *member_name;		            /* name of this member */
-    uint32_t member_name_size;      /* size of the member name */
-};
+
 
 struct  s_file {
 	bool					m64;
@@ -205,7 +206,6 @@ t_mach_o            *init_mach_o(t_file *file, void *data, size_t size);
 int                 add_mach(t_mach_o **curr, t_mach_o *new);
 
 // static_lib.c
-int add_ofile(t_file *file, void *ptr, t_ar_hdr *header);
 int handle_archive(t_file *file);
 
 // fat.c

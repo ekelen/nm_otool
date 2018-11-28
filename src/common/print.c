@@ -63,7 +63,7 @@ void print_meta_fat(t_file *file, t_mach_o *m)
 void print_meta_statlib(t_file *file, t_mach_o *m)
 {
 	ft_putendl("");
-    ft_printf("%s(%s):\n", file->filename, m->ofile->member_name);
+    ft_printf("%s(%s):\n", file->filename, m->ofile.name);
 }
 
 static int free_symbols(t_symbol *curr)
@@ -102,7 +102,6 @@ void print_machs(t_file *file, t_mach_o *m)
         print_in_order(m->symbols, m->symbols);
 		free_symbols(m->symbols);
 		m->symbols = NULL;
-		m->secs = NULL;
     }
     print_machs(file, m->next);
 }

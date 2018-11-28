@@ -1,6 +1,7 @@
 #include <nm_otool.h>
 
-static int		get_size(char *name)
+// Add result to ar_hdr pointer to get position of mach-O hdr
+static int		get_size(const char *name)
 {
 	int		x;
 	char	*word;
@@ -10,7 +11,8 @@ static int		get_size(char *name)
 	return (x);
 }
 
-static char	    *get_ar_name(char *name)
+// Get name of archive object file by looking after the position of ARFMAG
+static char	    *get_ar_name(const char *name)
 {
 	int		len;
 
@@ -18,37 +20,31 @@ static char	    *get_ar_name(char *name)
 	return (ft_strstr(name, ARFMAG) + len);
 }
 
-// TODO: Cleanup/rmv heap alloc
-// Also I don't like the name of this struct
-static t_ofile *init_ofile(t_file *file, void *ptr, t_ar_hdr *header)
+// TODO: I don't like the name of this struct
+static t_ofile get_ofile(t_file *file, const void *ptr, const t_ar_hdr *header)
 {
-    t_ofile *o;
-    
-    int result_init_ofile;
-    if (!(o = (t_ofile *)malloc(sizeof(t_ofile))))
-        return NULL;
-    
-    o->member_ar_hdr = header;
-    o->member_name_size = (size_t)get_size(o->member_ar_hdr->ar_name);
-    o->member_size = (uint32_t)ft_atoi(o->member_ar_hdr->ar_size);
-    o->member_name = (char *)get_ar_name(o->member_ar_hdr->ar_name);
-    o->member_addr = (void*)ptr 
-        + sizeof(struct ar_hdr) 
-        + o->member_name_size;
+    t_ofile o;
+
+    o.hdr = header;
+    o.name_size = (size_t)get_size(o.hdr->ar_name);
+    o.size = (uint32_t)ft_atoi(o.hdr->ar_size);
+    o.name = (const char *)get_ar_name(o.hdr->ar_name);
+    o.addr = ptr 
+        + sizeof(t_ar_hdr) 
+        + o.name_size;
     return o;
 }
 
-int add_ofile(t_file *file, void *ptr, t_ar_hdr *header)
+int add_ofile(t_file *file, void *ptr, const t_ar_hdr *header)
 {
-    t_ofile *new;
+    t_ofile o;
     t_mach_o *m;
     int result;
 
-    if (!(new = init_ofile(file, ptr, header)))
+    o = get_ofile(file, ptr, header);
+    if (!(m = init_mach_o(file, o.addr, o.size - o.name_size)))
         return EXIT_FAILURE;
-    if (!(m = init_mach_o(file, new->member_addr, new->member_size - new->member_name_size)))
-        return NULL;
-    m->ofile = new;
+    m->ofile = o;
     result = add_mach(&(file->mach), m);
     return result;
 }
