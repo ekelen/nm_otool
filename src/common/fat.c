@@ -148,7 +148,7 @@ int handle_fat_2(t_file *file, uint32_t nfat_arch)
     t_arch a;
 
 	i = -1;
-    while (++i < nfat_arch)
+    while (++i < nfat_arch) // TODO: Update so not pointlessly alloc'ing other arch's when we have host CPU
     {
         f = check_fa(file, nfat_arch, i);
         if (!f.fa32 && !f.fa64)

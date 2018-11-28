@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/28 12:22:55 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/28 14:16:07 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,9 @@
 # include <mach/machine.h>
 # include <stdbool.h>
 
-# define HOST_CPU CPU_TYPE_X86_64
-# define STR_FLAGS "ajuUr"
+#include "nm.h"
 
-# define SHOW_ANY_MASK 
+# define HOST_CPU CPU_TYPE_X86_64
 
 typedef struct mach_header          t_mach_header;
 typedef struct mach_header_64       t_mach_header_64;
@@ -77,25 +76,6 @@ struct s_arch_info {
     char name[20];
     cpu_type_t cpu_type;
     cpu_subtype_t cpu_subtype;
-};
-
-typedef enum e_user_flags t_e_user_flags;
-enum e_user_flags {
-    ALL = 1 << 0,
-    SYM_NAME_ONLY = 1 << 1,
-    UNDEF_ONLY = 1 << 2,
-    NO_UNDEF = 1 << 3,
-    SORT_REVERSE = 1 << 4 
-};
-
-typedef enum e_symbol_show t_e_symbol_show;
-enum e_symbol_show {
-    SHOW_VALUE = 1 << 0,
-    SHOW_TYPE = 1 << 1,
-    SHOW_NAME = 1 << 2,
-    SHOW_STRVAL = 1 << 3,
-    SHOW_VAL_COL = 1 << 4, 
-    SHOW_ANY = 1 << 5
 };
 
 typedef enum e_error t_e_error;
@@ -149,6 +129,7 @@ struct s_arch {
     uint64_t                size;
 };
 
+// TODO: Remove redundant fields
 struct s_mach_o {
     uint32_t                flags;
     uint32_t                magic;
@@ -178,24 +159,16 @@ struct s_mach_o {
     uint64_t				(*swap64)(uint64_t x);
 };
 
-
-
+// ofile.h
+// TODO: Too verbose
 struct s_ofile {
-    // uint32_t member_offset;         /* logical offset to the member starting */
     char *member_addr;      	    /* pointer to the member contents */
     uint32_t member_size;           /* actual size of the member (not rounded)*/
     struct ar_hdr *member_ar_hdr;   /* pointer to the ar_hdr for this member */
     char *member_name;		            /* name of this member */
     uint32_t member_name_size;      /* size of the member name */
-    // enum ofile_type member_type;    /* the type of file for this member */
-    cpu_type_t archive_cputype;	    /* if the archive contains objects then */
-    cpu_subtype_t archive_cpusubtype;		    /*  these two fields reflect the objects */
-		    /*  at are in the archive. */
 };
 
-
-
-typedef struct  s_file t_file;
 struct  s_file {
 	bool					m64;
 	bool					is_fat;
@@ -219,8 +192,8 @@ struct  s_file {
 
 // util.c
 uint32_t nswap32(uint32_t x);
-uint64_t	nswap64(uint64_t x);
-uint64_t	swap64(uint64_t x);
+uint64_t nswap64(uint64_t x);
+uint64_t swap64(uint64_t x);
 uint32_t swap32 (uint32_t x);
 void *ptr_read(void *addr, size_t addr_len, const void *req, size_t req_length);
 void *ptr_check(void *addr_max, const void *req, size_t req_length);
@@ -234,12 +207,6 @@ int                 add_mach(t_mach_o **curr, t_mach_o *new);
 int add_ofile(t_file *file, void *ptr, t_ar_hdr *header);
 int handle_archive(t_file *file);
 
-// fat_32.c
-int handle_fat_32(t_file *file, uint32_t nfat_arch);
-
-// fat_64.c
-int handle_fat_64(t_file *file, uint32_t nfat_arch);
-
 // fat.c
 t_arch init_arch    (t_file *file, t_u_fa f);
 t_arch_info         get_arch_info(cpu_type_t cputype, cpu_subtype_t cpusubtype);
@@ -249,12 +216,7 @@ char                *get_archname(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 // parse_commands.c
 int parse_seg(t_file *file, t_mach_o *m, const struct load_command *lc);
 
-// universal.c
-t_arch              *init_fat(t_file *file);
-
 // parse_symtab.c
-int handle_symtab_32(t_file *file, t_mach_o *m, t_symtab_command *st);
-int handle_symtab_64(t_file *file, t_mach_o *m, t_symtab_command *st);
 int parse_symtab(t_file *file, t_mach_o *m, const struct load_command *cmd);
 
 // symbol.c
@@ -271,18 +233,11 @@ t_file              *init_file(void *data, off_t size, char *argname, uint32_t f
 void print_in_order(t_symbol *head, t_symbol *current);
 void print_nsecs(t_mach_o *m);
 void print_secs(t_sec *curr);
-// void print_archs(t_file *file, t_mach_o *curr);
-// void print_ofiles(t_file *file, t_ofile *curr);
 
-// void print_symbol_32(t_symbol *symbol);
-// void print_symbol_64(t_symbol *symbol);
 void print_meta_statlib(t_file *file, t_mach_o *m);
 void print_meta_single(t_file *file, t_mach_o *m);
 void print_meta_fat(t_file *file, t_mach_o *m);
 void print_symbols(t_file *file);
-
-// misc
-void print_secs(t_sec *curr);
 
 //error.c
 int error(const char *arg, int err);

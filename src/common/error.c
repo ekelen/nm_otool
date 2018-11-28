@@ -1,5 +1,6 @@
 #include <nm_otool.h>
 
+// TODO: Consistent error codes
 int error(const char *arg, int err)
 {
 	if (err == ERR_USAGE)
@@ -22,6 +23,7 @@ int error(const char *arg, int err)
 	return err;
 }
 
+// TODO: Consistent error codes
 int error_extended(const char *arg, int err, const char *msg)
 {
 	ft_putstr_fd("ERROR: ", 2);

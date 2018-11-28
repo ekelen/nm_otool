@@ -3,9 +3,6 @@
 
 char parse_section_type(uint64_t nsects, uint8_t n_sect)
 {
-    t_sec *sec;
-    sec = NULL;
-
     if (n_sect == NO_SECT)
         return 'u';
     else if (n_sect <= MAX_SECT)
@@ -30,20 +27,13 @@ char parse_type(uint64_t nsects, t_symbol *symbol)
 
     if (c & N_STAB)
         return '-';
-	// ft_printf("\n\ni  ::  %d\n", i);
-	// ft_printf("symbol->n_type  ::  %x\n", symbol->n_type);
     c = c & N_TYPE;
-	// ft_printf("symbol->n_type  ::  %x\n", symbol->n_type);
-	// ft_printf("c  ::  %d\n", c);
-	// ft_printf("N_ABS  ::  %d\n", N_ABS);
     if (c == N_UNDF)
         c = symbol->n_value == 0 ? 'u' : 'c'; // local common symbol
     else if (c == N_PBUD)
         c = 'u';
     else if (c == N_ABS)
-	{
         c = 'a';
-	}
     else if (c == N_SECT)
         c = parse_section_type(nsects, symbol->n_sect);
     else if (c == N_INDR)
@@ -56,6 +46,7 @@ char parse_type(uint64_t nsects, t_symbol *symbol)
     return (unsigned char)c;
 }
 
+// TODO: do something with this landfill
 static uint32_t check_show(uint32_t flags, t_symbol *symbol)
 {
 	uint32_t print;
@@ -101,6 +92,7 @@ static uint32_t check_show(uint32_t flags, t_symbol *symbol)
     return print;
 }
 
+// default
 int cmp_name(t_symbol *sym1, t_symbol *sym2)
 {
     int cmp;
@@ -108,6 +100,19 @@ int cmp_name(t_symbol *sym1, t_symbol *sym2)
     cmp = ft_strcmp(sym1->nom, sym2->nom);
     if (cmp == 0)
         return (sym1->n_value - sym2->n_value);
+    else
+        return cmp;
+}
+
+// todo: test
+// for flag -r
+int cmp_name_reverse(t_symbol *sym1, t_symbol *sym2)
+{
+    int cmp;
+    
+    cmp = ft_strcmp(sym2->nom, sym1->nom);
+    if (cmp == 0)
+        return (sym2->n_value - sym1->n_value);
     else
         return cmp;
 }
@@ -162,14 +167,11 @@ static int fill_symbol_data(uint32_t flags, t_mach_o *m, t_symtab_command *st, t
 
 	if (!(s->nom = get_sym_name(m, st, nl)))
         return EXIT_FAILURE;
-	// ft_printf("s->m64  ::  %d\n", s->m64);
 	s->n_value = s->m64 ? m->swap64(nl.nl64->n_value) : (uint64_t)(m->swap32(nl.nl32->n_value));
 	s->n_sect = s->m64 ? nl.nl64->n_sect : nl.nl32->n_sect;
 	s->n_type = s->m64 ? nl.nl64->n_type : nl.nl32->n_type;
-	
 	s->type = parse_type(m->nsects, s);
-    s->sort = cmp_name;
-
+    s->sort = cmp_name; // todo: add others
 	s->print = check_show(flags, s);
 	return EXIT_SUCCESS;
 }
@@ -180,10 +182,8 @@ int add_symbol(t_file *file, t_mach_o *m, t_symtab_command *st, const void *nptr
     if (!(s = malloc(sizeof(t_symbol))))
         return EXIT_FAILURE;
 	s->nptr = nptr;
-	s->print = 0x00000000;
 	s->left = NULL;
 	s->right = NULL;
-	
 	if (fill_symbol_data(file->flags, m, st, s) == EXIT_FAILURE)
 		return EXIT_FAILURE; // free
     sort_symbol(&(m->symbols), s);

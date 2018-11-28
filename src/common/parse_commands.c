@@ -11,9 +11,7 @@ int parse_seg(t_file *file, t_mach_o *m, const struct load_command *lc)
 
 	if (!seg && !seg64)
 		return EXIT_FAILURE;
-	
 	nsects = m->m64 ? m->swap32(seg64->nsects) : m->swap32(seg->nsects);
-
     if (nsects > 0)
         return get_secs(file, m, seg ? (void*)seg : (void*)seg64, nsects);
     return EXIT_SUCCESS;

@@ -1,9 +1,10 @@
 #include <nm_otool.h>
 #include <assert.h>
 
+// Loops thru segments; collects everything we'll need to display
+// TODO: Eyesore
 static int    fill_mach(t_file *file, t_mach_o *m)
 {
-	// ft_printf("fill_mach\n");
 	struct load_command *lc;
 	t_mach_header_64 *mh64;
 	t_mach_header *mh;
@@ -58,6 +59,7 @@ static int    fill_mach(t_file *file, t_mach_o *m)
     return EXIT_SUCCESS;
 }
 
+// TODO: Get rid of redundant info, split into more helpful subfns
 t_mach_o *init_mach_o(t_file *file, void *data, size_t size)
 {
 	t_mach_o *m;

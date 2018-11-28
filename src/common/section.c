@@ -68,6 +68,7 @@ static int add_sec(t_file *file, t_mach_o *m, const void *sec_addr)
 	return (EXIT_SUCCESS);
 }
 
+// TODO: Don't need to store all the sects?
 int get_secs(t_file *file, t_mach_o *m, void *seg, uint32_t nsects)
 {
     size_t index;
