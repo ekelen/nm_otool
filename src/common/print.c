@@ -41,18 +41,18 @@ void print_nsecs(t_mach_o *m)
     ft_printf("DATA  ::  %zu\n", (m->nsects & DATA_SECT) >> 8);
 }
 
-void print_secs(t_sec *curr)
-{
-    if (!curr)
-        return;
-    else
-    {
-        ft_printf("%d sectname  ::  %s\n", curr->index, curr->sc.sc->sectname);
-        ft_printf("%d curr->segname  ::  %s\n", curr->index, curr->sc.sc->segname);
-		ft_putendl("");
-        print_secs(curr->next);
-    }
-}
+// void print_secs(t_sec *curr)
+// {
+//     if (!curr)
+//         return;
+//     else
+//     {
+//         ft_printf("%d sectname  ::  %s\n", curr->index, curr->sc.sc->sectname);
+//         ft_printf("%d curr->segname  ::  %s\n", curr->index, curr->sc.sc->segname);
+// 		ft_putendl("");
+//         print_secs(curr->next);
+//     }
+// }
 
 void print_meta_fat(t_file *file, t_mach_o *m)
 {
@@ -101,7 +101,6 @@ void print_machs(t_file *file, t_mach_o *m)
 		file->print_meta(file, m);
         print_in_order(m->symbols, m->symbols);
 		free_symbols(m->symbols);
-		free_sections(m->secs);
 		m->symbols = NULL;
 		m->secs = NULL;
     }
