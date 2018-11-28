@@ -19,8 +19,11 @@ class bcolors:
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 name_nm = "ft_nm"
+name_otool = "ft_otool"
 dir_nm = os.path.join(dir_path, "..")
+dir_otool = os.path.join(dir_path, "..")
 nm_path = os.path.join(dir_path, "..", name_nm)
+otool_path = os.path.join(dir_path, "..", name_otool)
 
 # /usr/local/mysql/lib
 
@@ -33,45 +36,52 @@ class Base(TestCase):
 		for f in test_files:
 			with self.subTest(f=f):
 				try:
-					ftnm = subprocess.check_output([nm_path, os.path.join(self.test_path, f)] + flags, stderr=subprocess.DEVNULL)
-					nxnm = subprocess.check_output(["nm", os.path.join(self.test_path, f)] + flags, stderr=subprocess.DEVNULL)
-					self.assertEqual(ftnm, nxnm, msg=f'{f} with flags {flags} does not match.')
+					ftot = subprocess.check_output([otool_path, os.path.join(self.test_path, f)], stderr=subprocess.DEVNULL)
+					nxot = subprocess.check_output(["otool", "-t", os.path.join(self.test_path, f)], stderr=subprocess.DEVNULL)
+					self.assertEqual(ftot, nxot, msg=f'{f} does not match.')
 				except subprocess.CalledProcessError:
-					ftnm = subprocess.check_output([nm_path, os.path.join(self.test_path, f)] + flags, stderr=subprocess.DEVNULL)
-					self.assertFalse(ftnm, msg=f'{f} with flags {flags} not causing error.')
-					# raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
+					ftot = subprocess.check_output([otool_path, os.path.join(self.test_path, f)], stderr=subprocess.DEVNULL)
+					self.assertFalse(ftot, msg=f'{f} not causing error.')
 
-	def ensure_false_for_known_corrupted(self, test_files):
+	def check_corrupted(self, test_files):
 		for f in test_files:
 			with self.subTest(f=f):
 				try:
-					ftnm = subprocess.check_output([nm_path, os.path.join(self.test_path, f)], stderr=subprocess.DEVNULL)
-					self.assertFalse(ftnm, msg=f'{f} not causing error.')
+					ftot = subprocess.check_output([otool_path, os.path.join(self.test_path, f)], stderr=subprocess.DEVNULL)
+					self.assertFalse(ftot, msg=f'{f} not causing error.')
 				except subprocess.CalledProcessError as e:
 					self.assertEqual(e.returncode, 1)
-
-
+			
 class Easy(Base):
 	def test_easy(self):
 		""" All the easy ones."""
 		self.compare(["test_facile", "test_moins_facile", "test_half_obj", "test_wrong_lc_command_size"])
 
 class T32(Base):
-
 	def setUp(self):
 		self.test_path = os.path.join(dir_path, "unit_test_files", "32")
 
-	def test_all_32(self):
-		""" All the 32 ones."""
-		files = os.listdir(self.test_path)
-		self.compare(files)
+	def test_ls_32(self):
+		self.compare(["MachO-OSX-x86-ls"])
+
+	def test_32_exe_hard(self):
+		self.compare(["32_exe_hard"])
+
+class T32_Hard(T32):
+	def test_Helloworld_32(self):
+		self.compare(["MachO-iOS-armv7s-Helloworld"])
+
+	def test_32_openssl(self):
+		self.compare(["MachO-OSX-ppc-openssl-1.0.1h"])
+
+	def test_32_arm117(self):
+		self.compare(["MachO-iOS-arm1176JZFS-bash"])
 
 class T64(Base):
-
 	def setUp(self):
 		self.test_path = os.path.join(dir_path, "unit_test_files", "64")
 
-	def test_all_64(self):
+	def test_all_64_otool(self):
 		""" All the 64 ones."""
 		files = os.listdir(self.test_path)
 		self.compare(files)
@@ -100,10 +110,8 @@ class Fat(Base):
 		""" All the fat ones."""
 		files = os.listdir(self.test_path)
 		self.compare(files)
-
 	
 class Statlib(Base):
-
 	def setUp(self):
 		self.test_path = os.path.join(dir_path, "unit_test_files", "lib_stat")
 
@@ -136,12 +144,12 @@ class Corrupt(Base):
 		self.compare(["fat_not_fail_except_one"])
 
 	def test_mega_bad_string(self):
-		self.ensure_false_for_known_corrupted(["mega_bad_string"])
+		self.check_corrupted(["mega_bad_string"])
 
 	def test_all_corrupt(self):
 		""" All the corrupt """
 		files = os.listdir(self.test_path)
-		self.ensure_false_for_known_corrupted(files)
+		self.check_corrupted(files)
 
 class Dylib(Base):
 
