@@ -18,11 +18,8 @@ class bcolors:
 	UNDERLINE = '\033[4m'
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-name_nm = "ft_nm"
 name_otool = "ft_otool"
 dir_nm = os.path.join(dir_path, "..")
-dir_otool = os.path.join(dir_path, "..")
-nm_path = os.path.join(dir_path, "..", name_nm)
 otool_path = os.path.join(dir_path, "..", name_otool)
 
 # /usr/local/mysql/lib
@@ -171,6 +168,6 @@ class Dylib(Base):
 		self.compare(files)
 
 if __name__ == '__main__':
-	cmd = ["make", "-C", dir_nm, "re"]
+	cmd = ["make", "-C", dir_otool, "re"]
 	subprocess.run(cmd)
 	ut.main()
