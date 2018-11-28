@@ -63,7 +63,7 @@ void print_meta_fat(t_file *file, t_mach_o *m)
 void print_meta_statlib(t_file *file, t_mach_o *m)
 {
 	ft_putendl("");
-    ft_printf("%s(%s):\n", file->filename, m->ofile->member_name);
+    ft_printf("%s(%s):\n", file->filename, m->ofile.name);
 }
 
 static int free_symbols(t_symbol *curr)

@@ -87,11 +87,11 @@ struct ofile {
     /* If this structure is currently referencing an archive member or an object
        file that is an archive member these are valid and filled in. */
     uint32_t member_offset;         /* logical offset to the member starting */
-    char *member_addr;      	    /* pointer to the member contents */
-    uint32_t member_size;           /* actual size of the member (not rounded)*/
-    struct ar_hdr *member_ar_hdr;   /* pointer to the ar_hdr for this member */
-    char *member_name;		    /* name of this member */
-    uint32_t member_name_size;      /* size of the member name */
+    char *addr;      	    /* pointer to the member contents */
+    uint32_t size;           /* actual size of the member (not rounded)*/
+    struct ar_hdr *hdr;   /* pointer to the ar_hdr for this member */
+    char *name;		    /* name of this member */
+    uint32_t name_size;      /* size of the member name */
     enum ofile_type member_type;    /* the type of file for this member */
     cpu_type_t archive_cputype;	    /* if the archive contains objects then */
     cpu_subtype_t		    /*  these two fields reflect the objects */
