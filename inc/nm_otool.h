@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 09:23:38 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/29 10:49:02 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,12 @@
 # include <stdbool.h>
 
 # define HOST_CPU CPU_TYPE_X86_64
+
+# define MH_CIGAM_MASK 0xf0ffffff
+# define MH_MAGIC_MASK 0xfffffff0
+# define SWAP_MAGIC (MH_CIGAM & 0xf0ffffff)
+# define MH_ANY (MH_MAGIC & MH_MAGIC_MASK)
+
 # define AR_HDR_SIZE sizeof(t_ar_hdr)
 
 typedef struct mach_header          t_mach_header;
@@ -232,8 +238,9 @@ int free_symbols(t_symbol *curr);
 // section.c
 int get_secs(t_file *file, t_mach_o *m, void *seg, uint32_t nsects);
 
-// init.c
+// file.c
 t_file              *init_file(void *data, off_t size, char *argname, uint32_t flags);
+void                free_file(t_file *file);
 
 //print.c
 void print_nsecs(t_mach_o *m);

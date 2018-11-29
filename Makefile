@@ -38,8 +38,8 @@ CFLAGS = -Werror -Wextra -w -g $(INC)
 
 SRC_COMMON += error.c
 SRC_COMMON += fat.c
+SRC_COMMON += file.c
 SRC_COMMON += mach.c
-SRC_COMMON += init.c
 SRC_COMMON += util.c
 SRC_COMMON += section.c
 SRC_COMMON += static_lib.c

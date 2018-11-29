@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 09:27:08 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/29 10:26:57 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
     while (--i > 0)
     {
         if (argv[argc - i][0] != '-' && (++nfiles))
-            read_file_nm(flags, argv[argc - i]);
+            err = read_file_nm(flags, argv[argc - i]);
     }
     if (!nfiles)
         return(read_file_nm(flags, "a.out"));

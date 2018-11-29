@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   file.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 11:29:00 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 09:05:25 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/29 10:39:16 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,38 @@ t_file      *init_file(void *data, off_t size, char *argname, uint32_t flags)
 	file->is_multi = (bool)(file->is_fat || file->is_statlib);
 	file->m64 = file->swap32(magic) & 1  || file->is_statlib ? 1 : 0;
 	file->offset = file_offset(file->is_fat, file->is_statlib, file->m64);
-	file->sort = cmp_name;
+	file->sort = NULL;
 	file->mach = NULL;
     return file;
+}
+
+void free_machs(t_mach_o *curr)
+{
+    t_mach_o *tmp;
+	while (curr)
+	{
+		if (curr->symbols != NULL)
+		{
+			free_symbols(curr->symbols);
+			curr->symbols = NULL;
+		}
+		tmp = curr;
+		curr = curr->next;
+		free(tmp);
+	}
+	// dprintf(2, "freed machs\n");
+	return;
+}
+
+void	free_file(t_file *file)
+{
+	if (file->mach)
+	{
+		free_machs(file->mach);
+	}
+	file->mach = NULL;
+	munmap(file->data, (size_t)(file->length));
+	free(file);
+	// dprintf(2, "freed file\n");
+	return;
 }

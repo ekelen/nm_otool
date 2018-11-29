@@ -74,19 +74,17 @@ t_mach_o *init_mach_o(t_file *file, void *data, size_t size)
 		return NULL;
 	if (!(magic = *(uint32_t *)ptr_read(data, size, data, sizeof(uint32_t))))
 		return (NULL);
-	m->swap = (magic & 0xf0ffffff) == (MH_CIGAM & 0xf0ffffff) ? 1 : 0;
+	// if (!(magic = *(uint32_t *)ptr_check_msg(m->end, data, sizeof(uint32_t), "magic number")))
+	// 	return (NULL);
+	m->swap = (magic & MH_CIGAM_MASK) == SWAP_MAGIC ? 1 : 0;
 	m->flags = file->flags;
 	
 	m->swap32 = m->swap ? swap32 : nswap32;
 	m->swap64 = m->swap ? swap64 : nswap64;
 	magic = m->swap32(magic);
 
-	if (magic != MH_MAGIC && magic != MH_MAGIC_64)
-	{
-		ft_printf("bad magic\n");
-		exit(0);
+	if ((magic & MH_MAGIC_MASK) != MH_ANY)
 		return NULL;
-	}
 	m->magic = magic;
 	m->m64 = magic & 1;
 	m->symbols = NULL;
