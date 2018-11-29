@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 11:22:46 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/29 14:08:39 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ uint32_t parse_flags_nm(char *av, int *err, size_t i)
         return ((*err = 2) && 0);
     else if (i > 0 && !ft_strchr(STR_FLAGS, av[i]))
         return ((*err = 2) && 0);
+
     flags = 0x00000000;
     if (av[i] == 'a')
         flags |= ALL;
@@ -57,6 +58,20 @@ int read_file_nm(uint32_t flags, char *av)
     return (add_file_nm(ptr, buf.st_size, av, flags));
 }
 
+int check_for_flags(int argc, char *argv[], int *err, uint32_t *flags)
+{
+    while (--argc > 0)
+    {
+        if (argv[argc][0] == '-')
+        {
+            *flags |= parse_flags_nm(argv[argc], err, ft_strlen(argv[argc])-1);
+            if (*err)
+                return(error(argv[argc], *err));
+        }
+    }
+    return (EXIT_SUCCESS);
+}
+
 int main(int argc, char *argv[])
 {
     int err;
@@ -74,15 +89,9 @@ int main(int argc, char *argv[])
     if (argc < 2)
         return (error("No file", 3));
 
-    while (--i > 0)
-    {
-        if (argv[argc - i][0] == '-')
-        {
-            flags |= parse_flags_nm(argv[argc - i], &err, ft_strlen(argv[argc - i])-1);
-            if (err)
-                return(error(argv[argc - i], 2));
-        }
-    }
+    check_for_flags(argc, argv, &err, &flags);
+    if (err)
+        return (err);
 
     i = argc;
     while (--i > 0)

@@ -14,9 +14,6 @@ int parse_seg(t_file *file, t_mach_o *m, const struct load_command *lc)
 
 	seg = !m->m64 ? (t_segment_command *)ptr_check_msg(m->end, lc, m->swap32(lc->cmdsize), "segment") : NULL;
 	seg64 = m->m64 ? (t_segment_command_64 *)ptr_check_msg(m->end, lc, m->swap32(lc->cmdsize), "segment 64") : NULL;
-
-	// TODO: Make sure command size is multiple of 4/8 ?
-
 	if (!seg && !seg64)
 		return EXIT_FAILURE;
 	nsects = m->m64 ? m->swap32(seg64->nsects) : m->swap32(seg->nsects);
