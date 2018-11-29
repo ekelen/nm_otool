@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 11:29:00 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 10:39:16 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/29 11:57:33 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ t_file      *init_file(void *data, off_t size, char *argname, uint32_t flags)
 	file->filename = argname;
 	if (!(magic = *(uint32_t *)ptr_read(data, size, data, sizeof(uint32_t))))
 		return (NULL);
-	file->swap = magic == MH_CIGAM || magic == MH_CIGAM_64 || magic == FAT_CIGAM || magic == FAT_CIGAM_64 ? 1 : 0;
+	file->swap = ((magic & MH_CIGAM_MASK) == SWAP_MAGIC) || ((magic & FAT_CIGAM_MASK) == SWAP_FAT) ? 1 : 0;
 	file->swap32 = file->swap ? swap32 : nswap32;
-	file->is_fat = magic == FAT_MAGIC || magic == FAT_CIGAM || magic == FAT_CIGAM_64 || magic == FAT_MAGIC_64 ? 1 : 0;
+	file->is_fat = (file->swap32(magic) & FAT_MAGIC_MASK) == FAT_ANY ? 1 : 0;
 	file->is_statlib = !ft_strncmp((const char*)data, ARMAG, SARMAG);
 	file->is_multi = (bool)(file->is_fat || file->is_statlib);
 	file->m64 = file->swap32(magic) & 1  || file->is_statlib ? 1 : 0;
