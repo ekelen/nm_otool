@@ -162,6 +162,73 @@ class Dylib(Base):
 		files = os.listdir(self.test_path)[:10]
 		self.compare(files)
 
+class Easy_Flags(Base):
+	def setUp(self):
+		super().setUp()
+		self.files = ["test_facile", "test_moins_facile", "test_half_obj", "test_wrong_lc_command_size"]
+
+	def test_easy_only_undef(self):
+		""" Only undefined."""
+		self.compare(self.files, flags=["-u"])
+
+	def test_easy_no_undef(self):
+		""" No undefined."""
+		self.compare(self.files, flags=["-U"])
+
+	def test_easy_all(self):
+		""" All."""
+		self.compare(self.files, flags=["-a"])
+
+	def test_reverse(self):
+		""" Reverse."""
+		self.compare(self.files, flags=["-r"])
+
+class T32flags(Base):
+	def setUp(self):
+		self.test_path = os.path.join(dir_path, "unit_test_files", "32")
+		self.files = os.listdir(self.test_path)
+
+	def test_only_undef(self):
+		""" Only undefined."""
+		self.compare(self.files, flags=["-u"])
+
+	def test_no_undef(self):
+		""" No undefined."""
+		self.compare(self.files, flags=["-U"])
+
+	# def test_all(self):
+	# 	""" All."""
+	# 	self.compare(self.files, flags=["-a"])
+
+	def test_reverse(self):
+		""" Reverse."""
+		self.compare(self.files, flags=["-r"])
+
+	def test_reverse_only_undef(self):
+		""" Reverse."""
+		self.compare(self.files, flags=["-ru"])
+
+class T64flags(Base):
+	def setUp(self):
+		self.test_path = os.path.join(dir_path, "unit_test_files", "64")
+		self.files = os.listdir(self.test_path)
+
+	def test_only_undef(self):
+		""" Only undefined."""
+		self.compare(self.files, flags=["-u"])
+
+	def test_no_undef(self):
+		""" No undefined."""
+		self.compare(self.files, flags=["-U"])
+
+	# def test_all(self):
+	# 	""" All."""
+	# 	self.compare(self.files, flags=["-a"])
+
+	def test_reverse(self):
+		""" Reverse."""
+		self.compare(self.files, flags=["-r"])
+
 if __name__ == '__main__':
 	cmd = ["make", "-C", dir_nm, "re"]
 	subprocess.run(cmd)

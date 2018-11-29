@@ -1,7 +1,7 @@
 #include <nm_otool.h>
 #include <assert.h>
 
-static int free_symbols(t_symbol *curr)
+int free_symbols(t_symbol *curr)
 {
     if (!curr)
         return EXIT_SUCCESS;
@@ -55,52 +55,6 @@ char parse_type(uint64_t nsects, t_symbol *symbol)
     return (unsigned char)c;
 }
 
-// TODO: do something with this landfill
-static uint32_t check_show(uint32_t flags, t_symbol *symbol)
-{
-	uint32_t print;
-
-	print = 0x000000;
-    print |= (SHOW_ANY | SHOW_TYPE | SHOW_NAME | SHOW_VAL_COL | SHOW_VALUE);
-    if ((flags & 1) & ALL)
-    {
-        print |= (SHOW_ANY | SHOW_TYPE | SHOW_NAME | SHOW_VAL_COL | SHOW_VALUE);
-        
-    }
-    else if (symbol->n_type & N_STAB)
-    {
-        print &= ~SHOW_ANY;
-    }
-    else
-    {
-        print |= (SHOW_ANY | SHOW_TYPE | SHOW_NAME | SHOW_VAL_COL | SHOW_VALUE);
-    }
-
-    if (symbol->type == 'I')
-    {
-        print &= ~SHOW_VALUE;
-    }
-
-    if (!symbol->n_value && ft_strchr("Uu", symbol->type))
-    {
-        print &= ~SHOW_VALUE;
-    }
-
-    if ((flags & 4) & UNDEF_ONLY)
-    {
-        if (!ft_strchr("uU", symbol->type))
-        {
-            print &= ~SHOW_ANY;
-        } else {
-            print &= ~SHOW_VAL_COL;
-        }
-    }
-    if ((flags & 8) & NO_UNDEF)
-        if (ft_strchr("uU", symbol->type))
-            print &= ~SHOW_ANY;
-    return print;
-}
-
 // default
 int cmp_name(t_symbol *sym1, t_symbol *sym2)
 {
@@ -148,7 +102,7 @@ static char *get_sym_name(t_mach_o *m, t_symtab_command *st, t_u_nl nl)
 	return name;
 }
 
-void sort_symbol(t_symbol **curr, t_symbol *new)
+void sort_symbol(int (*sort)(t_symbol *s1, t_symbol *s2), t_symbol **curr, t_symbol *new)
 {
     int cmp;
     
@@ -157,11 +111,11 @@ void sort_symbol(t_symbol **curr, t_symbol *new)
         *curr = new;
         return;
     }
-    cmp = (*curr)->sort((*curr), new);
+    cmp = sort((*curr), new);
     if (cmp > 0)
-        return sort_symbol(&(*curr)->left, new);
+        return sort_symbol(sort, &(*curr)->left, new);
     else
-        return sort_symbol(&(*curr)->right, new);
+        return sort_symbol(sort, &(*curr)->right, new);
 }
 
 static int fill_symbol_data(uint32_t flags, t_mach_o *m, t_symtab_command *st, t_symbol *s)
@@ -180,7 +134,6 @@ static int fill_symbol_data(uint32_t flags, t_mach_o *m, t_symtab_command *st, t
 	s->n_type = s->m64 ? nl.nl64->n_type : nl.nl32->n_type;
 	s->type = parse_type(m->nsects, s);
     s->sort = cmp_name; // todo: add others
-	s->print = check_show(flags, s);
 	return EXIT_SUCCESS;
 }
 
@@ -194,6 +147,6 @@ int add_symbol(t_file *file, t_mach_o *m, t_symtab_command *st, const void *nptr
 	s->right = NULL;
 	if (fill_symbol_data(file->flags, m, st, s) == EXIT_FAILURE)
 		return EXIT_FAILURE; // free
-    sort_symbol(&(m->symbols), s);
+    sort_symbol(file->sort, &(m->symbols), s);
     return EXIT_SUCCESS;
 }

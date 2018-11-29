@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/28 22:09:51 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/29 09:23:38 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,6 +173,7 @@ struct  s_file {
 	bool					is_statlib;
     bool                    is_multi;
     bool                    swap;
+    bool                    is_nm;
 	const void				*data;
     const void              *end;
 	size_t					length;
@@ -185,6 +186,7 @@ struct  s_file {
     t_mach_o                *mach;  
 
     void                    (*print_meta)(t_file *file, t_mach_o *m);
+    int                     (*sort)(t_symbol *sym1, t_symbol *sym2);
     // void                    (*print_otool_meta)(t_file *file, t_mach_o *m);
 };
 
@@ -201,6 +203,9 @@ void *ptr_check_msg(void *addr_max, const void *req, size_t req_length, const ch
 t_mach_o            *init_mach_o(t_file *file, void *data, size_t size);
 int                 add_mach(t_mach_o **curr, t_mach_o *new);
 
+// read_file.c
+int read_file(uint32_t flags, char *av, bool is_nm);
+
 // static_lib.c
 int handle_archive(t_file *file);
 
@@ -216,10 +221,12 @@ int parse_seg(t_file *file, t_mach_o *m, const struct load_command *lc);
 // parse_symtab.c
 int parse_symtab(t_file *file, t_mach_o *m, const struct load_command *cmd);
 
+
 // symbol.c
 int add_symbol(t_file *file, t_mach_o *m, t_symtab_command *st, const void *nptr);
 int cmp_name_reverse(t_symbol *sym1, t_symbol *sym2);
 int cmp_name(t_symbol *sym1, t_symbol *sym2);
+int free_symbols(t_symbol *curr);
 
 
 // section.c
@@ -234,5 +241,6 @@ void print_nsecs(t_mach_o *m);
 //error.c
 int error(const char *arg, int err);
 int error_extended(const char *arg, int err, const char *msg);
+
 
 #endif
