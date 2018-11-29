@@ -6,49 +6,24 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/26 15:59:12 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/29 09:27:08 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <nm_otool.h>
+#include <nm.h>
 #include <assert.h>
 
-static int start_file(void *ptr, size_t size, char *argname, uint32_t flags)
+uint32_t parse_flags_nm(char *av, int *err, size_t i)
 {
-    int result;
-    t_file *file;
+    uint32_t flags;
 
-    if (!(file = init_file((void *)ptr, size, argname, flags)))
-        return EXIT_FAILURE;
-
-    if (file->is_fat)
-        result = handle_fat(file);
-    else if (file->is_statlib)
-        result = handle_archive(file);
-    else if (!file->is_statlib && !file->is_fat)
-        result = (((file->mach = init_mach_o(file, file->data, size))) == NULL 
-            ? EXIT_FAILURE 
-            : EXIT_SUCCESS);
-
-    // result = init_nm(ptr, size, argname, flags);
-    if (result == EXIT_FAILURE)
-        return (error_extended(argname, 1, "Input file error."));
-    else
-        print_machs(file, file->mach);
-    return EXIT_SUCCESS;
-}
-
-uint32_t parse_flags(char *av, int *err, size_t i)
-{
     if (i == 0 && av[i] == '-')
         return (0);
     else if (i == 0 && av[i] != '-')
         return ((*err = 2) && 0);
     else if (i > 0 && !ft_strchr(STR_FLAGS, av[i]))
         return ((*err = 2) && 0);
-
-    uint32_t flags = 0;
-
+    flags = 0x00000000;
     if (av[i] == 'a')
         flags |= ALL;
     else if (av[i] == 'j')
@@ -59,12 +34,11 @@ uint32_t parse_flags(char *av, int *err, size_t i)
         flags |= NO_UNDEF;
     else if (av[i] == 'r')
         flags |= SORT_REVERSE;
-
-    flags |= parse_flags(av, err, i - 1);
+    flags |= parse_flags_nm(av, err, i - 1);
     return flags;
 }
 
-int read_file(uint32_t flags, char *av)
+int read_file_nm(uint32_t flags, char *av)
 {
     int fd;
     struct stat buf;
@@ -78,7 +52,7 @@ int read_file(uint32_t flags, char *av)
     if ((ptr = mmap(0, buf.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
         return (error_extended(av, 1, "Couldn't allocate space with munmap"));
 
-    return(start_file(ptr, buf.st_size, av, flags));
+    return (add_file_nm(ptr, buf.st_size, av, flags));
 }
 
 int main(int argc, char *argv[])
@@ -102,7 +76,7 @@ int main(int argc, char *argv[])
     {
         if (argv[argc - i][0] == '-')
         {
-            flags |= parse_flags(argv[argc - i], &err, ft_strlen(argv[argc - i])-1);
+            flags |= parse_flags_nm(argv[argc - i], &err, ft_strlen(argv[argc - i])-1);
             if (err)
                 return(error(argv[argc - i], 2));
         }
@@ -112,10 +86,10 @@ int main(int argc, char *argv[])
     while (--i > 0)
     {
         if (argv[argc - i][0] != '-' && (++nfiles))
-            read_file(flags, argv[argc - i]);
+            read_file_nm(flags, argv[argc - i]);
     }
     if (!nfiles)
-        return(read_file(flags, "a.out"));
+        return(read_file_nm(flags, "a.out"));
     
     return (0);
 }

@@ -111,7 +111,6 @@ static int add_host_cpu_arch(t_file *file, t_arch a)
     {
 		assert(m->cputype == m->arch.arch_info.cpu_type);
         file->is_multi = FALSE;
-        file->print_meta = print_meta_single;
 		return EXIT_SUCCESS;
     }
 	return EXIT_FAILURE;

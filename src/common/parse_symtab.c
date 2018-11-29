@@ -1,15 +1,6 @@
 #include <nm_otool.h>
 #include <assert.h>
 
-static int free_symbols(t_symbol *curr)
-{
-    if (!curr)
-        return EXIT_SUCCESS;
-    free_symbols(curr->left);
-    free_symbols(curr->right);
-    free((void*)curr);
-}
-
 static int handle_symtab_2(t_file *file, t_mach_o *m, t_symtab_command *st)
 {
     uint32_t i;
