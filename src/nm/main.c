@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 14:08:39 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/29 14:36:13 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ uint32_t parse_flags_nm(char *av, int *err, size_t i)
     return flags;
 }
 
-int read_file_nm(uint32_t flags, char *av)
+int read_file_nm(t_nm_context *nmc, char *av)
 {
     int fd;
     struct stat buf;
@@ -55,7 +55,7 @@ int read_file_nm(uint32_t flags, char *av)
     if ((ptr = mmap(0, buf.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
         return (error_extended(av, 1, "Couldn't allocate space with munmap"));
 
-    return (add_file_nm(ptr, buf.st_size, av, flags));
+    return (add_file_nm(ptr, buf.st_size, av, nmc->flags));
 }
 
 int check_for_flags(int argc, char *argv[], int *err, uint32_t *flags)
@@ -72,16 +72,36 @@ int check_for_flags(int argc, char *argv[], int *err, uint32_t *flags)
     return (EXIT_SUCCESS);
 }
 
+t_nm_context *init_context(int err, uint32_t flags)
+{
+    t_nm_context *nmc;
+
+    nmc = malloc(sizeof(t_nm_context));
+
+    nmc->is_nm = TRUE;
+    nmc->flags = flags;
+    nmc->err = err;
+    nmc->nfiles = 0;
+    nmc->files = NULL;
+
+    return nmc;
+}
+
 int main(int argc, char *argv[])
 {
     int err;
     size_t i;
     uint32_t flags;
     size_t nfiles;
+
+    err = 0;
+
+    t_nm_context    *nmc;
+    
     
     //TODO: a.out if no file
     //TODO: multiple files
-    err = 0;
+    
     flags = 0;
     i = argc;
     nfiles = 0;
@@ -93,14 +113,15 @@ int main(int argc, char *argv[])
     if (err)
         return (err);
 
-    i = argc;
-    while (--i > 0)
+    nmc = init_context(err, flags);
+
+    while (--argc > 0)
     {
-        if (argv[argc - i][0] != '-' && (++nfiles))
-            err = read_file_nm(flags, argv[argc - i]);
+        if (argv[argc][0] != '-' && (++(nmc->nfiles)))
+            read_file_nm(nmc, argv[argc]);
     }
-    if (!nfiles)
-        return(read_file_nm(flags, "a.out"));
+    if (!nmc->nfiles)
+        read_file_nm(nmc, "a.out");
     
     return (0);
 }
