@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 10:26:57 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/29 11:22:46 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ uint32_t parse_flags_nm(char *av, int *err, size_t i)
         flags |= NO_UNDEF;
     else if (av[i] == 'r')
         flags |= SORT_REVERSE;
+    else if (av[i] == 'A')
+        flags |= PRINT_PATHNAME;
     flags |= parse_flags_nm(av, err, i - 1);
     return flags;
 }

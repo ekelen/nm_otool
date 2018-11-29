@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 10:49:02 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/29 11:36:57 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,11 +107,7 @@ struct  s_symbol {
     uint64_t        value;
     uint64_t        n_value;
     uint8_t         n_sect;
-    void            (*print_value)(t_symbol *symbol);
-    uint32_t        print;
     bool            m64;
-
-    int             (*sort)(t_symbol *sym1, t_symbol *sym2);
     t_symbol        *left;
     t_symbol        *right;
 };
@@ -150,6 +146,7 @@ struct s_mach_o {
     t_symbol                *symbols;
     bool                    m64;
     bool                    swap;
+    bool                    is_multi;
     const void              *data;
 
     size_t                  offset; // from mach header
@@ -168,9 +165,10 @@ struct s_mach_o {
     t_arch                  arch;
     cpu_type_t              cputype;
     t_ofile                 ofile;
-
+    void                    (*print_meta)(t_file *file, t_mach_o *m);
     uint32_t				(*swap32)(uint32_t x);
     uint64_t				(*swap64)(uint64_t x);
+
 };
 
 struct  s_file {

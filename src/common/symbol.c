@@ -133,7 +133,6 @@ static int fill_symbol_data(uint32_t flags, t_mach_o *m, t_symtab_command *st, t
 	s->n_sect = s->m64 ? nl.nl64->n_sect : nl.nl32->n_sect;
 	s->n_type = s->m64 ? nl.nl64->n_type : nl.nl32->n_type;
 	s->type = parse_type(m->nsects, s);
-    s->sort = cmp_name; // todo: add others
 	return EXIT_SUCCESS;
 }
 
