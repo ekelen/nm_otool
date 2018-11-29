@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 11:55:17 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/29 12:16:16 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,16 @@
 
 # define HOST_CPU CPU_TYPE_X86_64
 
-# define MH_CIGAM_MASK 0xf0ffffff
-# define MH_MAGIC_MASK 0xfffffff0
-# define SWAP_MAGIC (MH_CIGAM & 0xf0ffffff)
-# define MH_ANY (MH_MAGIC & MH_MAGIC_MASK)
+# define CIGAM_MASK 0xf0ffffff
+# define MAGIC_MASK 0xfffffff0
 
-# define FAT_CIGAM_MASK 0xf0ffffff
-# define FAT_MAGIC_MASK 0xfffffff0
-# define SWAP_FAT (FAT_CIGAM & 0xf0ffffff)
+# define SWAP_MAGIC (MH_CIGAM & CIGAM_MASK)
+# define MH_ANY (MH_MAGIC & MAGIC_MASK)
+
+# define SWAP_FAT (FAT_CIGAM & CIGAM_MASK)
 # define FAT_ANY (FAT_MAGIC & FAT_MAGIC_MASK)
+
+# define SWAP_ANY (MH_CIGAM & CIGAM_MASK)||(FAT_CIGAM & CIGAM_MASK)
 
 # define AR_HDR_SIZE sizeof(t_ar_hdr)
 
