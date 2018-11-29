@@ -64,25 +64,21 @@ t_mach_o *init_mach_o(t_file *file, void *data, size_t size)
 {
 	t_mach_o *m;
 	uint32_t magic;
+	void *ptr;
 
 	if (!(m = (t_mach_o *)malloc(sizeof(t_mach_o))))
 		return NULL;
 
 	m->data = data;
-
 	if (!(m->end = ptr_check_msg(file->end, data + size, 0, "mach-o end")))
 		return NULL;
-	if (!(magic = *(uint32_t *)ptr_read(data, size, data, sizeof(uint32_t))))
+	if (!(ptr = ptr_check_msg(m->end, data, sizeof(uint32_t), "magic number")))
 		return (NULL);
-	// if (!(magic = *(uint32_t *)ptr_check_msg(m->end, data, sizeof(uint32_t), "magic number")))
-	// 	return (NULL);
+	magic = (*(uint32_t *)ptr);
 	m->swap = (magic & CIGAM_MASK) == SWAP_MAGIC ? 1 : 0;
 	m->flags = file->flags;
-	
 	m->swap32 = m->swap ? swap32 : nswap32;
 	m->swap64 = m->swap ? swap64 : nswap64;
-	// magic = m->swap32(magic);
-
 	if ((m->swap32(magic) & MAGIC_MASK) != MH_ANY)
 		return NULL;
 	m->magic = magic;

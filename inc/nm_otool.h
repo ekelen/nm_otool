@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 12:16:16 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/29 12:19:40 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 # define MH_ANY (MH_MAGIC & MAGIC_MASK)
 
 # define SWAP_FAT (FAT_CIGAM & CIGAM_MASK)
-# define FAT_ANY (FAT_MAGIC & FAT_MAGIC_MASK)
+# define FAT_ANY (FAT_MAGIC & MAGIC_MASK)
 
 # define SWAP_ANY (MH_CIGAM & CIGAM_MASK)||(FAT_CIGAM & CIGAM_MASK)
 
