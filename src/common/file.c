@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 11:29:00 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 12:10:17 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/30 11:05:46 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ void free_machs(t_mach_o *curr)
 		curr = curr->next;
 		free(tmp);
 	}
-	// dprintf(2, "freed machs\n");
 	return;
 }
 

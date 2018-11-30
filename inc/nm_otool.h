@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 12:19:40 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/30 11:04:40 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,12 +193,20 @@ struct  s_file {
     uint64_t				(*swap64)(uint64_t x);
     size_t                  offset;
 
-    t_mach_o                *mach;  
+    t_mach_o                *mach; 
 
     void                    (*print_meta)(t_file *file, t_mach_o *m);
     int                     (*sort)(t_symbol *sym1, t_symbol *sym2);
     // void                    (*print_otool_meta)(t_file *file, t_mach_o *m);
 };
+
+typedef struct  s_nm_context {
+    bool                    is_nm;
+    uint32_t                flags;
+	int						err;
+	t_file					*files;
+	size_t					nfiles;
+}				t_nm_context;
 
 // util.c
 uint32_t nswap32(uint32_t x);

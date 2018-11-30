@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 11:22:46 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/30 11:01:23 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ uint32_t parse_flags_nm(char *av, int *err, size_t i)
         return ((*err = 2) && 0);
     else if (i > 0 && !ft_strchr(STR_FLAGS, av[i]))
         return ((*err = 2) && 0);
+
     flags = 0x00000000;
     if (av[i] == 'a')
         flags |= ALL;
@@ -40,58 +41,93 @@ uint32_t parse_flags_nm(char *av, int *err, size_t i)
     return flags;
 }
 
-int read_file_nm(uint32_t flags, char *av)
+static void get_symbol_sort_nm(t_file *file, uint32_t flags)
+{
+	if (flags & SORT_REVERSE)
+		file->sort = cmp_name_reverse;
+	else
+		file->sort = cmp_name;
+	return;
+}
+
+void add_file_nm(void *data, off_t size, char *argname, t_nm_context *nmc)
+{
+	t_file *file;
+
+	if (!(file = init_file(data, size, argname, nmc->flags)))
+    {
+        error(argname, 1);
+		return;
+    }
+	get_symbol_sort_nm(file, nmc->flags);
+	if (process_file(file, size) == EXIT_SUCCESS)
+        print_machs(file, file->mach);
+    else
+        error(argname, 1);
+    free_file(file);
+}
+
+void read_file_nm(t_nm_context *nmc, char *av)
 {
     int fd;
     struct stat buf;
     void *ptr;
-    int error;
 
+    if (nmc->nfiles > 1)
+        ft_printf("\n%s:\n", av);
     if ((fd = open(av, O_RDONLY)) < 0)
-        return (error_extended(av, 1, "Couldn't open file"));
-    if (fstat(fd, &buf) < 0)
-        return (error_extended(av, 1, "fstat failure"));
-    if ((ptr = mmap(0, buf.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
-        return (error_extended(av, 1, "Couldn't allocate space with munmap"));
+        nmc->err = (error(av, 1));
+    if (!nmc->err && fstat(fd, &buf) < 0)
+        nmc->err = (error(av, 1));
+    if (!nmc->err && (ptr = mmap(0, buf.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
+        nmc->err = (error(av, 1));
+    if (!nmc->err)
+        add_file_nm(ptr, buf.st_size, av, nmc);
+    return;
+}
 
-    return (add_file_nm(ptr, buf.st_size, av, flags));
+int check_for_flags(int argc, char *argv[], t_nm_context *nmc)
+{
+    while (--argc > 0)
+    {
+        if (argv[argc][0] == '-')
+        {
+            nmc->flags |= parse_flags_nm(argv[argc], &(nmc->err), ft_strlen(argv[argc])-1);
+            if (nmc->err)
+                return(error(argv[argc], nmc->err));
+        } 
+        else
+            nmc->nfiles++;
+    }
+    return (EXIT_SUCCESS);
+}
+
+t_nm_context init_context(void)
+{
+    t_nm_context nmc;
+    nmc.is_nm = TRUE;
+    nmc.flags = 0x00000000;
+    nmc.err = 0;
+    nmc.nfiles = 0;
+    return nmc;
 }
 
 int main(int argc, char *argv[])
 {
-    int err;
     size_t i;
-    uint32_t flags;
-    size_t nfiles;
-    
-    //TODO: a.out if no file
-    //TODO: multiple files
-    err = 0;
-    flags = 0;
-    i = argc;
-    nfiles = 0;
-    
-    if (argc < 2)
-        return (error("No file", 3));
+    t_nm_context    nmc;
 
-    while (--i > 0)
-    {
-        if (argv[argc - i][0] == '-')
-        {
-            flags |= parse_flags_nm(argv[argc - i], &err, ft_strlen(argv[argc - i])-1);
-            if (err)
-                return(error(argv[argc - i], 2));
-        }
-    }
+    nmc = init_context();
+    check_for_flags(argc, argv, &nmc);
+    if (nmc.err)
+        return (nmc.err);
 
-    i = argc;
-    while (--i > 0)
+    while (++i < argc)
     {
-        if (argv[argc - i][0] != '-' && (++nfiles))
-            err = read_file_nm(flags, argv[argc - i]);
+        if (argv[i][0] != '-')
+            read_file_nm(&nmc, argv[i]);
     }
-    if (!nfiles)
-        return(read_file_nm(flags, "a.out"));
-    
+    if (!nmc.nfiles)
+        read_file_nm(&nmc, "a.out");
     return (0);
 }

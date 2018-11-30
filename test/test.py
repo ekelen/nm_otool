@@ -37,8 +37,8 @@ class Base(TestCase):
 					nxnm = subprocess.check_output(["nm", os.path.join(self.test_path, f)] + flags, stderr=subprocess.DEVNULL)
 					self.assertEqual(ftnm, nxnm, msg=f'{f} with flags {flags} does not match.')
 				except subprocess.CalledProcessError:
-					ftnm = subprocess.check_output([nm_path, os.path.join(self.test_path, f)] + flags, stderr=subprocess.DEVNULL)
-					self.assertFalse(ftnm, msg=f'{f} with flags {flags} not causing error.')
+					ftnm = subprocess.check_output([nm_path, os.path.join(self.test_path, f)] + flags, stderr=subprocess.STDOUT)
+					self.assertTrue(ftnm, msg=f'{f} with flags {flags} not causing error.')
 					# raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
 
 	def ensure_false_for_known_corrupted(self, test_files):

@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 11:23:17 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/29 18:11:43 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,6 @@ void print_meta_fat(t_file *file, t_mach_o *m);
 void print_machs(t_file *file, t_mach_o *m);
 
 // init_nm.c
-int add_file_nm(void *data, off_t size, char *argname, uint32_t flags);
+// int add_file_nm(void *data, off_t size, char *argname, uint32_t flags);
 
 #endif
