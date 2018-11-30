@@ -61,6 +61,7 @@ class Easy(Base):
 		super().setUp()
 		self.files = ["test_facile", "test_moins_facile", "test_half_obj", "test_wrong_lc_command_size"]
 		self.valids = ["test_facile", "test_moins_facile"]
+		self.invalids = ["test_half_obj", "test_wrong_lc_command_size"]
 
 	def test_easy(self):
 		""" All the easy ones."""
@@ -69,6 +70,9 @@ class Easy(Base):
 	def test_multiple_valid(self):
 		""" compare vlaid pairs """
 		self.compare_multiple_valid(self.valids)
+
+	def test_easy_corrupted(self):
+		self.check_corrupted(self.invalids)
 
 class T32(Base):
 	def setUp(self):

@@ -26,7 +26,7 @@ int error(const char *arg, int err)
 int error_ot(const char *arg, int err, const char *msg)
 {
 	if (arg)
-		ft_printf("%s:\n", arg);
+		ft_putendl_fd(arg, 2);
 	if (err == ERR_USAGE)
 	{
 		ft_putstr_fd("Unknown flag ", 2);
