@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 18:13:35 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/30 11:04:40 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,6 @@ struct  s_file {
     size_t                  offset;
 
     t_mach_o                *mach; 
-    t_file                  *next; 
 
     void                    (*print_meta)(t_file *file, t_mach_o *m);
     int                     (*sort)(t_symbol *sym1, t_symbol *sym2);

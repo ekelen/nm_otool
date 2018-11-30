@@ -140,12 +140,12 @@ int add_symbol(t_file *file, t_mach_o *m, t_symtab_command *st, const void *nptr
 {
 	t_symbol *s;
     if (!(s = malloc(sizeof(t_symbol))))
-        return EXIT_FAILURE;
+        return (EXIT_FAILURE);
 	s->nptr = nptr;
 	s->left = NULL;
 	s->right = NULL;
 	if (fill_symbol_data(file->flags, m, st, s) == EXIT_FAILURE)
 		return EXIT_FAILURE; // free
     sort_symbol(file->sort, &(m->symbols), s);
-    return EXIT_SUCCESS;
+    return (EXIT_SUCCESS);
 }
