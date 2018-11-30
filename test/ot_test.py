@@ -37,8 +37,15 @@ class Base(TestCase):
 					nxot = subprocess.check_output(["otool", "-t", os.path.join(self.test_path, f)], stderr=subprocess.DEVNULL)
 					self.assertEqual(ftot, nxot, msg=f'{f} does not match.')
 				except subprocess.CalledProcessError:
-					ftot = subprocess.check_output([otool_path, os.path.join(self.test_path, f)], stderr=subprocess.DEVNULL)
-					self.assertFalse(ftot, msg=f'{f} not causing error.')
+					ftot = subprocess.check_output([otool_path, os.path.join(self.test_path, f)], stderr=subprocess.STDOUT)
+					self.assertTrue(ftot, msg=f'{f} not causing error.')
+
+	def compare_multiple_valid(self, test_files, flags=[]):
+		for f_pair in list(zip(test_files[:-1], test_files[1:])):
+			with self.subTest(f_pair=f_pair):
+				ftot = subprocess.check_output([otool_path, os.path.join(self.test_path, f_pair[0]), os.path.join(self.test_path, f_pair[1])], stderr=subprocess.DEVNULL)
+				nxot = subprocess.check_output(["otool", "-t", os.path.join(self.test_path, f_pair[0]), os.path.join(self.test_path, f_pair[1])], stderr=subprocess.DEVNULL)
+				self.assertEqual(ftot, nxot, msg=f'{f_pair} does not match.')
 
 	def check_corrupted(self, test_files):
 		for f in test_files:
@@ -50,13 +57,23 @@ class Base(TestCase):
 					self.assertEqual(e.returncode, 1)
 			
 class Easy(Base):
+	def setUp(self):
+		super().setUp()
+		self.files = ["test_facile", "test_moins_facile", "test_half_obj", "test_wrong_lc_command_size"]
+		self.valids = ["test_facile", "test_moins_facile"]
+
 	def test_easy(self):
 		""" All the easy ones."""
-		self.compare(["test_facile", "test_moins_facile", "test_half_obj", "test_wrong_lc_command_size"])
+		self.compare(self.files)
+
+	def test_multiple_valid(self):
+		""" compare vlaid pairs """
+		self.compare_multiple_valid(self.valids)
 
 class T32(Base):
 	def setUp(self):
 		self.test_path = os.path.join(dir_path, "unit_test_files", "32")
+		self.files = os.listdir(self.test_path)
 
 	def test_ls_32(self):
 		self.compare(["MachO-OSX-x86-ls"])
@@ -77,11 +94,15 @@ class T32_Hard(T32):
 class T64(Base):
 	def setUp(self):
 		self.test_path = os.path.join(dir_path, "unit_test_files", "64")
+		self.files = os.listdir(self.test_path)
 
 	def test_all_64_otool(self):
 		""" All the 64 ones."""
-		files = os.listdir(self.test_path)
-		self.compare(files)
+		self.compare(self.files)
+
+	def test_all_64_otool_multiple(self):
+		""" Multiple 64 at once. """
+		self.compare_multiple_valid(self.files)
 
 class Fat(Base):
 

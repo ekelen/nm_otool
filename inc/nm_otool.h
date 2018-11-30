@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/30 11:26:38 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/30 11:43:36 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,13 +199,12 @@ struct  s_file {
     // void                    (*print_otool_meta)(t_file *file, t_mach_o *m);
 };
 
-typedef struct  s_nm_context {
+typedef struct  s_context {
     bool                    is_nm;
     uint32_t                flags;
 	int						err;
-	t_file					*files;
 	size_t					nfiles;
-}				t_nm_context;
+}				t_context;
 
 // util.c
 uint32_t nswap32(uint32_t x);
@@ -258,6 +257,7 @@ void print_nsecs(t_mach_o *m);
 
 //error.c
 int error(const char *arg, int err);
+int error_ot(const char *arg, int err, const char *msg);
 int error_extended(const char *arg, int err, const char *msg);
 
 

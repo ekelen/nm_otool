@@ -52,6 +52,10 @@ class Base(TestCase):
 
 
 class Easy(Base):
+	def setUp(self):
+		super().setUp()
+		self.files = ["test_facile", "test_moins_facile", "test_half_obj", "test_wrong_lc_command_size"]
+		
 	def test_easy(self):
 		""" All the easy ones."""
 		self.compare(["test_facile", "test_moins_facile", "test_half_obj", "test_wrong_lc_command_size"])
