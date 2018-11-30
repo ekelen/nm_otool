@@ -67,8 +67,6 @@ int cmp_name(t_symbol *sym1, t_symbol *sym2)
         return cmp;
 }
 
-// todo: test
-// for flag -r
 int cmp_name_reverse(t_symbol *sym1, t_symbol *sym2)
 {
     int cmp;
@@ -104,6 +102,8 @@ static char *get_sym_name(t_mach_o *m, t_symtab_command *st, t_u_nl nl)
 
 void sort_symbol(int (*sort)(t_symbol *s1, t_symbol *s2), t_symbol **curr, t_symbol *new)
 {
+    if (!sort)
+        return;
     int cmp;
     
     if (!*curr)
