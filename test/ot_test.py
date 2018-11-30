@@ -19,7 +19,7 @@ class bcolors:
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 name_otool = "ft_otool"
-dir_nm = os.path.join(dir_path, "..")
+dir_otool = os.path.join(dir_path, "..")
 otool_path = os.path.join(dir_path, "..", name_otool)
 
 # /usr/local/mysql/lib

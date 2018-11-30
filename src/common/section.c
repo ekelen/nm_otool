@@ -31,7 +31,6 @@ int get_secs(t_file *file, t_mach_o *m, void *seg, uint32_t nsects)
         : ptr_check_msg((void *)file->end, seg + sizeof(t_segment_command), sizeof(t_section), "section");
     if (!ptr)
         return (EXIT_FAILURE);
-    // m->current_sect--;
     while (m->current_sect < curr_nsects)
     {
         if (ptr == NULL)

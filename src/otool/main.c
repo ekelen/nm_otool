@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/27 21:26:37 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/30 11:27:17 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ static int print_text(t_mach_o *m, int len, void *addr, uint32_t offset)
         if (!is_ppc)
 		    ft_putstr(" ");
         else
-            // if (((i + 1) % 4) == 0 && !((i + 1) % 16 == 0))
             if (((i + 1) % 4) == 0)
                 ft_putstr(" ");
 		i++;
@@ -91,14 +90,14 @@ static int print_otool(t_file *file, t_mach_o *m)
     else
         print_otool_meta_single(file, m);
     addr = (void *)(m->m64 ?
-                m->swap64(m->text_sect->sc.sc64->addr)
-                : m->swap32(m->text_sect->sc.sc->addr));
+                m->swap64((*(t_section_64 *)(m->text_sect)).addr)
+                : m->swap32((*(t_section *)(m->text_sect)).addr));
     size = (uint64_t)(m->m64 ?
-                m->swap64(m->text_sect->sc.sc64->size)
-                : m->swap32(m->text_sect->sc.sc->size));
+                m->swap64((*(t_section_64 *)(m->text_sect)).size)
+                : m->swap32((*(t_section *)(m->text_sect)).size));
     offset = (uint64_t)m->m64 ? 
-        m->swap32(m->text_sect->sc.sc64->offset)
-        : m->swap32(m->text_sect->sc.sc->offset);
+        m->swap32((*(t_section_64 *)(m->text_sect)).offset)
+        : m->swap32((*(t_section *)(m->text_sect)).offset);
     print_text(m, size, addr, offset);
     print_otool(file, m->next);
 }
