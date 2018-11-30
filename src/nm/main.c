@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/30 10:34:52 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/30 10:37:44 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,62 +106,51 @@ int read_file_nm(t_nm_context *nmc, char *av)
     return EXIT_FAILURE;
 }
 
-int check_for_flags(int argc, char *argv[], int *err, uint32_t *flags, t_nm_context **nmc)
+int check_for_flags(int argc, char *argv[], t_nm_context *nmc)
 {
     while (--argc > 0)
     {
         if (argv[argc][0] == '-')
         {
-            (*nmc)->flags |= parse_flags_nm(argv[argc], &(*nmc)->err, ft_strlen(argv[argc])-1);
-            if ((*nmc)->err)
-                return(error(argv[argc], (*nmc)->err));
+            nmc->flags |= parse_flags_nm(argv[argc], &(nmc->err), ft_strlen(argv[argc])-1);
+            if (nmc->err)
+                return(error(argv[argc], nmc->err));
         } else {
-            (*nmc)->nfiles++;
+            nmc->nfiles++;
         }
     }
     return (EXIT_SUCCESS);
 }
 
-t_nm_context *init_context(int err, uint32_t flags)
+t_nm_context *init_context(void)
 {
     t_nm_context *nmc;
 
     nmc = malloc(sizeof(t_nm_context));
 
     nmc->is_nm = TRUE;
-    nmc->flags = flags;
-    nmc->err = err;
+    nmc->flags = 0x00000000;
+    nmc->err = 0;
     nmc->nfiles = 0;
-    // nmc->files = NULL;
-
     return nmc;
 }
 
 int main(int argc, char *argv[])
 {
-    int err;
     size_t i;
-    uint32_t flags;
-    size_t nfiles;
-
-    err = 0;
-
     t_nm_context    *nmc;
 
-    nmc = init_context(err, 0x00000000);
+    nmc = init_context();
     
     
     //TODO: a.out if no file
     //TODO: multiple files
-    
-    flags = 0;
-    i = 0;
-    nfiles = 0;
+
     
     if (argc < 2)
         return (error("No file", 3));
 
-    check_for_flags(argc, argv, &err, &flags, &nmc);
+    check_for_flags(argc, argv, nmc);
     if (nmc->err)
         return (nmc->err);
 
