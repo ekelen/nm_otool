@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 11:29:00 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 12:10:17 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/29 18:13:22 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ t_file      *init_file(void *data, off_t size, char *argname, uint32_t flags)
 	file->offset = file_offset(file->is_fat, file->is_statlib, file->m64);
 	file->sort = NULL;
 	file->mach = NULL;
+	file->next = NULL;
     return file;
 }
 
