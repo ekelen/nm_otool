@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/30 11:43:36 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/30 14:53:57 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ struct  s_file {
 	const void				*data;
     const void              *end;
 	size_t					length;
-    char                    *filename;
+    const char              *filename;
     uint32_t                flags;
 	uint32_t				(*swap32)(uint32_t x);
     uint64_t				(*swap64)(uint64_t x);

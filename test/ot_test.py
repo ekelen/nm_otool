@@ -85,7 +85,6 @@ class T32(Base):
 	def test_32_exe_hard(self):
 		self.compare(["32_exe_hard"])
 
-class T32_Hard(T32):
 	def test_Helloworld_32(self):
 		self.compare(["MachO-iOS-armv7s-Helloworld"])
 

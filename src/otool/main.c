@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/30 11:51:10 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/30 14:50:22 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,7 @@ static int print_text(t_mach_o *m, int len, void *addr, uint32_t offset)
 				ft_printf("%08llx", (uint32_t) & (addr[i]));
 			ft_putstr("\t");
 		}
-		ft_printf("%02x", byte_addr[i]);
-        if (!is_ppc)
-		    ft_putstr(" ");
-        else
-            if (((i + 1) % 4) == 0)
-                ft_putstr(" ");
+		ft_printf("%02x ", byte_addr[i]);
 		i++;
     }
     ft_putendl("");
