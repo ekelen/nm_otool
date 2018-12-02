@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/30 14:53:57 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/30 17:15:29 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,10 @@
 # include <mach-o/ranlib.h>
 # include <mach/machine.h>
 # include <stdbool.h>
+
+# define ERR_FILE 1
+# define ERR_USAGE 2
+# define ERR_OTHER 3
 
 # define HOST_CPU CPU_TYPE_X86_64
 
@@ -86,12 +90,6 @@ struct s_arch_info {
     char name[20];
     cpu_type_t cpu_type;
     cpu_subtype_t cpu_subtype;
-};
-
-typedef enum e_error t_e_error;
-enum e_error {
-    ERR_FILE = 1,
-    ERR_USAGE = 2
 };
 
 typedef enum e_nsect t_e_nsect;

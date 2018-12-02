@@ -58,7 +58,7 @@ class Easy(Base):
 
 	def test_easy(self):
 		""" All the easy ones."""
-		self.compare(files)
+		self.compare(self.files)
 
 class T32(Base):
 	def setUp(self):

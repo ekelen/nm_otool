@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/30 14:50:22 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/02 11:53:49 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,10 @@ static int print_otool(t_file *file, t_mach_o *m)
     uint32_t offset;
     void *addr;
 
+    //     ft_printf("m->magic  ::  %lx\n", m->magic);
+    // ft_printf("m->swap  ::  %lx\n", m->swap);
+    // ft_printf("m->cputype  ::  %d\n", m->cputype);
+
     if (!m || !m->nsects & TEXT_SECT)
         return EXIT_SUCCESS;
     if (!file || !file->mach)
@@ -89,10 +93,10 @@ static int print_otool(t_file *file, t_mach_o *m)
                 : m->swap32((*(t_section *)(m->text_sect)).addr));
     size = (uint64_t)(m->m64 ?
                 m->swap64((*(t_section_64 *)(m->text_sect)).size)
-                : m->swap32((*(t_section *)(m->text_sect)).size));
+                : (uint64_t)(m->swap32((*(t_section *)(m->text_sect)).size)));
     offset = (uint64_t)m->m64 ? 
         m->swap32((*(t_section_64 *)(m->text_sect)).offset)
-        : m->swap32((*(t_section *)(m->text_sect)).offset);
+        : (uint64_t)(m->swap32((*(t_section *)(m->text_sect)).offset));
     print_text(m, size, addr, offset);
     print_otool(file, m->next);
 }
@@ -139,7 +143,7 @@ int check_for_flags(int argc, char *argv[], t_context *c)
         if (argv[argc][0] == '-')
         {
             if (ft_strcmp(argv[argc], "-t"))
-                return(error_ot(argv[argc], 2, NULL));
+                return(error_ot(argv[argc], ERR_USAGE, NULL));
         } 
         else
             c->nfiles++;
@@ -159,14 +163,12 @@ t_context init_context(void)
 
 int main(int argc, char *argv[])
 {
-    size_t i;
-    t_context    c;
+    size_t          i;
+    t_context       c;
 
     c = init_context();
-    check_for_flags(argc, argv, &c);
-    if (c.err)
+    if ((c.err = check_for_flags(argc, argv, &c)) != EXIT_SUCCESS)
         return (c.err);
-
     while (++i < argc)
     {
         if (argv[i][0] != '-')
