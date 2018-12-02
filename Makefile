@@ -87,6 +87,7 @@ $(OBJS_NM): $(PATH_OBJ)/$(PATH_NM)/%.o: $(PATH_SRC)/$(PATH_NM)/%.c
 
 $(OBJS_OTOOL): $(PATH_OBJ)/$(PATH_OTOOL)/%.o: $(PATH_SRC)/$(PATH_OTOOL)/%.c
 	@$(CC) $(CFLAGS) -c $< -o $@
+	@echo -e "${MAGENTA}.${RESET}"
 
 test: re
 	@echo -e "${MAGENTA}"
@@ -102,9 +103,11 @@ test: re
 clean:
 	@rm -f $(OBJS_COMMON)
 	@rm -f $(OBJS_NM)
+	@rm -f $(OBS_OTOOL)
 
 fclean: clean
 	@rm -f $(NAME_NM)
+	@rm -f $(NAME_OTOOL)
 	@echo "${MAGENTA}cleaned.${RESET}" >&2
 
 

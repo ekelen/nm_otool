@@ -52,12 +52,15 @@ class Base(TestCase):
 
 
 class Easy(Base):
+	def setUp(self):
+		super().setUp()
+		self.files = ["test_facile", "test_moins_facile", "test_half_obj", "test_wrong_lc_command_size"]
+
 	def test_easy(self):
 		""" All the easy ones."""
-		self.compare(["test_facile", "test_moins_facile", "test_half_obj", "test_wrong_lc_command_size"])
+		self.compare(self.files)
 
 class T32(Base):
-
 	def setUp(self):
 		self.test_path = os.path.join(dir_path, "unit_test_files", "32")
 

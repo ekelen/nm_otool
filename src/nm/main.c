@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/30 11:01:23 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/30 11:30:33 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static void get_symbol_sort_nm(t_file *file, uint32_t flags)
 	return;
 }
 
-void add_file_nm(void *data, off_t size, char *argname, t_nm_context *nmc)
+void add_file_nm(void *data, off_t size, char *argname, t_context *nmc)
 {
 	t_file *file;
 
@@ -67,7 +67,7 @@ void add_file_nm(void *data, off_t size, char *argname, t_nm_context *nmc)
     free_file(file);
 }
 
-void read_file_nm(t_nm_context *nmc, char *av)
+void read_file_nm(t_context *nmc, char *av)
 {
     int fd;
     struct stat buf;
@@ -86,7 +86,7 @@ void read_file_nm(t_nm_context *nmc, char *av)
     return;
 }
 
-int check_for_flags(int argc, char *argv[], t_nm_context *nmc)
+int check_for_flags(int argc, char *argv[], t_context *nmc)
 {
     while (--argc > 0)
     {
@@ -102,9 +102,9 @@ int check_for_flags(int argc, char *argv[], t_nm_context *nmc)
     return (EXIT_SUCCESS);
 }
 
-t_nm_context init_context(void)
+t_context init_context(void)
 {
-    t_nm_context nmc;
+    t_context nmc;
     nmc.is_nm = TRUE;
     nmc.flags = 0x00000000;
     nmc.err = 0;
@@ -115,7 +115,7 @@ t_nm_context init_context(void)
 int main(int argc, char *argv[])
 {
     size_t i;
-    t_nm_context    nmc;
+    t_context    nmc;
 
     nmc = init_context();
     check_for_flags(argc, argv, &nmc);

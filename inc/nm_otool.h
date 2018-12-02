@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/30 11:04:40 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/11/30 17:15:29 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,10 @@
 # include <mach-o/ranlib.h>
 # include <mach/machine.h>
 # include <stdbool.h>
+
+# define ERR_FILE 1
+# define ERR_USAGE 2
+# define ERR_OTHER 3
 
 # define HOST_CPU CPU_TYPE_X86_64
 
@@ -86,12 +90,6 @@ struct s_arch_info {
     char name[20];
     cpu_type_t cpu_type;
     cpu_subtype_t cpu_subtype;
-};
-
-typedef enum e_error t_e_error;
-enum e_error {
-    ERR_FILE = 1,
-    ERR_USAGE = 2
 };
 
 typedef enum e_nsect t_e_nsect;
@@ -166,7 +164,7 @@ struct s_mach_o {
 
     t_symtab_command        *st;
 
-    t_sec                   *text_sect;
+    const void              *text_sect;
 
     t_arch                  arch;
     cpu_type_t              cputype;
@@ -174,7 +172,6 @@ struct s_mach_o {
     void                    (*print_meta)(t_file *file, t_mach_o *m);
     uint32_t				(*swap32)(uint32_t x);
     uint64_t				(*swap64)(uint64_t x);
-
 };
 
 struct  s_file {
@@ -187,7 +184,7 @@ struct  s_file {
 	const void				*data;
     const void              *end;
 	size_t					length;
-    char                    *filename;
+    const char              *filename;
     uint32_t                flags;
 	uint32_t				(*swap32)(uint32_t x);
     uint64_t				(*swap64)(uint64_t x);
@@ -200,13 +197,12 @@ struct  s_file {
     // void                    (*print_otool_meta)(t_file *file, t_mach_o *m);
 };
 
-typedef struct  s_nm_context {
+typedef struct  s_context {
     bool                    is_nm;
     uint32_t                flags;
 	int						err;
-	t_file					*files;
 	size_t					nfiles;
-}				t_nm_context;
+}				t_context;
 
 // util.c
 uint32_t nswap32(uint32_t x);
@@ -222,7 +218,7 @@ t_mach_o            *init_mach_o(t_file *file, void *data, size_t size);
 int                 add_mach(t_mach_o **curr, t_mach_o *new);
 
 // read_file.c
-int read_file(uint32_t flags, char *av, bool is_nm);
+// int read_file(uint32_t flags, char *av, bool is_nm);
 
 // static_lib.c
 int handle_archive(t_file *file);
@@ -259,6 +255,7 @@ void print_nsecs(t_mach_o *m);
 
 //error.c
 int error(const char *arg, int err);
+int error_ot(const char *arg, int err, const char *msg);
 int error_extended(const char *arg, int err, const char *msg);
 
 
