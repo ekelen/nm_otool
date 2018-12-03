@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 21:22:29 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/02 16:41:13 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/03 11:17:19 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static uint32_t check_display(uint32_t flags, t_symbol *symbol)
     return print;
 }
 
-static void print_symbol_value(t_file *file, t_symbol *s, uint32_t print)
+static void print_symbol_value(t_symbol *s, uint32_t print)
 {
 	if ((print & SHOW_VALUE) == SHOW_VALUE)
 		ft_printf(s->m64 ? "%016llx " : "%08llx ", s->n_value);
@@ -65,7 +65,7 @@ static void print_in_order(t_file *file, t_mach_o *m, t_symbol *head, t_symbol *
 		if (print & SHOW_PATHNAME)
 			ft_printf("%s: ", file->filename);
 		if (print & SHOW_VAL_COL)
-			print_symbol_value(file, current, print);
+			print_symbol_value(current, print);
 		if (print & SHOW_TYPE)
     		ft_printf("%c ", current->type);
     	ft_printf("%s", current->nom);

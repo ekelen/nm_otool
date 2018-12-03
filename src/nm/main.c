@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/02 17:08:36 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/03 11:33:44 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,25 +52,20 @@ static void get_symbol_sort_nm(t_file *file, uint32_t flags)
 
 void add_file_nm(void *data, off_t size, char *argname, t_context *nmc)
 {
-	t_file *file;
+	t_file      *file;
+    int         err;
 
+    err = 0;
     if (!(file = (t_file *)malloc(sizeof(t_file))))
-    {
-        error("allocation error", 1);
-        return;
-    }
-	if (!init_file(file, data, size, argname))
-    {
-        free_file(file);
-        error(argname, 1);
-		return;
-    }
+        err = ERR_ALLOCATION;
+	if (!err && (err = init_file(file, data, size, argname)) > SUCCESS)
+        err = ERR_FILE;
     file->flags = nmc->flags;
 	get_symbol_sort_nm(file, nmc->flags);
-	if (process_file(file, size) == EXIT_SUCCESS)
-        print_machs(file, file->mach);
+	if (!err && (err = process_file(file, size)) > SUCCESS)
+        error(argname, err);
     else
-        error(argname, 1);
+        print_machs(file, file->mach);
     free_file(file);
 }
 
@@ -121,10 +116,11 @@ t_context init_context(void)
 
 int main(int argc, char *argv[])
 {
-    size_t i;
-    t_context    nmc;
+    int             i;
+    t_context       nmc;
 
     nmc = init_context();
+    i = 0;
     check_for_flags(argc, argv, &nmc);
     if (nmc.err)
         return (nmc.err);

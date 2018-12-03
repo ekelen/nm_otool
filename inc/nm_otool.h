@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/03 10:23:12 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/03 11:04:58 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@
 # define NLIST_SIZE sizeof(struct nlist)
 # define NLIST_64_SIZE sizeof(struct nlist_64)
 
+typedef unsigned char               t_byte;
+
 typedef struct mach_header          t_mach_header;
 typedef struct mach_header_64       t_mach_header_64;
 typedef struct segment_command      t_segment_command;
@@ -98,7 +100,7 @@ typedef union   u_u_mh {
 
 typedef struct s_arch_info t_arch_info;
 struct s_arch_info {
-    char name[20];
+    const char *name;
     cpu_type_t cpu_type;
     cpu_subtype_t cpu_subtype;
 };
@@ -211,17 +213,18 @@ uint32_t nswap32(uint32_t x);
 uint64_t nswap64(uint64_t x);
 uint64_t swap64(uint64_t x);
 uint32_t swap32 (uint32_t x);
-const void *ptr_check(void *addr_max, const void *req, size_t req_length);
-const void *ptr_check_msg(void *addr_max, const void *req, size_t req_length, const char *msg);
+void *ptr_check(const void *addr_max, void *req, size_t req_length);
+void *ptr_check_msg(const void *addr_max, void *req, size_t req_length, const char *msg);
 
 //mach.c
-int                 init_mach_o(t_file *file, void *data, size_t size, t_mach_o *m);
+int		            init_mach_o(t_file *file, const void *data, size_t size, t_mach_o *m);
 int                 add_mach(t_mach_o **curr, t_mach_o *new);
 void                remove_mach(t_mach_o *m);
+void                free_machs(t_mach_o *curr);
 
 // read_file.c
 int                 process_file(t_file *file, size_t size);
-int                 handle_32_64(t_file *file, void *ptr, size_t size);
+int                 handle_32_64(t_file *file, size_t size);
 
 // static_lib.c
 int handle_archive(t_file *file);
@@ -230,7 +233,7 @@ int handle_archive(t_file *file);
 t_arch init_arch    (t_file *file, t_u_fa f);
 t_arch_info         get_arch_info(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 int                 handle_fat(t_file *file);
-char                *get_archname(cpu_type_t cputype, cpu_subtype_t cpusubtype);
+const char          *get_archname(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 
 // parse_commands.c
 int parse_seg(t_file *file, t_mach_o *m, const struct load_command *lc);
@@ -243,7 +246,7 @@ int parse_symtab(t_file *file, t_mach_o *m, const struct load_command *cmd);
 int add_symbol(t_file *file, t_mach_o *m, t_symtab_command *st, const void *nptr);
 int cmp_name_reverse(t_symbol *sym1, t_symbol *sym2);
 int cmp_name(t_symbol *sym1, t_symbol *sym2);
-int free_symbols(t_symbol *curr);
+void free_symbols(t_symbol *curr);
 
 
 // section.c

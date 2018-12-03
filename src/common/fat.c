@@ -54,10 +54,10 @@ static const t_arch_info arch_list[] = {
 	{"x86_64", CPU_TYPE_I386, CPU_SUBTYPE_X86_64_H},
 	{"x86_64", CPU_TYPE_X86_64, CPU_SUBTYPE_X86_64_H},
 	{"xscale", CPU_TYPE_ARM, CPU_SUBTYPE_ARM_XSCALE},
-	{NULL, 0, 0}
+	{"", 0, 0}
 };
 
-char    *get_archname(cpu_type_t cputype, cpu_subtype_t cpusubtype)
+const char    *get_archname(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 {
     unsigned int i;
 
@@ -108,7 +108,7 @@ static int add_host_cpu_arch(t_file *file, t_arch a)
 
 	if (!(m = (t_mach_o *)malloc(sizeof(t_mach_o))))
 		return (EXIT_FAILURE);
-    if (init_mach_o(file, file->data + a.fa_offset, a.size, m) > EXIT_SUCCESS)
+    if (init_mach_o(file, (void *)file->data + a.fa_offset, a.size, m) > EXIT_SUCCESS)
 	{
 		remove_mach(m);
         return (EXIT_FAILURE);
@@ -126,7 +126,7 @@ static int add_arch(t_file *file, t_arch a)
 
 	if (!(m = (t_mach_o *)malloc(sizeof(t_mach_o))))
 		return (EXIT_FAILURE);
-    if (init_mach_o(file, file->data + a.fa_offset, a.size, m) == EXIT_FAILURE)
+    if (init_mach_o(file, (void *)file->data + a.fa_offset, a.size, m) == EXIT_FAILURE)
 	{
 		remove_mach(m);
         return (EXIT_FAILURE);
@@ -187,7 +187,7 @@ int handle_fat(t_file *file)
 	struct fat_header *header;
 	size_t nfat_arch;
 
-	if (!(header = (struct fat_header *)ptr_check_msg(file->end, file->data, file->offset, "fat header")))
+	if (!(header = (struct fat_header *)ptr_check_msg(file->end, (void *)file->data, file->offset, "fat header")))
         return EXIT_FAILURE;
 	nfat_arch = file->swap32(header->nfat_arch);
 	result = handle_fat_2(file, nfat_arch);
