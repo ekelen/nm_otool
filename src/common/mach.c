@@ -1,98 +1,88 @@
 #include <nm_otool.h>
 #include <assert.h>
 
-// Loops thru segments; collects everything we'll need to display
-// TODO: Eyesore
-static int    fill_mach(t_file *file, t_mach_o *m)
+static int	parse_mh(t_file *file, t_mach_o *m, size_t *ncmds, struct load_command **lc)
 {
-	struct load_command *lc;
-	t_mach_header_64 *mh64;
-	t_mach_header *mh;
-	size_t i;
-	size_t ncmds;
+	t_u_mh mh;
 	size_t sizeofcmds;
 
-	void *endcmds;
+	(m->m64) ? (mh.mh64 = (t_mach_header_64 *)ptr_check(file->end, m->data, m->offset))
+		: (mh.mh32 = (t_mach_header *)ptr_check(file->end, m->data, m->offset));
 
-	i = -1;
-    mh64 = m->m64 ? (t_mach_header_64 *)ptr_check(file->end, m->data, m->offset) : NULL;
-	mh = !m->m64 ? (t_mach_header *)ptr_check(file->end, m->data, m->offset) : NULL;
+	if (!mh.mh64 && !mh.mh32)
+		return (EXIT_FAILURE);
+	m->cputype = m->swap32(m->m64 ? mh.mh64->cputype : mh.mh32->cputype);
+	sizeofcmds = m->swap32(m->m64 ? mh.mh64->sizeofcmds : mh.mh32->sizeofcmds);
+	if (!(ptr_check_msg(file->end, m->data + m->offset, sizeofcmds, "all load commands")))
+		return (EXIT_FAILURE);
+	*ncmds = m->swap32(m->m64 ? mh.mh64->ncmds : mh.mh32->ncmds);
+	m->end_commands = m->data + m->offset + sizeofcmds;
+	if (!(*lc = (t_load_command *)ptr_check_msg(m->end_commands, m->data + m->offset, sizeof(t_load_command), "first load command")))
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
+}
 
-	m->cputype = m->m64 ? m->swap32(mh64->cputype) : m->swap32(mh->cputype);
-	if (!mh64 && !mh)
-		return EXIT_FAILURE;
-	sizeofcmds = m->m64 ? m->swap32(mh64->sizeofcmds) : m->swap32(mh->sizeofcmds);
-    lc = (t_load_command *)ptr_check_msg(file->end, m->data + m->offset, sizeofcmds, "all load commands");
-	if (!lc)
-		return EXIT_FAILURE;
+// Loops thru segments; collects everything we'll need to display
+static int    fill_mach(t_file *file, t_mach_o *m)
+{
+	struct load_command 	*lc;
+	int 					ncmds;
+	size_t 					cmdsize;
 
-	ncmds = !m->m64 ? m->swap32(mh->ncmds) : m->swap32(mh64->ncmds);
-	
-	endcmds = (void *)lc + sizeofcmds;
-	// dprintf(2, "endcmds  ::  %p\n", endcmds);
-
-    while (++i < ncmds)
+	ncmds = 0;
+	lc = NULL;
+	if (parse_mh(file, m, &ncmds, &lc) == EXIT_FAILURE)
+		return (EXIT_FAILURE);
+    while (--ncmds >= 0)
     {
-        lc = (t_load_command *)ptr_check_msg(endcmds, (void *)lc, m->swap32(lc->cmdsize), "load command");
-        if (lc == NULL)
-            return EXIT_FAILURE;
+		cmdsize = lc ? m->swap32(lc->cmdsize) : 0;
+        if (lc == NULL || \
+			(lc = (t_load_command *)ptr_check(m->end_commands, lc, cmdsize)) == NULL)
+			return (EXIT_FAILURE);
         if (m->swap32(lc->cmd) == LC_SEGMENT || m->swap32(lc->cmd) == LC_SEGMENT_64)
         {
             if (parse_seg(file, m, lc) == EXIT_FAILURE)
                 return EXIT_FAILURE;
         }
-        else if (m->swap32(lc->cmd) == LC_SYMTAB) {
-			int result;
-			result = parse_symtab(file, m, lc);
-			if (result == EXIT_FAILURE)
-				return EXIT_FAILURE;
-        }
-		if (i < ncmds - 1)
-		{
-        	lc = (t_load_command *)ptr_check_msg(endcmds, (void *)lc + m->swap32(lc->cmdsize), sizeof(t_load_command), "next load command");
-        	if (lc == NULL && i < (ncmds - 1))
-			{
-        	    return EXIT_FAILURE;
-			}
-		}
+        else if ((m->swap32(lc->cmd) == LC_SYMTAB) && (parse_symtab(file, m, lc)) == EXIT_FAILURE)
+			return (EXIT_FAILURE);
+		lc = (t_load_command *)ptr_check(m->end_commands, (void *)lc + cmdsize, sizeof(t_load_command));
     }
     return EXIT_SUCCESS;
 }
 
-// TODO: Get rid of redundant info, split into more helpful subfns
-t_mach_o *init_mach_o(t_file *file, void *data, size_t size)
+static int parse_magic(uint32_t magic, t_mach_o *m)
 {
-	t_mach_o *m;
-	uint32_t magic;
-	void *ptr;
-
-	if (!(m = (t_mach_o *)malloc(sizeof(t_mach_o))))
-		return NULL;
-
-	m->data = data;
-	if (!(m->end = ptr_check_msg(file->end, data + size, 0, "mach-o end")))
-		return (NULL);
-	if (!(ptr = ptr_check_msg(m->end, data, sizeof(uint32_t), "magic number")))
-		return (NULL);
-	magic = (*(uint32_t *)ptr);
-	m->swap = (magic & CIGAM_MASK) == SWAP_MAGIC ? 1 : 0;
+	m->magic = magic;
+	m->swap = (m->magic & CIGAM_MASK) == SWAP_MAGIC ? 1 : 0;
 	m->swap32 = m->swap ? swap32 : nswap32;
 	m->swap64 = m->swap ? swap64 : nswap64;
-	if ((m->swap32(magic) & MAGIC_MASK) != MH_ANY)
-		return (NULL);
-	m->magic = magic;
+	if ((m->swap32(m->magic) & MAGIC_MASK) != MH_ANY)
+		return (EXIT_FAILURE);
 	m->m64 = m->swap32(m->magic) & 1;
+	m->offset = m->m64 ? sizeof(t_mach_header_64) : sizeof(t_mach_header);
+	return (EXIT_SUCCESS);
+}
+
+// TODO: Get rid of redundant info, split into more helpful subfns
+int		init_mach_o(t_file *file, void *data, size_t size, t_mach_o *m)
+{
+	void 		*ptr;
+
 	m->symbols = NULL;
 	m->st = NULL;
-	m->offset = m->m64 ? sizeof(t_mach_header_64) : sizeof(t_mach_header);
-	m->nsects = 0x00000000;
-	m->current_sect = 1;
-	m->is_multi = FALSE;
 	m->print_meta = NULL;
 	m->next = NULL;
-	if (fill_mach(file, m) == EXIT_FAILURE)
-		return NULL;
-	return m;
+	m->data = data;
+	if (!(m->end = ptr_check_msg(file->end, data + size, 0, "mach-o end")))
+		return (EXIT_FAILURE);
+	if (!(ptr = ptr_check_msg(m->end, data, sizeof(uint32_t), "magic number")))
+		return (EXIT_FAILURE);
+	if (parse_magic(*(uint32_t *)ptr, m) > EXIT_SUCCESS)
+		return (EXIT_FAILURE);
+	m->nsects = 0x00000000;
+	m->current_sect = 1;
+	return (fill_mach(file, m));
 }
 
 int add_mach(t_mach_o **curr, t_mach_o *new)
@@ -105,4 +95,31 @@ int add_mach(t_mach_o **curr, t_mach_o *new)
 		return EXIT_SUCCESS;
 	}
     return add_mach(&(*curr)->next, new);
+}
+
+void remove_mach(t_mach_o *m)
+{
+	if (m->symbols != NULL)
+	{
+		free_symbols(m->symbols);
+	}
+	free(m);
+	return;
+}
+
+void free_machs(t_mach_o *curr)
+{
+    t_mach_o *tmp;
+	while (curr)
+	{
+		if (curr->symbols != NULL)
+		{
+			free_symbols(curr->symbols);
+			curr->symbols = NULL;
+		}
+		tmp = curr;
+		curr = curr->next;
+		free(tmp);
+	}
+	return;
 }

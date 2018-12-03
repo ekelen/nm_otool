@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/02 11:53:49 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/02 17:10:49 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,16 +75,12 @@ static int print_otool(t_file *file, t_mach_o *m)
     uint32_t offset;
     void *addr;
 
-    //     ft_printf("m->magic  ::  %lx\n", m->magic);
-    // ft_printf("m->swap  ::  %lx\n", m->swap);
-    // ft_printf("m->cputype  ::  %d\n", m->cputype);
-
     if (!m || !m->nsects & TEXT_SECT)
         return EXIT_SUCCESS;
     if (!file || !file->mach)
         return EXIT_FAILURE;
 
-    if (file->is_fat)
+    if (file->info & IS_FAT)
         print_otool_meta_fat(file, m);
     else
         print_otool_meta_single(file, m);
@@ -94,9 +90,7 @@ static int print_otool(t_file *file, t_mach_o *m)
     size = (uint64_t)(m->m64 ?
                 m->swap64((*(t_section_64 *)(m->text_sect)).size)
                 : (uint64_t)(m->swap32((*(t_section *)(m->text_sect)).size)));
-    offset = (uint64_t)m->m64 ? 
-        m->swap32((*(t_section_64 *)(m->text_sect)).offset)
-        : (uint64_t)(m->swap32((*(t_section *)(m->text_sect)).offset));
+    offset = (uint64_t)m->swap32(m->m64 ? (*(t_section_64 *)(m->text_sect)).offset : (*(t_section *)(m->text_sect)).offset);
     print_text(m, size, addr, offset);
     print_otool(file, m->next);
 }
@@ -105,8 +99,14 @@ void add_file_otool(void *data, off_t size, char *argname, t_context *c)
 {
 	t_file *file;
 
-	if (!(file = init_file(data, size, argname, c->flags)))
+    if (!(file = (t_file *)malloc(sizeof(t_file))))
     {
+        error_ot(argname, 1, "allocation error");
+        return;
+    }
+	if (!init_file(file, data, size, argname))
+    {
+        free_file(file);
         error(argname, 1);
 		return;
     }

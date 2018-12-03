@@ -41,24 +41,51 @@ class Base(TestCase):
 					self.assertTrue(ftnm, msg=f'{f} with flags {flags} not causing error.')
 					# raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
 
-	def ensure_false_for_known_corrupted(self, test_files):
+	def compare_multiple_valid(self, test_files, flags=[]):
+		for f_pair in list(zip(test_files[:-1], test_files[1:])):
+			with self.subTest(f_pair=f_pair):
+				ftnm = subprocess.check_output([nm_path, os.path.join(self.test_path, f_pair[0]), os.path.join(self.test_path, f_pair[1])] + flags, stderr=subprocess.DEVNULL)
+				nxnm = subprocess.check_output(["nm", os.path.join(self.test_path, f_pair[0]), os.path.join(self.test_path, f_pair[1])] + flags, stderr=subprocess.DEVNULL)
+				self.assertEqual(ftnm, nxnm, msg=f'{f_pair} does not match.')
+
+	def ensure_no_stdout_for_corrupted(self, test_files):
 		for f in test_files:
 			with self.subTest(f=f):
 				try:
 					ftnm = subprocess.check_output([nm_path, os.path.join(self.test_path, f)], stderr=subprocess.DEVNULL)
-					self.assertFalse(ftnm, msg=f'{f} not causing error.')
+					self.assertFalse(ftnm, msg=f'{f} returning message on stdout.')
 				except subprocess.CalledProcessError as e:
 					self.assertEqual(e.returncode, 1)
+
+	def ensure_has_at_least_stderr_output(self, test_files):
+		""" check has output on stderr """
+		for f in test_files:
+			with self.subTest(f=f):
+				try:
+					ftnm = subprocess.check_output([nm_path, os.path.join(self.test_path, f)], stderr=subprocess.STDOUT)
+					self.assertTrue(ftnm, msg=f'{f} has no error output.')
+				except subprocess.CalledProcessError as e:
+					self.assertEqual(e.returncode, 1)
+
+	def check_corrupted(self, test_files):
+		self.ensure_has_at_least_stderr_output(test_files)
+		self.ensure_no_stdout_for_corrupted(test_files)
 
 
 class Easy(Base):
 	def setUp(self):
 		super().setUp()
 		self.files = ["test_facile", "test_moins_facile", "test_half_obj", "test_wrong_lc_command_size"]
+		self.valids = ["test_facile", "test_moins_facile"]
+		self.invalids = ["test_half_obj", "test_wrong_lc_command_size"]
 
-	def test_easy(self):
-		""" All the easy ones."""
-		self.compare(self.files)
+	def test_multiple_valid(self):
+		""" compare valid pairs """
+		self.compare_multiple_valid(self.valids)
+
+	def test_corrupt(self):
+		""" compare invalid files """
+		self.check_corrupted(self.invalids)
 
 class T32(Base):
 	def setUp(self):
@@ -128,7 +155,6 @@ class Statlib(Base):
 		self.compare(files)
 
 class Corrupt(Base):
-
 	def setUp(self):
 		self.test_path = os.path.join(dir_path, "unit_test_files", "corrupt")
 
@@ -139,12 +165,12 @@ class Corrupt(Base):
 		self.compare(["fat_not_fail_except_one"])
 
 	def test_mega_bad_string(self):
-		self.ensure_false_for_known_corrupted(["mega_bad_string"])
+		self.ensure_no_stdout_for_corrupted(["mega_bad_string"])
 
 	def test_all_corrupt(self):
 		""" All the corrupt """
 		files = os.listdir(self.test_path)
-		self.ensure_false_for_known_corrupted(files)
+		self.check_corrupted(files)
 
 class Dylib(Base):
 
@@ -162,7 +188,7 @@ class Dylib(Base):
 
 	def test_all_fat_lib(self):
 		""" All the fat libs ones."""
-		files = os.listdir(self.test_path)[:10]
+		files = os.listdir(self.test_path)
 		self.compare(files)
 
 class Easy_Flags(Base):
@@ -199,10 +225,6 @@ class T32flags(Base):
 		""" No undefined."""
 		self.compare(self.files, flags=["-U"])
 
-	# def test_all(self):
-	# 	""" All."""
-	# 	self.compare(self.files, flags=["-a"])
-
 	def test_reverse(self):
 		""" Reverse."""
 		self.compare(self.files, flags=["-r"])
@@ -224,13 +246,18 @@ class T64flags(Base):
 		""" No undefined."""
 		self.compare(self.files, flags=["-U"])
 
-	# def test_all(self):
-	# 	""" All."""
-	# 	self.compare(self.files, flags=["-a"])
-
 	def test_reverse(self):
 		""" Reverse."""
 		self.compare(self.files, flags=["-r"])
+
+class Dylibflags(Base):
+	def setUp(self):
+		self.test_path = os.path.join(dir_path, "unit_test_files", "fat_lib")
+		self.files = os.listdir(self.test_path)
+
+	def test_no_undef(self):
+		""" No undefined."""
+		self.compare(self.files, flags=["-U"])
 
 if __name__ == '__main__':
 	cmd = ["make", "-C", dir_nm, "re"]

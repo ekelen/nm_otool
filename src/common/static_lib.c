@@ -26,7 +26,9 @@ int add_ofile(t_file *file, void *ptr, const void *header)
 {
     t_ofile o;
     t_mach_o *m;
-
+    
+    if (!(m = (t_mach_o *)malloc(sizeof(t_mach_o))))
+		return (EXIT_FAILURE);
     o.hdr = (const t_ar_hdr *)header;
     o.name_size = (size_t)get_size(o.hdr->ar_name);
     o.size = (uint32_t)ft_atoi(o.hdr->ar_size);
@@ -34,8 +36,11 @@ int add_ofile(t_file *file, void *ptr, const void *header)
     o.addr = ptr 
         + sizeof(t_ar_hdr) 
         + o.name_size;
-    if (!(m = init_mach_o(file, o.addr, o.size - o.name_size)))
+    if (init_mach_o(file, o.addr, o.size - o.name_size, m) > EXIT_SUCCESS)
+    {
+        free(m);
         return EXIT_FAILURE;
+    }
     m->ofile = o;
     return(add_mach(&(file->mach), m));
 }

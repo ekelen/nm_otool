@@ -89,39 +89,48 @@ t_arch_info    get_arch_info(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 t_arch init_arch(t_file *file, t_u_fa f)
 {
 	t_arch new;
-	new.offset = file->m64 ? sizeof(t_fat_arch_64) : sizeof(t_fat_arch);
+	new.offset = file->info & IS_64 ? sizeof(t_fat_arch_64) : sizeof(t_fat_arch);
 	new.m64 = 0;
 
-	int cputype = file->m64 ? file->swap32(f.fa64->cputype) : file->swap32(f.fa32->cputype);
-	int cpusubtype = file->m64 ? file->swap32(f.fa64->cpusubtype) : file->swap32(f.fa32->cpusubtype);
+	int cputype = file->info & IS_64 ? file->swap32(f.fa64->cputype) : file->swap32(f.fa32->cputype);
+	int cpusubtype = file->info & IS_64 ? file->swap32(f.fa64->cpusubtype) : file->swap32(f.fa32->cpusubtype);
 
 	new.arch_info = get_arch_info(cputype, cpusubtype);
-	new.fa_offset = file->m64 ? file->swap64(f.fa64->offset) : (uint64_t)(file->swap32(f.fa32->offset));
-    new.size = file->m64 ? file->swap64(f.fa64->size) : (uint64_t)(file->swap32(f.fa32->size));
+	new.fa_offset = file->info & IS_64 ? file->swap64(f.fa64->offset) : (uint64_t)(file->swap32(f.fa32->offset));
+    new.size = file->info & IS_64 ? file->swap64(f.fa64->size) : (uint64_t)(file->swap32(f.fa32->size));
 	return new;
 }
 
 static int add_host_cpu_arch(t_file *file, t_arch a)
 {
-    t_mach_o *m;
-    if ((m = init_mach_o(file, file->data + a.fa_offset, a.size)) == NULL)
-        return EXIT_FAILURE;
-	m->arch = a;
-	if (m && (file->mach = m))
-    {
-		assert(m->cputype == m->arch.arch_info.cpu_type);
-        file->is_multi = FALSE;
-		return EXIT_SUCCESS;
-    }
-	return EXIT_FAILURE;
+	t_mach_o *m;
+    int result;
+
+	if (!(m = (t_mach_o *)malloc(sizeof(t_mach_o))))
+		return (EXIT_FAILURE);
+    if (init_mach_o(file, file->data + a.fa_offset, a.size, m) > EXIT_SUCCESS)
+	{
+		remove_mach(m);
+        return (EXIT_FAILURE);
+	}
+    m->arch = a;
+	file->info &= ~IS_MULTI;
+    result = add_mach(&(file->mach), m);
+    return result;
 }
 
 static int add_arch(t_file *file, t_arch a)
 {
     t_mach_o *m;
     int result;
-    if ((m = init_mach_o(file, file->data + a.fa_offset, a.size)) == NULL)
-        return EXIT_FAILURE;
+
+	if (!(m = (t_mach_o *)malloc(sizeof(t_mach_o))))
+		return (EXIT_FAILURE);
+    if (init_mach_o(file, file->data + a.fa_offset, a.size, m) == EXIT_FAILURE)
+	{
+		remove_mach(m);
+        return (EXIT_FAILURE);
+	}
     m->arch = a;
     result = add_mach(&(file->mach), m);
     return result;
@@ -131,7 +140,7 @@ static t_u_fa check_fa(t_file *file, uint32_t nfat_arch, int i)
 {
     t_u_fa f;
 
-    if (file->m64)
+    if (file->info & IS_64)
         f.fa64 = (t_fat_arch_64 *)ptr_check_msg(file->end, \
             (void *)file->data + file->offset + sizeof(t_fat_arch_64) * i, sizeof(t_fat_arch_64) * nfat_arch, "fat arch 64");
     else
@@ -147,7 +156,17 @@ int handle_fat_2(t_file *file, uint32_t nfat_arch)
     t_arch a;
 
 	i = -1;
-    while (++i < nfat_arch) // TODO: Update so not pointlessly alloc'ing other arch's when we have host CPU
+	while (++i < nfat_arch)
+    {
+        f = check_fa(file, nfat_arch, i);
+        if (!f.fa32 && !f.fa64)
+            return (EXIT_FAILURE);
+        a = init_arch(file, f);
+        if (a.arch_info.cpu_type == HOST_CPU)
+            return(add_host_cpu_arch(file, a));
+    }
+	i = -1;
+    while (++i < nfat_arch)
     {
         f = check_fa(file, nfat_arch, i);
         if (!f.fa32 && !f.fa64)
@@ -156,10 +175,10 @@ int handle_fat_2(t_file *file, uint32_t nfat_arch)
         if (a.arch_info.cpu_type == HOST_CPU)
             return(add_host_cpu_arch(file, a));
         else
-			if (add_arch(file, a) == EXIT_FAILURE)
+			if (add_arch(file, a) > EXIT_SUCCESS)
 				return (EXIT_FAILURE);
     }
-    return EXIT_SUCCESS;
+    return (EXIT_SUCCESS);
 }
 
 int handle_fat(t_file *file)

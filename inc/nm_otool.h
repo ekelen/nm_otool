@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/30 17:15:29 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/03 09:19:47 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,22 @@
 # define ERR_USAGE 2
 # define ERR_OTHER 3
 
+# define IS_64 0x1
+# define IS_SWAP 0x2
+# define IS_SINGLE_MACH 0x4
+# define IS_FAT 0x8
+# define IS_STATLIB 0x10
+# define IS_MULTI 0x20
+
 # define HOST_CPU CPU_TYPE_X86_64
 
 # define CIGAM_MASK 0xf0ffffff
 # define MAGIC_MASK 0xfffffff0
-
 # define SWAP_MAGIC (MH_CIGAM & CIGAM_MASK)
 # define MH_ANY (MH_MAGIC & MAGIC_MASK)
-
 # define SWAP_FAT (FAT_CIGAM & CIGAM_MASK)
 # define FAT_ANY (FAT_MAGIC & MAGIC_MASK)
-
-# define SWAP_ANY (MH_CIGAM & CIGAM_MASK)||(FAT_CIGAM & CIGAM_MASK)
+# define SWAP_ANY (SWAP_MAGIC)||(SWAP_FAT)
 
 # define AR_HDR_SIZE sizeof(t_ar_hdr)
 
@@ -84,6 +88,11 @@ typedef union   u_u_nl {
     t_nlist      *nl32;
     t_nlist_64   *nl64;
 }               t_u_nl;
+
+typedef union   u_u_mh {
+    t_mach_header      *mh32;
+    t_mach_header_64   *mh64;
+}               t_u_mh;
 
 typedef struct s_arch_info t_arch_info;
 struct s_arch_info {
@@ -145,18 +154,19 @@ struct s_ofile {
 
 // TODO: Remove redundant fields
 struct s_mach_o {
-    uint32_t                flags;
     uint32_t                magic;
     t_symbol                *symbols;
     bool                    m64;
     bool                    swap;
-    bool                    is_multi;
     const void              *data;
 
     size_t                  offset; // from mach header
     size_t                  nsyms;
 
     void                    *end; // data + length
+
+    const void              *end_commands; // end of load commands
+
     t_mach_o                *next;
 
     uint64_t                nsects;
@@ -175,12 +185,7 @@ struct s_mach_o {
 };
 
 struct  s_file {
-	bool					m64;
-	bool					is_fat;
-	bool					is_statlib;
-    bool                    is_multi;
-    bool                    swap;
-    bool                    is_nm;
+    uint32_t                info;
 	const void				*data;
     const void              *end;
 	size_t					length;
@@ -209,16 +214,17 @@ uint32_t nswap32(uint32_t x);
 uint64_t nswap64(uint64_t x);
 uint64_t swap64(uint64_t x);
 uint32_t swap32 (uint32_t x);
-void *ptr_read(void *addr, size_t addr_len, const void *req, size_t req_length);
 void *ptr_check(void *addr_max, const void *req, size_t req_length);
 void *ptr_check_msg(void *addr_max, const void *req, size_t req_length, const char *msg);
 
 //mach.c
-t_mach_o            *init_mach_o(t_file *file, void *data, size_t size);
+int                 init_mach_o(t_file *file, void *data, size_t size, t_mach_o *m);
 int                 add_mach(t_mach_o **curr, t_mach_o *new);
+void                remove_mach(t_mach_o *m);
 
 // read_file.c
-// int read_file(uint32_t flags, char *av, bool is_nm);
+int                 process_file(t_file *file, size_t size);
+int                 handle_32_64(t_file *file, void *ptr, size_t size);
 
 // static_lib.c
 int handle_archive(t_file *file);
@@ -247,7 +253,7 @@ int free_symbols(t_symbol *curr);
 int get_secs(t_file *file, t_mach_o *m, void *seg, uint32_t nsects);
 
 // file.c
-t_file              *init_file(void *data, off_t size, char *argname, uint32_t flags);
+int                 init_file(t_file *file, void *data, off_t size, char *argname);
 void                free_file(t_file *file);
 
 //print.c

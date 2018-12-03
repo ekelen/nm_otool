@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 21:22:29 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 11:37:40 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/02 16:41:13 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,11 +94,11 @@ void print_meta_single(t_file *file, t_mach_o *m)
 	(void)m;
 }
 
-void get_meta_print_nm(t_file *file, t_mach_o *m)
+void get_mach_meta_print_nm(t_file *file, t_mach_o *m)
 {
-	m->print_meta = file->is_fat && file->is_multi
+	m->print_meta = file->info & IS_FAT && file->info & IS_MULTI
 			? print_meta_fat
-			: (file->is_statlib 
+			: (file->info & IS_STATLIB 
 				? print_meta_statlib
 				: print_meta_single);
 	return;
@@ -107,13 +107,10 @@ void get_meta_print_nm(t_file *file, t_mach_o *m)
 void print_machs(t_file *file, t_mach_o *m)
 {
 	if (!m)
-	{
-		(file->is_multi) ? ft_putstr("") : ft_putstr("");
         return;
-	}
     else if (m)
     {
-		get_meta_print_nm(file, m);
+		get_mach_meta_print_nm(file, m);
 		m->print_meta(file, m);
         print_in_order(file, m, m->symbols, m->symbols);
 		free_symbols(m->symbols);

@@ -128,12 +128,12 @@ static int fill_symbol_data(uint32_t flags, t_mach_o *m, t_symtab_command *st, t
 	else
 		nl.nl32 = (t_nlist *)(s->nptr);
 	if (!(s->nom = get_sym_name(m, st, nl)))
-        return EXIT_FAILURE;
+        return (EXIT_FAILURE);
 	s->n_value = s->m64 ? m->swap64(nl.nl64->n_value) : (uint64_t)(m->swap32(nl.nl32->n_value));
 	s->n_sect = s->m64 ? nl.nl64->n_sect : nl.nl32->n_sect;
 	s->n_type = s->m64 ? nl.nl64->n_type : nl.nl32->n_type;
 	s->type = parse_type(m->nsects, s);
-	return EXIT_SUCCESS;
+	return (EXIT_SUCCESS);
 }
 
 int add_symbol(t_file *file, t_mach_o *m, t_symtab_command *st, const void *nptr)
@@ -144,8 +144,11 @@ int add_symbol(t_file *file, t_mach_o *m, t_symtab_command *st, const void *nptr
 	s->nptr = nptr;
 	s->left = NULL;
 	s->right = NULL;
-	if (fill_symbol_data(file->flags, m, st, s) == EXIT_FAILURE)
-		return EXIT_FAILURE; // free
+	if (fill_symbol_data(file->flags, m, st, s))
+    {
+        free(s);
+		return (EXIT_FAILURE);
+    }
     sort_symbol(file->sort, &(m->symbols), s);
     return (EXIT_SUCCESS);
 }
