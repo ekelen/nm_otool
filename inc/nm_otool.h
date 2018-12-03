@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/03 09:19:47 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/03 10:09:14 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 # define ERR_FILE 1
 # define ERR_USAGE 2
 # define ERR_OTHER 3
+# define ERR_ALLOCATION 4
 
 # define IS_64 0x1
 # define IS_SWAP 0x2
@@ -108,16 +109,11 @@ enum e_nsect {
     BSS_SECT = 0x00ff0000
 };
 
-
-// // type: char-encoded symbol types (per nm man pages)
-// // sym_name: human-readable char string name
-// // value: offset location in
 struct  s_symbol {
     char            *nom;
     const void      *nptr;
     char            type;
     uint8_t         n_type;
-    uint64_t        value;
     uint64_t        n_value;
     uint8_t         n_sect;
     bool            m64;
@@ -125,8 +121,6 @@ struct  s_symbol {
     t_symbol        *right;
 };
 
-// // index: which section it is (1-indexed)
-// // sc: actual section struct
 typedef struct s_sec {
     size_t                  index;
     const void              *sec;
@@ -214,8 +208,8 @@ uint32_t nswap32(uint32_t x);
 uint64_t nswap64(uint64_t x);
 uint64_t swap64(uint64_t x);
 uint32_t swap32 (uint32_t x);
-void *ptr_check(void *addr_max, const void *req, size_t req_length);
-void *ptr_check_msg(void *addr_max, const void *req, size_t req_length, const char *msg);
+const void *ptr_check(void *addr_max, const void *req, size_t req_length);
+const void *ptr_check_msg(void *addr_max, const void *req, size_t req_length, const char *msg);
 
 //mach.c
 int                 init_mach_o(t_file *file, void *data, size_t size, t_mach_o *m);
@@ -262,7 +256,6 @@ void print_nsecs(t_mach_o *m);
 //error.c
 int error(const char *arg, int err);
 int error_ot(const char *arg, int err, const char *msg);
-int error_extended(const char *arg, int err, const char *msg);
 
 
 #endif
