@@ -1,7 +1,7 @@
 #include <nm_otool.h>
 
 // TODO: Consistent error codes - enum
-int error(const char *arg, int err)
+int error(const char *arg, t_e_errs err)
 {
 	if (err == ERR_USAGE)
 	{
@@ -20,14 +20,12 @@ int error(const char *arg, int err)
 		ft_putstr_fd("Error allocating heap space.", 2);
 	}
 	else
-	{
 		ft_putstr_fd(arg, 2);
-	}
 	ft_putendl_fd("", 2);
 	return err;
 }
 
-int error_ot(const char *arg, int err, const char *msg)
+int error_ot(const char *arg, t_e_errs err, const char *msg)
 {
 	if (arg)
 		ft_putendl_fd(arg, 2);
@@ -44,9 +42,7 @@ int error_ot(const char *arg, int err, const char *msg)
 		ft_putstr_fd(".", 2);
 	}
 	else if (err == ERR_ALLOCATION)
-	{
 		ft_putstr_fd("Error allocating heap space.", 2);
-	}
 	else if (msg)
 		ft_putstr_fd(msg, 2);
 	ft_putendl_fd("", 2);

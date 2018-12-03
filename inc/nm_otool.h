@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/03 10:09:14 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/03 10:23:12 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,17 +30,16 @@
 # include <mach/machine.h>
 # include <stdbool.h>
 
-# define ERR_FILE 1
-# define ERR_USAGE 2
-# define ERR_OTHER 3
-# define ERR_ALLOCATION 4
-
 # define IS_64 0x1
 # define IS_SWAP 0x2
 # define IS_SINGLE_MACH 0x4
 # define IS_FAT 0x8
 # define IS_STATLIB 0x10
 # define IS_MULTI 0x20
+
+# define TEXT_SECT 0x000000ff
+# define DATA_SECT 0x0000ff00
+# define BSS_SECT 0x00ff0000
 
 # define HOST_CPU CPU_TYPE_X86_64
 
@@ -53,6 +52,8 @@
 # define SWAP_ANY (SWAP_MAGIC)||(SWAP_FAT)
 
 # define AR_HDR_SIZE sizeof(t_ar_hdr)
+# define NLIST_SIZE sizeof(struct nlist)
+# define NLIST_64_SIZE sizeof(struct nlist_64)
 
 typedef struct mach_header          t_mach_header;
 typedef struct mach_header_64       t_mach_header_64;
@@ -102,11 +103,13 @@ struct s_arch_info {
     cpu_subtype_t cpu_subtype;
 };
 
-typedef enum e_nsect t_e_nsect;
-enum e_nsect {
-    TEXT_SECT = 0x000000ff,
-    DATA_SECT = 0x0000ff00,
-    BSS_SECT = 0x00ff0000
+typedef enum e_errs t_e_errs;
+enum e_errs {
+    SUCCESS = 0,
+    ERR_FILE = 1,
+    ERR_USAGE = 2,
+    ERR_OTHER = 3,
+    ERR_ALLOCATION = 4
 };
 
 struct  s_symbol {
@@ -254,8 +257,8 @@ void                free_file(t_file *file);
 void print_nsecs(t_mach_o *m);
 
 //error.c
-int error(const char *arg, int err);
-int error_ot(const char *arg, int err, const char *msg);
+int error(const char *arg, t_e_errs err);
+int error_ot(const char *arg, t_e_errs err, const char *msg);
 
 
 #endif
