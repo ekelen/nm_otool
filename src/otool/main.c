@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/03 14:53:11 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/03 15:35:24 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static bool get_is_ppc(t_mach_o *m)
     // dprintf(2, "m->magic  ::  %x\n", m->magic);
     // dprintf(2, "m->cputype  :                :  %d\n", m->cputype);
     
-    return ((m->cputype) == CPU_TYPE_POWERPC);
+    return ((m->cputype) == CPU_TYPE_POWERPC || (m->cputype) == CPU_TYPE_ARM);
 }
 
 // static int print_text(t_mach_o *m, size_t len, void *addr, uint32_t offset)
@@ -74,24 +74,61 @@ static void print_otool_meta_single(t_file *file, t_mach_o *m)
     print_meta_text();
 }
 
+// static int one_line(t_mach_o *m, uint64_t size, void *start, void *addr)
+// {
+
+// }
+
 static int get_otool_line(t_mach_o *m, uint64_t size, void *start, void *addr)
 {
     size_t      i;
     size_t      j;
-    (void)start;
+    size_t      k;
+    bool        is_ppc;
+    uint32_t    content;
+    unsigned char uc_content;
 
     i = 0;
     j = 0;
+    k = 0;
+    is_ppc = get_is_ppc(m);
     while (i < size)
     {
         if (m->m64)
-            ft_printf("%016llx", (uint64_t)&(addr[i]));
+        {
+            // ft_printf("%016llx", (uint64_t)&(addr[i]));
+            // ft_printf("%016llx", (uint64_t)&(addr[i]));
+            ft_printf("%016llx ", (uint64_t *)(addr));
+            addr = (void *)addr + 16;
+        }
         else
-            ft_printf("%08llx", (uint32_t)&(addr[i]));
+        {
+            // ft_printf("%08llx", (uint32_t)&(addr[i]));
+            ft_printf("%016llx ", (uint64_t *)(addr));
+            addr = (void *)addr + 8;
+        }
+        // if (is_ppc)
+        // {
+            k = 0;
+            while (k < 16)
+            {
+                uc_content = (*(unsigned char *)(start + j));
+                content = swap32((*(uint32_t *)(start + k)));
+                // content = (uint32_t)((uint32_t *)&(start[j]));
+                // uc_content = (unsigned char)((unsigned char *)&(start[j]));
+                ft_printf("%08llx ", content);
+                j++;
+                k += 4;
+                // ft_printf("%02hhx ", uc_content);
+                
+            }
+            start = (void *)start + 16;
+        // }
         ft_putendl("");
         i += 16;
         // j++;
     }
+    exit(0);
     return (SUCCESS);
 }
 
