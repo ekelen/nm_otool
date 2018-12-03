@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 11:29:00 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/03 09:18:35 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/03 11:22:22 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static uint32_t 	parse_hdr_type(uint32_t magic, void *data, uint32_t (*uswap32)(
 	return type;
 }
 
-static uint32_t 	parse_magic(uint32_t magic, void *data, size_t size)
+static uint32_t 	parse_magic(uint32_t magic, void *data)
 {
 	uint32_t info;
 	int is_64;
@@ -71,12 +71,12 @@ int init_file(t_file *file, void *data, off_t size, char *argname)
 	file->filename = argname;
 	if (!(ptr = ptr_check(file->end, data, sizeof(uint32_t))))
 		return (EXIT_FAILURE);
-	file->info = parse_magic(*(uint32_t *)ptr, data, size);
+	file->info = parse_magic(*(uint32_t *)ptr, data);
 	file->swap32 = file->info & IS_SWAP ? swap32 : nswap32;
 	file->swap64 = file->info & IS_SWAP ? swap64 : nswap64;
 	file->offset = file_offset(file->info);
 	file->sort = NULL;
-    return file;
+    return (SUCCESS);
 }
 
 void	free_file(t_file *file)
@@ -86,7 +86,7 @@ void	free_file(t_file *file)
 		free_machs(file->mach);
 	}
 	file->mach = NULL;
-	munmap(file->data, (size_t)(file->length));
+	munmap((void *)file->data, (size_t)(file->length));
 	free(file);
 	// dprintf(2, "freed file\n");
 	return;

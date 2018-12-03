@@ -1,7 +1,7 @@
 #include <nm_otool.h>
 
 
-const void *ptr_check(void *addr_max, const void *req, size_t req_length) 
+void *ptr_check(const void *addr_max, void *req, size_t req_length) 
 {
     if ((uint8_t *) req + req_length > (uint8_t *) addr_max) {
         return NULL;
@@ -9,7 +9,7 @@ const void *ptr_check(void *addr_max, const void *req, size_t req_length)
     return req;
 }
 
-const void *ptr_check_msg(void *addr_max, const void *req, size_t req_length, const char *msg) 
+void *ptr_check_msg(const void *addr_max, void *req, size_t req_length, const char *msg) 
 {
     if ((uint8_t *) req + req_length > (uint8_t *) addr_max) {
         ft_putstr_fd("Not enough room for ", 2);

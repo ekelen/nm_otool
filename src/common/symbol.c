@@ -1,10 +1,10 @@
 #include <nm_otool.h>
 #include <assert.h>
 
-int free_symbols(t_symbol *curr)
+void free_symbols(t_symbol *curr)
 {
     if (!curr)
-        return EXIT_SUCCESS;
+        return;
     free_symbols(curr->left);
     free_symbols(curr->right);
     free((void*)curr);
@@ -80,22 +80,22 @@ int cmp_name_reverse(t_symbol *sym1, t_symbol *sym2)
 
 static char *get_sym_name(t_mach_o *m, t_symtab_command *st, t_u_nl nl)
 {
-    char *name;
-    void *name_start;
-    void *strtab_end;
-    uint32_t n_strx;
+    char        *name;
+    void        *name_start;
+    void        *strtab_end;
+    uint32_t    n_strx;
 
 	n_strx = m->m64 ? m->swap32(nl.nl64->n_un.n_strx) : m->swap32(nl.nl32->n_un.n_strx);
 	
-    name_start = m->data 
+    name_start = (void *)m->data 
         + st->stroff
         + n_strx;
 
-    strtab_end = m->data
+    strtab_end = (void *)m->data
         + st->stroff
         + st->strsize;
 
-    if (!(name = (char *)ptr_check_msg(strtab_end, name_start, 0, "symbol name")))
+    if (!(name = (char *)ptr_check_msg(strtab_end, (void *)name_start, 0, "symbol name")))
 		return NULL;
 	return name;
 }
@@ -104,36 +104,33 @@ void sort_symbol(int (*sort)(t_symbol *s1, t_symbol *s2), t_symbol **curr, t_sym
 {
     if (!sort)
         return;
-    int cmp;
-    
     if (!*curr)
     {
         *curr = new;
         return;
     }
-    cmp = sort((*curr), new);
-    if (cmp > 0)
+    if (sort((*curr), new) > 0)
         return sort_symbol(sort, &(*curr)->left, new);
     else
         return sort_symbol(sort, &(*curr)->right, new);
 }
 
-static int fill_symbol_data(uint32_t flags, t_mach_o *m, t_symtab_command *st, t_symbol *s)
+static int fill_symbol_data(t_mach_o *m, t_symtab_command *st, t_symbol *s)
 {
 	t_u_nl nl;
-	s->m64 = m->m64;
 
+	s->m64 = m->m64;
 	if (s->m64)
 		nl.nl64 = (t_nlist_64 *)(s->nptr);
 	else
 		nl.nl32 = (t_nlist *)(s->nptr);
 	if (!(s->nom = get_sym_name(m, st, nl)))
-        return (EXIT_FAILURE);
+        return (ERR_FILE);
 	s->n_value = s->m64 ? m->swap64(nl.nl64->n_value) : (uint64_t)(m->swap32(nl.nl32->n_value));
 	s->n_sect = s->m64 ? nl.nl64->n_sect : nl.nl32->n_sect;
 	s->n_type = s->m64 ? nl.nl64->n_type : nl.nl32->n_type;
 	s->type = parse_type(m->nsects, s);
-	return (EXIT_SUCCESS);
+	return (SUCCESS);
 }
 
 int add_symbol(t_file *file, t_mach_o *m, t_symtab_command *st, const void *nptr)
@@ -144,7 +141,7 @@ int add_symbol(t_file *file, t_mach_o *m, t_symtab_command *st, const void *nptr
 	s->nptr = nptr;
 	s->left = NULL;
 	s->right = NULL;
-	if (fill_symbol_data(file->flags, m, st, s))
+	if (fill_symbol_data(m, st, s))
     {
         free(s);
 		return (EXIT_FAILURE);

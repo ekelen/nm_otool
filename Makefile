@@ -34,7 +34,7 @@ PATH_PRINTF = $(PATH_LIB)/printf
 INC = -I$(PATH_INC) -I$(PATH_LIBFT)/inc -I$(PATH_PRINTF)/includes
 
 CC = gcc
-CFLAGS = -Werror -Wextra -w -g $(INC)
+CFLAGS = -Werror -Wextra -Wall -g $(INC)
 
 SRC_COMMON += error.c
 SRC_COMMON += fat.c

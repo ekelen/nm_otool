@@ -64,7 +64,7 @@ int handle_archive(t_file *file)
     void            *ptr;
     size_t          ar_size;
 
-    ptr = file->data + file->offset;
+    ptr = (void *)file->data + file->offset;
     if (!(header = (t_ar_hdr *)ptr_check_msg(file->end, ptr, AR_HDR_SIZE, "archive header")))
         return (EXIT_FAILURE);
     ar_size = (size_t)ft_atoi(header->ar_size);
