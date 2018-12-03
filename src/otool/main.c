@@ -6,11 +6,12 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/02 17:10:49 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/03 13:54:46 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <nm_otool.h>
+#include <limits.h>
 
 static bool get_is_ppc(t_mach_o *m)
 {
@@ -20,15 +21,17 @@ static bool get_is_ppc(t_mach_o *m)
     return ((m->cputype) == CPU_TYPE_POWERPC);
 }
 
-static int print_text(t_mach_o *m, int len, void *addr, uint32_t offset)
+static int print_text(t_mach_o *m, size_t len, void *addr, uint32_t offset)
 {
     unsigned char	*byte_addr;
+    void            *test;
     bool            is_ppc;
     size_t          i;
 
     is_ppc = get_is_ppc(m);
     // dprintf(2, "is_ppc  ::  %d\n", is_ppc);
-	byte_addr = m->data + offset;
+	byte_addr = (unsigned char *)m->data + offset;
+    test = (void *)byte_addr;
 	i = 0;
 	while (i < len)
 	{
@@ -42,10 +45,11 @@ static int print_text(t_mach_o *m, int len, void *addr, uint32_t offset)
 				ft_printf("%08llx", (uint32_t) & (addr[i]));
 			ft_putstr("\t");
 		}
-		ft_printf("%02x ", byte_addr[i]);
+		ft_printf("%02hhx ", byte_addr[i]);
 		i++;
     }
     ft_putendl("");
+    return (SUCCESS);
 }
 
 static void print_meta_text(void)
@@ -65,9 +69,12 @@ static void print_otool_meta_fat(t_file *file, t_mach_o *m)
 
 static void print_otool_meta_single(t_file *file, t_mach_o *m)
 {
+    (void)m;
     ft_printf("%s:\n", file->filename);
     print_meta_text();
 }
+
+// static int get_otool_line()
 
 static int print_otool(t_file *file, t_mach_o *m)
 {
@@ -75,7 +82,7 @@ static int print_otool(t_file *file, t_mach_o *m)
     uint32_t offset;
     void *addr;
 
-    if (!m || !m->nsects & TEXT_SECT)
+    if (!m || !(m->nsects & TEXT_SECT))
         return EXIT_SUCCESS;
     if (!file || !file->mach)
         return EXIT_FAILURE;
@@ -93,9 +100,10 @@ static int print_otool(t_file *file, t_mach_o *m)
     offset = (uint64_t)m->swap32(m->m64 ? (*(t_section_64 *)(m->text_sect)).offset : (*(t_section *)(m->text_sect)).offset);
     print_text(m, size, addr, offset);
     print_otool(file, m->next);
+    return (SUCCESS);
 }
 
-void add_file_otool(void *data, off_t size, char *argname, t_context *c)
+void add_file_otool(void *data, off_t size, char *argname)
 {
 	t_file *file;
 
@@ -104,13 +112,13 @@ void add_file_otool(void *data, off_t size, char *argname, t_context *c)
         error_ot(argname, 1, "allocation error");
         return;
     }
-	if (!init_file(file, data, size, argname))
+	if (init_file(file, data, size, argname) > SUCCESS)
     {
         free_file(file);
         error(argname, 1);
 		return;
     }
-	if (process_file(file, size) == EXIT_SUCCESS)
+	if (process_file(file, size) == SUCCESS)
         print_otool(file, file->mach);
     else
         error_ot(argname, 1, NULL);
@@ -119,9 +127,9 @@ void add_file_otool(void *data, off_t size, char *argname, t_context *c)
 
 void read_file_otool(t_context *c, char *av)
 {
-    int fd;
-    struct stat buf;
-    void *ptr;
+    int     fd;
+    struct  stat buf;
+    void    *ptr;
 
     // if (c->nfiles > 1)
     //     ft_printf("\n%s:\n", av);
@@ -132,7 +140,7 @@ void read_file_otool(t_context *c, char *av)
     if (!c->err && (ptr = mmap(0, buf.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
         c->err = (error_ot(av, 1, NULL));
     if (!c->err)
-        add_file_otool(ptr, buf.st_size, av, c);
+        add_file_otool(ptr, buf.st_size, av);
     return;
 }
 
@@ -163,11 +171,12 @@ t_context init_context(void)
 
 int main(int argc, char *argv[])
 {
-    size_t          i;
+    int             i;
     t_context       c;
 
     c = init_context();
-    if ((c.err = check_for_flags(argc, argv, &c)) != EXIT_SUCCESS)
+    i = 0;
+    if ((c.err = check_for_flags(argc, argv, &c)) > EXIT_SUCCESS)
         return (c.err);
     while (++i < argc)
     {
