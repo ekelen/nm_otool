@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/03 15:35:24 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/03 19:57:39 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,17 +81,20 @@ static void print_otool_meta_single(t_file *file, t_mach_o *m)
 
 static int get_otool_line(t_mach_o *m, uint64_t size, void *start, void *addr)
 {
+    // ft_printf("m->magic  ::  %llx\n", m->magic);
     size_t      i;
     size_t      j;
     size_t      k;
     bool        is_ppc;
-    uint32_t    content;
+    // uint32_t    content;
     unsigned char uc_content;
+    // uint32_t    *test;
 
     i = 0;
     j = 0;
     k = 0;
     is_ppc = get_is_ppc(m);
+    ft_printf("is_ppc  ::  %d\n", is_ppc);
     while (i < size)
     {
         if (m->m64)
@@ -107,25 +110,30 @@ static int get_otool_line(t_mach_o *m, uint64_t size, void *start, void *addr)
             ft_printf("%016llx ", (uint64_t *)(addr));
             addr = (void *)addr + 8;
         }
+        ft_putstr("\t");
         // if (is_ppc)
         // {
             k = 0;
-            while (k < 16)
+            j = 0;
+            while (j < 16 && i + j < size)
             {
                 uc_content = (*(unsigned char *)(start + j));
-                content = swap32((*(uint32_t *)(start + k)));
+                // content = swap32((*(uint32_t *)(start + k)));
+                // test = &content;
+                // ft_printf("test  ::  %p\n", test);
                 // content = (uint32_t)((uint32_t *)&(start[j]));
                 // uc_content = (unsigned char)((unsigned char *)&(start[j]));
-                ft_printf("%08llx ", content);
+                // ft_printf("%08llx ", content);
                 j++;
-                k += 4;
-                // ft_printf("%02hhx ", uc_content);
+                // k += 4;
+                ft_printf("%02hhx ", uc_content);
                 
             }
             start = (void *)start + 16;
         // }
         ft_putendl("");
         i += 16;
+        exit(0);
         // j++;
     }
     exit(0);
