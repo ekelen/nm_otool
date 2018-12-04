@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/04 11:33:25 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/04 11:59:53 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,20 +104,18 @@ static int get_otool_line(t_mach_o *m, uint64_t size, void *start, void *addr)
     dprintf(2, "magic # ::  %x\n", m->magic);
     dprintf(2, "swap    ::  %x\n", m->swap);
 
-    int num = 1;
 
-    uint32_t test = 0x12345678;
-    uint32_t *test_ptr;
+    // uint32_t test = 0x12345678;
+    // uint32_t *test_ptr;
 
-    test_ptr = &test;
+    // test_ptr = &test;
     
-    dprintf(2, "test    ::  %x\n", test);
-    for (k = 0; k < 4; k++)
-    {
-        one_byte = (*(uint8_t *)((void*)test_ptr + k));
-        dprintf(2, "one_byte    ::  %x\n", one_byte);
-    }
-    exit(0);
+    // dprintf(2, "test    ::  %x\n", test);
+    // for (k = 0; k < 4; k++)
+    // {
+    //     one_byte = (*(uint8_t *)((void*)test_ptr + k));
+    //     dprintf(2, "one_byte    ::  %x\n", one_byte);
+    // }
     
     while (i < size)
     {
@@ -157,7 +155,7 @@ static int get_otool_line(t_mach_o *m, uint64_t size, void *start, void *addr)
             ft_putendl("");
             while (k < 16 && i + k < size)
             {
-                four_bytes = (*(uint32_t *)(start + k));
+                four_bytes = m->swap32((*(uint32_t *)(start + k)));
                 dprintf(2, "%08x    ", four_bytes);
                 k += 4;
             }
@@ -165,8 +163,6 @@ static int get_otool_line(t_mach_o *m, uint64_t size, void *start, void *addr)
         // }
         ft_putendl("");
         i += 16;
-        exit(0);
-        // j++;
     }
     exit(0);
     return (SUCCESS);
