@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/03 19:57:39 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/04 11:33:25 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,14 @@
 
 static bool get_is_ppc(t_mach_o *m)
 {
-    // dprintf(2, "m->magic  ::  %x\n", m->magic);
-    // dprintf(2, "m->cputype  :                :  %d\n", m->cputype);
-    
-    return ((m->cputype) == CPU_TYPE_POWERPC || (m->cputype) == CPU_TYPE_ARM);
+    // Blocks
+    return (m->cputype == CPU_TYPE_POWERPC);
+}
+
+static bool get_is_arm(t_mach_o *m)
+{
+    // Blocks
+    return (m->cputype == CPU_TYPE_ARM);
 }
 
 // static int print_text(t_mach_o *m, size_t len, void *addr, uint32_t offset)
@@ -82,32 +86,52 @@ static void print_otool_meta_single(t_file *file, t_mach_o *m)
 static int get_otool_line(t_mach_o *m, uint64_t size, void *start, void *addr)
 {
     // ft_printf("m->magic  ::  %llx\n", m->magic);
-    size_t      i;
-    size_t      j;
-    size_t      k;
-    bool        is_ppc;
+    size_t          i;
+    size_t          j;
+    size_t          k;
+    bool            is_ppc;
     // uint32_t    content;
-    unsigned char uc_content;
+    uint8_t         one_byte;
+    uint32_t        four_bytes;
     // uint32_t    *test;
 
     i = 0;
     j = 0;
     k = 0;
     is_ppc = get_is_ppc(m);
-    ft_printf("is_ppc  ::  %d\n", is_ppc);
+    dprintf(2, "is_ppc  ::  %d\n", is_ppc);
+    dprintf(2, "is_ARM  ::  %d\n", get_is_arm(m));
+    dprintf(2, "magic # ::  %x\n", m->magic);
+    dprintf(2, "swap    ::  %x\n", m->swap);
+
+    int num = 1;
+
+    uint32_t test = 0x12345678;
+    uint32_t *test_ptr;
+
+    test_ptr = &test;
+    
+    dprintf(2, "test    ::  %x\n", test);
+    for (k = 0; k < 4; k++)
+    {
+        one_byte = (*(uint8_t *)((void*)test_ptr + k));
+        dprintf(2, "one_byte    ::  %x\n", one_byte);
+    }
+    exit(0);
+    
     while (i < size)
     {
         if (m->m64)
         {
             // ft_printf("%016llx", (uint64_t)&(addr[i]));
             // ft_printf("%016llx", (uint64_t)&(addr[i]));
-            ft_printf("%016llx ", (uint64_t *)(addr));
+            dprintf(2, "%p ", (uint64_t *)(addr));
             addr = (void *)addr + 16;
         }
         else
         {
-            // ft_printf("%08llx", (uint32_t)&(addr[i]));
-            ft_printf("%016llx ", (uint64_t *)(addr));
+            // dprintf(2, "%08llx", (uint32_t)&(addr[i]));
+            dprintf(2, "%p ", (uint32_t *)(addr));
             addr = (void *)addr + 8;
         }
         ft_putstr("\t");
@@ -115,19 +139,27 @@ static int get_otool_line(t_mach_o *m, uint64_t size, void *start, void *addr)
         // {
             k = 0;
             j = 0;
+            ft_putendl("");
             while (j < 16 && i + j < size)
             {
-                uc_content = (*(unsigned char *)(start + j));
-                // content = swap32((*(uint32_t *)(start + k)));
-                // test = &content;
-                // ft_printf("test  ::  %p\n", test);
-                // content = (uint32_t)((uint32_t *)&(start[j]));
-                // uc_content = (unsigned char)((unsigned char *)&(start[j]));
-                // ft_printf("%08llx ", content);
+                one_byte = (*(uint8_t *)(start + j));
+                dprintf(2, "%02hhx ", one_byte);
                 j++;
-                // k += 4;
-                ft_printf("%02hhx ", uc_content);
-                
+            }
+            ft_putendl("");
+            j = 0;
+            while (j < 16 && i + j < size)
+            {
+                one_byte = (*(uint8_t *)(start + j));
+                dprintf(2, "%02x ", one_byte);
+                j++;
+            }
+            ft_putendl("");
+            while (k < 16 && i + k < size)
+            {
+                four_bytes = (*(uint32_t *)(start + k));
+                dprintf(2, "%08x    ", four_bytes);
+                k += 4;
             }
             start = (void *)start + 16;
         // }
@@ -162,7 +194,9 @@ static int print_otool(t_file *file, t_mach_o *m)
     size = (uint64_t)(m->m64 ?
                 m->swap64((*(t_section_64 *)(m->text_sect)).size)
                 : (uint64_t)(m->swap32((*(t_section *)(m->text_sect)).size)));
-    offset = (uint64_t)m->swap32(m->m64 ? (*(t_section_64 *)(m->text_sect)).offset : (*(t_section *)(m->text_sect)).offset);
+    offset = (uint64_t)(m->m64 ?
+                m->swap64((*(t_section_64 *)(m->text_sect)).offset)
+                : (uint64_t)(m->swap32((*(t_section *)(m->text_sect)).offset)));
     start = (void *)m->data + offset;
     get_otool_line(m, size, start, addr);
     // print_text(m, size, addr, offset);
