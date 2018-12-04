@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/04 11:59:53 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/04 14:16:01 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,39 +22,8 @@ static bool get_is_ppc(t_mach_o *m)
 static bool get_is_arm(t_mach_o *m)
 {
     // Blocks
-    return (m->cputype == CPU_TYPE_ARM);
+    return (m->cputype == CPU_TYPE_ARM || m->cputype == CPU_TYPE_ARM64);
 }
-
-// static int print_text(t_mach_o *m, size_t len, void *addr, uint32_t offset)
-// {
-//     unsigned char	*byte_addr;
-//     void            *test;
-//     bool            is_ppc;
-//     size_t          i;
-
-//     is_ppc = get_is_ppc(m);
-//     // dprintf(2, "is_ppc  ::  %d\n", is_ppc);
-// 	byte_addr = (unsigned char *)m->data + offset;
-//     test = (void *)byte_addr;
-// 	i = 0;
-// 	while (i < len)
-// 	{
-// 		if ((i % 16) == 0)
-// 		{
-// 			if (i != 0)
-// 				ft_putendl("");
-// 			if (m->m64)
-// 				ft_printf("%016llx", (uint64_t)&(addr[i]));
-// 			else
-// 				ft_printf("%08llx", (uint32_t)&(addr[i]));
-// 			ft_putstr("\t");
-// 		}
-// 		ft_printf("%02hhx ", byte_addr[i]);
-// 		i++;
-//     }
-//     ft_putendl("");
-//     return (SUCCESS);
-// }
 
 static void print_meta_text(void)
 {
@@ -63,9 +32,9 @@ static void print_meta_text(void)
 
 static void print_otool_meta_fat(t_file *file, t_mach_o *m)
 {
+
     ft_printf("%s", file->filename);
-    // dprintf(2, "get_is_ppc(m)  ::  %d\n", get_is_ppc(m));
-    if (!get_is_ppc(m))
+    if ((file->info & IS_MULTI)) // TODO: What condition show ppc?
         ft_printf(" (architecture %s)", m->arch.arch_info.name);
     ft_printf(":\n");
     print_meta_text();
@@ -78,93 +47,47 @@ static void print_otool_meta_single(t_file *file, t_mach_o *m)
     print_meta_text();
 }
 
-// static int one_line(t_mach_o *m, uint64_t size, void *start, void *addr)
-// {
-
-// }
-
 static int get_otool_line(t_mach_o *m, uint64_t size, void *start, void *addr)
 {
-    // ft_printf("m->magic  ::  %llx\n", m->magic);
     size_t          i;
     size_t          j;
     size_t          k;
-    bool            is_ppc;
-    // uint32_t    content;
-    uint8_t         one_byte;
     uint32_t        four_bytes;
-    // uint32_t    *test;
 
     i = 0;
     j = 0;
     k = 0;
-    is_ppc = get_is_ppc(m);
-    dprintf(2, "is_ppc  ::  %d\n", is_ppc);
-    dprintf(2, "is_ARM  ::  %d\n", get_is_arm(m));
-    dprintf(2, "magic # ::  %x\n", m->magic);
-    dprintf(2, "swap    ::  %x\n", m->swap);
-
-
-    // uint32_t test = 0x12345678;
-    // uint32_t *test_ptr;
-
-    // test_ptr = &test;
-    
-    // dprintf(2, "test    ::  %x\n", test);
-    // for (k = 0; k < 4; k++)
-    // {
-    //     one_byte = (*(uint8_t *)((void*)test_ptr + k));
-    //     dprintf(2, "one_byte    ::  %x\n", one_byte);
-    // }
     
     while (i < size)
     {
         if (m->m64)
+            ft_printf("%016llx", (uint64_t)&(addr[i]));
+        else
+            ft_printf("%08lx", (uint32_t)&(addr[i]));
+        ft_putstr("\t");
+        k = 0;
+        j = 0;
+        if (!get_is_arm(m) && !get_is_ppc(m)) // TODO: What conditions?
         {
-            // ft_printf("%016llx", (uint64_t)&(addr[i]));
-            // ft_printf("%016llx", (uint64_t)&(addr[i]));
-            dprintf(2, "%p ", (uint64_t *)(addr));
-            addr = (void *)addr + 16;
+            while (j < 16 && i + j < size)
+            {
+                ft_printf("%02hhx ", *((uint8_t *)(&start[j])));
+                j++;
+            }
         }
         else
         {
-            // dprintf(2, "%08llx", (uint32_t)&(addr[i]));
-            dprintf(2, "%p ", (uint32_t *)(addr));
-            addr = (void *)addr + 8;
-        }
-        ft_putstr("\t");
-        // if (is_ppc)
-        // {
-            k = 0;
-            j = 0;
-            ft_putendl("");
-            while (j < 16 && i + j < size)
-            {
-                one_byte = (*(uint8_t *)(start + j));
-                dprintf(2, "%02hhx ", one_byte);
-                j++;
-            }
-            ft_putendl("");
-            j = 0;
-            while (j < 16 && i + j < size)
-            {
-                one_byte = (*(uint8_t *)(start + j));
-                dprintf(2, "%02x ", one_byte);
-                j++;
-            }
-            ft_putendl("");
             while (k < 16 && i + k < size)
             {
                 four_bytes = m->swap32((*(uint32_t *)(start + k)));
-                dprintf(2, "%08x    ", four_bytes);
+                ft_printf("%08x ", four_bytes);
                 k += 4;
             }
-            start = (void *)start + 16;
-        // }
+        }
         ft_putendl("");
+        start = (void *)start + 16;
         i += 16;
     }
-    exit(0);
     return (SUCCESS);
 }
 
@@ -195,30 +118,25 @@ static int print_otool(t_file *file, t_mach_o *m)
                 : (uint64_t)(m->swap32((*(t_section *)(m->text_sect)).offset)));
     start = (void *)m->data + offset;
     get_otool_line(m, size, start, addr);
-    // print_text(m, size, addr, offset);
     print_otool(file, m->next);
     return (SUCCESS);
 }
 
 void add_file_otool(void *data, off_t size, char *argname)
 {
-	t_file *file;
+    t_file      *file;
+    int         err;
 
+    err = 0;
     if (!(file = (t_file *)malloc(sizeof(t_file))))
-    {
-        error_ot(argname, 1, "allocation error");
-        return;
-    }
-	if (init_file(file, data, size, argname) > SUCCESS)
-    {
-        free_file(file);
-        error(argname, 1);
-		return;
-    }
-	if (process_file(file, size) == SUCCESS)
-        print_otool(file, file->mach);
+        err = ERR_ALLOCATION;
+	if (!err && (err = init_file(file, data, size, argname)) > SUCCESS)
+        err = ERR_FILE;
+    file->info |= 0 << 6;
+	if (!err && (err = process_file(file, size)) > SUCCESS)
+        error_ot(argname, err, NULL);
     else
-        error_ot(argname, 1, NULL);
+        print_otool(file, file->mach);
     free_file(file);
 }
 

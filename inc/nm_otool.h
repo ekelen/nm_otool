@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/03 11:04:58 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/04 13:47:30 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 # define IS_FAT 0x8
 # define IS_STATLIB 0x10
 # define IS_MULTI 0x20
+# define IS_NM 0x40
 
 # define TEXT_SECT 0x000000ff
 # define DATA_SECT 0x0000ff00

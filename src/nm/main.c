@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/03 11:33:44 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/04 13:49:48 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ void add_file_nm(void *data, off_t size, char *argname, t_context *nmc)
 	if (!err && (err = init_file(file, data, size, argname)) > SUCCESS)
         err = ERR_FILE;
     file->flags = nmc->flags;
+    file->info |= 1 << 6;
 	get_symbol_sort_nm(file, nmc->flags);
 	if (!err && (err = process_file(file, size)) > SUCCESS)
         error(argname, err);

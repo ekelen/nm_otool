@@ -60,6 +60,7 @@ static const t_arch_info arch_list[] = {
 const char    *get_archname(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 {
     unsigned int i;
+	dprintf(2, "cpusubtype  ::  %d\n", cpusubtype);
 
     i = 0;
     while (arch_list[i].name)
@@ -74,11 +75,36 @@ const char    *get_archname(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 t_arch_info    get_arch_info(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 {
     unsigned int i;
+	dprintf(2, "cputype  ::  %d\n", cputype);
+	dprintf(2, "cpusubtype  ::  %d\n", cpusubtype);
 
     i = 0;
     while (arch_list[i].name[0])
     {
         if (cputype == arch_list[i].cpu_type && cpusubtype == arch_list[i].cpu_subtype)
+            return (arch_list[i]);
+        i++;
+    }
+    return arch_list[i];
+}
+
+t_arch_info    get_arch_info_otool(cpu_type_t cputype, cpu_subtype_t cpusubtype)
+{
+    unsigned int i;
+	dprintf(2, "cputype  ::  %d\n", cputype);
+	dprintf(2, "cpusubtype  ::  %d\n", cpusubtype);
+
+    i = 0;
+    while (arch_list[i].name[0])
+    {
+        if (cputype == arch_list[i].cpu_type && cpusubtype == arch_list[i].cpu_subtype)
+            return (arch_list[i]);
+        i++;
+    }
+	i = 0;
+    while (arch_list[i].name[0])
+    {
+        if (cputype == arch_list[i].cpu_type)
             return (arch_list[i]);
         i++;
     }
@@ -95,7 +121,7 @@ t_arch init_arch(t_file *file, t_u_fa f)
 	int cputype = file->info & IS_64 ? file->swap32(f.fa64->cputype) : file->swap32(f.fa32->cputype);
 	int cpusubtype = file->info & IS_64 ? file->swap32(f.fa64->cpusubtype) : file->swap32(f.fa32->cpusubtype);
 
-	new.arch_info = get_arch_info(cputype, cpusubtype);
+	new.arch_info = (file->info & IS_NM) ? get_arch_info(cputype, cpusubtype) : get_arch_info_otool(cputype, cpusubtype);
 	new.fa_offset = file->info & IS_64 ? file->swap64(f.fa64->offset) : (uint64_t)(file->swap32(f.fa32->offset));
     new.size = file->info & IS_64 ? file->swap64(f.fa64->size) : (uint64_t)(file->swap32(f.fa32->size));
 	return new;
