@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/04 14:16:01 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/04 17:12:16 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void print_otool_meta_fat(t_file *file, t_mach_o *m)
 {
 
     ft_printf("%s", file->filename);
-    if ((file->info & IS_MULTI)) // TODO: What condition show ppc?
+    if ((file->info & IS_MULTI) && m->arch.arch_info.name[0]) // TODO: What condition show ppc?
         ft_printf(" (architecture %s)", m->arch.arch_info.name);
     ft_printf(":\n");
     print_meta_text();
@@ -152,7 +152,7 @@ void read_file_otool(t_context *c, char *av)
         c->err = (error_ot(av, 1, NULL));
     if (!c->err && fstat(fd, &buf) < 0)
         c->err = (error_ot(av, 1, NULL));
-    if (!c->err && (ptr = mmap(0, buf.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
+    if (!c->err && (ptr = mmap(0, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
         c->err = (error_ot(av, 1, NULL));
     if (!c->err)
         add_file_otool(ptr, buf.st_size, av);

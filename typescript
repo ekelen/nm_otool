@@ -1,0 +1,105 @@
+Script started on Tue Dec  4 16:32:34 2018
+[1m[7m%[27m[1m[0m                                                                                 ]2;elizabethkelen@liz: ~/Projects/nm_otool_public]1;.._otool_public[0m[27m[24m[J[38;5;117m~/Projects/nm_otool_public[00m[38;5;012m (otool-unify [38;5;133m✘[38;5;012m)[38;5;133m[38;5;190m✭[00m [00m[38;5;077mᐅ[00m [K[?1h=[?2004hmman script[?1l>[?2004l
+]2;man script]1;man[?1049h[?1h=mdoc warning: .Fx: Unknown FreeBSD version `9.2' (#190)
+[m
+SCRIPT(1)                 BSD General Commands Manual                SCRIPT(1)[m
+[m
+[1mNAME[0m[m
+     [1mscript[0m -- make typescript of terminal session[m
+[m
+[1mSYNOPSIS[0m[m
+     [1mscript[0m [[1m-adkpqr[0m] [[1m-F[0m [4mpipe[24m] [[1m-t[0m [4mtime[24m] [[4mfile[24m [[4mcommand[24m [4m...[24m]][m
+[m
+[1mDESCRIPTION[0m[m
+     The [1mscript[0m utility makes a typescript of everything printed on your[m
+     terminal.  It is useful for students who need a hardcopy record of[m
+     an interactive session as proof of an assignment, as the typescript[m
+     file can be printed out later with lpr(1).[m
+[m
+     If the argument [4mfile[24m is given, [1mscript[0m saves all dialogue in [4mfile[24m.[m
+     If no file name is given, the typescript is saved in the file[m
+     [4mtypescript[24m.[m
+[m
+     If the argument [4mcommand[24m is given, [1mscript[0m will run the specified[m
+     command with an optional argument vector instead of an interactive[m
+     shell.[m
+[m
+     The following options are available:[m
+[m
+     [1m-a[0m      Append the output to [4mfile[24m or [4mtypescript[24m, retaining the[m
+             prior contents.[m
+[m
+     [1m-d[0m      When playing back a session with the [1m-p[0m flag, do not sleep[m
+             between records when playing back a timestamped session.[m
+[m
+     [1m-F[0m [4mpipe[24m[m
+             Immediately flush output after each write.  This will allow[m
+             a user to create a named pipe using mkfifo(1) and another[m
+             user may watch the live session using a utility like[m
+             cat(1).[m
+[m
+     [1m-k[0m      Log keys sent to the program as well as output.[m
+[m
+     [1m-p[0m      Play back a session recorded with the [1m-r[0m flag in real time.[m
+[m
+     [1m-q[0m      Run in quiet mode, omit the start, stop and command status[m
+             messages.[m
+[m
+     [1m-r[0m      Record a session with input, output, and timestamping.[m
+[m
+     [1m-t[0m [4mtime[24m[m
+             Specify the interval at which the script output file will[m
+             be flushed to disk, in seconds.  A value of 0 causes [1mscript[0m[m
+:[K[K [KESCESC[KOO[KBB[K             to flush after every character I/O event.  The default[m
+:[K[K [KESCESC[KOO[KBB[K             interval is 30 seconds.[m
+:[K[K [KESCESC[KOO[KBB[K[m
+:[K[K [KESCESC[KOO[KBB[K     The script ends when the forked shell (or command) exits (a[m
+:[K[K [KESCESC[KOO[KBB[K     [4mcontrol-D[24m to exit the Bourne shell (sh(1)), and [4mexit[24m, [4mlogout[24m or[m
+:[K[K [KESCESC[KOO[KBB[K     [4mcontrol-D[24m (if [4mignoreeof[24m is not set) for the C-shell, csh(1)).[m
+:[K[K [KESCESC[KOO[KBB[K[m
+:[K[K [KESCESC[KOO[KBB[K     Certain interactive commands, such as vi(1), create garbage in the[m
+:[K[K [KESCESC[KOO[KBB[K     typescript file.  The [1mscript[0m utility works best with commands that[m
+:[K[K [KESCESC[KOO[KBB[K     do not manipulate the screen.  The results are meant to emulate a[m
+:[K[K [KESCESC[KOO[KBB[K     hardcopy terminal, not an addressable one.[m
+:[K[K [KESCESC[KOO[KBB[K[m
+:[K[K [KESCESC[KOO[KBB[K[1mENVIRONMENT[0m[m
+:[K[K [KESCESC[KOO[KBB[K     The following environment variables are utilized by [1mscript[0m:[m
+:[K[K [KESCESC[KOO[KBB[K[m
+:[K[K [KESCESC[KOO[KBB[K     SCRIPT[m
+:[K[K [KESCESC[KOO[KBB[K            The SCRIPT environment variable is added to the sub-shell.[m
+:[K[K [KESCESC[KOO[KBB[K            If SCRIPT already existed in the users environment, its[m
+:[K[K [KESCESC[KOO[KBB[K            value is overwritten within the sub-shell.  The value of[m
+:[K[K [KESCESC[KOO[KBB[K            SCRIPT is the name of the [4mtypescript[24m file.[m
+:[K[K [KESCESC[KOO[KBB[K[m
+:[K[K [KESCESC[KOO[KBB[K     SHELL  If the variable SHELL exists, the shell forked by [1mscript[0m[m
+:[K[K [KESCESC[KOO[KBB[K            will be that shell.  If SHELL is not set, the Bourne shell[m
+:[K[K [KESCESC[KOO[KBB[K            is assumed.  (Most shells set this variable automatically).[m
+:[K[K [KESCESC[KOO[KBB[K[m
+:[K[K [KESCESC[KOO[KBB[K[1mSEE[0m [1mALSO[0m[m
+:[K[K [KESCESC[KOO[KBB[K     csh(1)[m
+:[K[K [KESCESC[KOO[KBB[K[m
+:[K[K [KESCESC[KOO[KBB[K[1mHISTORY[0m[m
+:[K[K [KESCESC[KOO[KBB[K     The [1mscript[0m command appeared in 3.0BSD.[m
+:[K[K [KESCESC[KOO[KBB[K[m
+:[K[K [KESCESC[KOO[KBB[K     The [1m-d[0m, [1m-p[0m and [1m-r[0m options first appeared in NetBSD 2.0 and were[m
+:[K[K [KESCESC[KOO[KBB[K     ported to FreeBSD 9.2.[m
+:[K[K [KESCESC[KOO[KBB[K[m
+:[K[K [KESCESC[KOO[KBB[K[1mBUGS[0m[m
+:[K[K [KESCESC[KOO[KBB[K     The [1mscript[0m utility places [1meverything[0m in the log file, including[m
+:[K[K [KESCESC[KOO[KBB[K     linefeeds and backspaces.  This is not what the naive user expects.[m
+:[K[K [KESCESC[KOO[KBB[K[m
+:[K[K [KESCESC[KOO[KBB[K     It is not possible to specify a command without also naming the[m
+:[K[K [KESCESC[KOO[KBB[K     script file because of argument parsing compatibility issues.[m
+:[K[K [KESCESC[KOO[KBB[K[m
+:[K[K [KESCESC[KOO[KBB[K     When running in [1m-k[0m mode, echo cancelling is far from ideal.  The[m
+:[K[K [KESCESC[KOO[KBB[K     slave terminal mode is checked for ECHO mode to check when to avoid[m
+:[K[K [KESCESC[KOO[KBB[K     manual echo logging.  This does not work when the terminal is in a[m
+:[K[K [KESCESC[KOO[KBB[K     raw mode where the program being run is doing manual echo.[m
+:[K[K [KESCESC[KOO[KBB[K[m
+:[K[K [KESCESC[KOO[KBB[K     If [1mscript[0m reads zero bytes from the terminal, it switches to a mode[m
+:[K[K [KESCESC[KOO[KBB[K     when it only attempts to read once a second until there is data to[m
+:[K[K [KESCESC[KOO[KBB[K     read.  This prevents [1mscript[0m from spinning on zero-byte reads, but[m
+:[K[K [KESCESC[KOO[KBB[K     might cause a 1-second delay in processing of user input.[m
+:[K[K [KESCESC[KOO[KBB[K[m
+:[K[K [KESCESC[KOO[KBB[KBSD                            December 4, 2013                            BSD[m
+:[K[K [KESCESC[KOO[KBB[K[K[7m(END)[27m[K[K [KESCESC[KOO[KBB[K[K[7m(END)[27m[K[K [KESCESC[KOO[KBB[K[K[7m(END)[27m[K[K [KESCESC[KOO[KBB[K[K[7m(END)[27m[K[K [KESCESC[KOO[KBB[K[K[7m(END)[27m[K[K [KESCESC[KOO[KBB[K[K[7m(END)[27m[K[K [KESCESC[KOO[KBB[K[K[7m(END)[27m[K[K [KESCESC[KOO[KBB[K[K[7m(END)[27m[K

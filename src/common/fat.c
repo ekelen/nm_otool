@@ -90,25 +90,7 @@ t_arch_info    get_arch_info(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 
 t_arch_info    get_arch_info_otool(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 {
-    unsigned int i;
-	dprintf(2, "cputype  ::  %d\n", cputype);
-	dprintf(2, "cpusubtype  ::  %d\n", cpusubtype);
-
-    i = 0;
-    while (arch_list[i].name[0])
-    {
-        if (cputype == arch_list[i].cpu_type && cpusubtype == arch_list[i].cpu_subtype)
-            return (arch_list[i]);
-        i++;
-    }
-	i = 0;
-    while (arch_list[i].name[0])
-    {
-        if (cputype == arch_list[i].cpu_type)
-            return (arch_list[i]);
-        i++;
-    }
-    return arch_list[i];
+    return (get_arch_info(cputype, cpusubtype));
 }
 
 // Store all the fat_arch info in one place
