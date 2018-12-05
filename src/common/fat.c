@@ -57,26 +57,9 @@ static const t_arch_info arch_list[] = {
 	{"", 0, 0}
 };
 
-const char    *get_archname(cpu_type_t cputype, cpu_subtype_t cpusubtype)
-{
-    unsigned int i;
-	dprintf(2, "cpusubtype  ::  %d\n", cpusubtype);
-
-    i = 0;
-    while (arch_list[i].name)
-    {
-        if (cputype == arch_list[i].cpu_type && cpusubtype == arch_list[i].cpu_subtype)
-            return (arch_list[i].name);
-        i++;
-    }
-    return ("");
-}
-
 t_arch_info    get_arch_info(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 {
-    unsigned int i;
-	dprintf(2, "cputype  ::  %d\n", cputype);
-	dprintf(2, "cpusubtype  ::  %d\n", cpusubtype);
+    int i;
 
     i = 0;
     while (arch_list[i].name[0])
@@ -88,22 +71,17 @@ t_arch_info    get_arch_info(cpu_type_t cputype, cpu_subtype_t cpusubtype)
     return arch_list[i];
 }
 
-t_arch_info    get_arch_info_otool(cpu_type_t cputype, cpu_subtype_t cpusubtype)
-{
-    return (get_arch_info(cputype, cpusubtype));
-}
-
 // Store all the fat_arch info in one place
 t_arch init_arch(t_file *file, t_u_fa f)
 {
-	t_arch new;
-	new.offset = file->info & IS_64 ? sizeof(t_fat_arch_64) : sizeof(t_fat_arch);
-	new.m64 = 0;
+	t_arch 			new;
+	cpu_type_t 		cputype;
+	cpu_subtype_t 	cpusubtype;
 
-	int cputype = file->info & IS_64 ? file->swap32(f.fa64->cputype) : file->swap32(f.fa32->cputype);
-	int cpusubtype = file->info & IS_64 ? file->swap32(f.fa64->cpusubtype) : file->swap32(f.fa32->cpusubtype);
-
-	new.arch_info = (file->info & IS_NM) ? get_arch_info(cputype, cpusubtype) : get_arch_info_otool(cputype, cpusubtype);
+	new.offset = file->info & IS_64 ? FH_64_SIZE : FH_SIZE;
+	cputype = file->info & IS_64 ? file->swap32(f.fa64->cputype) : file->swap32(f.fa32->cputype);
+	cpusubtype = file->info & IS_64 ? file->swap32(f.fa64->cpusubtype) : file->swap32(f.fa32->cpusubtype);
+	new.arch_info = get_arch_info(cputype, cpusubtype);
 	new.fa_offset = file->info & IS_64 ? file->swap64(f.fa64->offset) : (uint64_t)(file->swap32(f.fa32->offset));
     new.size = file->info & IS_64 ? file->swap64(f.fa64->size) : (uint64_t)(file->swap32(f.fa32->size));
 	return new;
@@ -123,6 +101,7 @@ static int add_host_cpu_arch(t_file *file, t_arch a)
 	}
     m->arch = a;
 	file->info &= ~IS_MULTI;
+	get_meta_print(file, m);
     result = add_mach(&(file->mach), m);
     return result;
 }
@@ -150,25 +129,25 @@ static t_u_fa check_fa(t_file *file, uint32_t nfat_arch, int i)
 
     if (file->info & IS_64)
         f.fa64 = (t_fat_arch_64 *)ptr_check_msg(file->end, \
-            (void *)file->data + file->offset + sizeof(t_fat_arch_64) * i, sizeof(t_fat_arch_64) * nfat_arch, "fat arch 64");
+            (void *)file->data + file->offset + FH_64_SIZE * i, FH_64_SIZE * nfat_arch, "fat arch 64");
     else
         f.fa32 = (t_fat_arch *)ptr_check_msg(file->end, \
-            (void *)file->data + file->offset + sizeof(t_fat_arch) * i, sizeof(t_fat_arch), "fat arch 32");
+            (void *)file->data + file->offset + FH_SIZE * i, FH_SIZE, "fat arch 32");
     return f;
 }
 
 int handle_fat_2(t_file *file, uint32_t nfat_arch)
 {
-    t_u_fa f;
+    t_u_fa 	f;
     size_t  i;
-    t_arch a;
+    t_arch 	a;
 
 	i = -1;
 	while (++i < nfat_arch)
     {
         f = check_fa(file, nfat_arch, i);
         if (!f.fa32 && !f.fa64)
-            return (EXIT_FAILURE);
+            return (ERR_FILE);
         a = init_arch(file, f);
         if (a.arch_info.cpu_type == HOST_CPU)
             return(add_host_cpu_arch(file, a));
@@ -180,11 +159,8 @@ int handle_fat_2(t_file *file, uint32_t nfat_arch)
         if (!f.fa32 && !f.fa64)
             return (EXIT_FAILURE);
         a = init_arch(file, f);
-        if (a.arch_info.cpu_type == HOST_CPU)
-            return(add_host_cpu_arch(file, a));
-        else
-			if (add_arch(file, a) > EXIT_SUCCESS)
-				return (EXIT_FAILURE);
+        if (add_arch(file, a) > EXIT_SUCCESS)
+			return (EXIT_FAILURE);
     }
     return (EXIT_SUCCESS);
 }

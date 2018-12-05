@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/04 17:38:24 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/05 09:48:35 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void read_file_nm(t_context *nmc, char *av)
         nmc->err = (error(av, 1));
     if (!nmc->err && fstat(fd, &buf) < 0)
         nmc->err = (error(av, 1));
-    if (!nmc->err && (ptr = mmap(0, buf.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
+    if (!nmc->err && (ptr = mmap(0, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
         nmc->err = (error(av, 1));
     if (!nmc->err)
         add_file_nm(ptr, buf.st_size, av, nmc);

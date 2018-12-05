@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/04 17:58:53 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/05 09:07:24 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,38 +25,38 @@ static bool get_is_arm(t_mach_o *m)
     return (m->cputype == CPU_TYPE_ARM || m->cputype == CPU_TYPE_ARM64);
 }
 
-static void print_meta_text(void)
-{
-    ft_printf("Contents of (%s,%s) section\n", SEG_TEXT, SECT_TEXT);
-}
+// static void print_meta_text(void)
+// {
+//     ft_printf("Contents of (%s,%s) section\n", SEG_TEXT, SECT_TEXT);
+// }
 
-static void print_otool_meta_fat(t_file *file, t_mach_o *m)
-{
+// static void print_otool_meta_fat(t_file *file, t_mach_o *m)
+// {
 
-    ft_printf("%s", file->filename);
-    if ((file->info & IS_MULTI) && m->arch.arch_info.name[0]) // TODO: What condition show ppc?
-        ft_printf(" (architecture %s)", m->arch.arch_info.name);
-    ft_printf(":\n");
-    print_meta_text();
-}
+//     ft_printf("%s", file->filename);
+//     if ((file->info & IS_MULTI) && m->arch.arch_info.name[0]) // TODO: What condition show ppc?
+//         ft_printf(" (architecture %s)", m->arch.arch_info.name);
+//     ft_printf(":\n");
+//     print_meta_text();
+// }
 
-static void print_otool_meta_single(t_file *file, t_mach_o *m)
-{
-    (void)m;
-    ft_printf("%s:\n", file->filename);
-    print_meta_text();
-}
+// static void print_otool_meta_single(t_file *file, t_mach_o *m)
+// {
+//     (void)m;
+//     ft_printf("%s:\n", file->filename);
+//     print_meta_text();
+// }
 
-static void print_meta_statlib(t_file *file, t_mach_o *m)
-{
-    ft_printf("%s(%s):\n", file->filename, m->ofile.name);
-    print_meta_text();
-}
+// static void print_meta_statlib(t_file *file, t_mach_o *m)
+// {
+//     ft_printf("%s(%s):\n", file->filename, m->ofile.name);
+//     print_meta_text();
+// }
 
-static void print_file_archive_meta(t_file *file)
-{
-    ft_printf("Archive : %s\n", file->filename);
-}
+// static void print_file_archive_meta(t_file *file)
+// {
+//     ft_printf("Archive : %s\n", file->filename);
+// }
 
 static int get_otool_line(t_mach_o *m, uint64_t size, void *start, void *addr)
 {
@@ -102,7 +102,7 @@ static int get_otool_line(t_mach_o *m, uint64_t size, void *start, void *addr)
     return (SUCCESS);
 }
 
-static int print_otool(t_file *file, t_mach_o *m, bool first)
+static int print_otool(t_file *file, t_mach_o *m)
 {
     uint64_t size;
     uint32_t offset;
@@ -110,19 +110,11 @@ static int print_otool(t_file *file, t_mach_o *m, bool first)
     void *start;
 
     if (!m || !(m->nsects & TEXT_SECT))
-        return EXIT_SUCCESS;
+        return (EXIT_SUCCESS);
     if (!file || !file->mach)
-        return EXIT_FAILURE;
+        return (EXIT_FAILURE);
 
-    if (first && (file->info & IS_STATLIB))
-        print_file_archive_meta(file);
-
-    if (file->info & IS_FAT)
-        print_otool_meta_fat(file, m);
-    else if (file->info & IS_STATLIB)
-        print_meta_statlib(file, m);
-    else
-        print_otool_meta_single(file, m);
+    m->print_meta(file, m);
     addr = (void *)(m->m64 ?
                 m->swap64((*(t_section_64 *)(m->text_sect)).addr)
                 : m->swap32((*(t_section *)(m->text_sect)).addr));
@@ -134,8 +126,7 @@ static int print_otool(t_file *file, t_mach_o *m, bool first)
                 : (uint64_t)(m->swap32((*(t_section *)(m->text_sect)).offset)));
     start = (void *)m->data + offset;
     get_otool_line(m, size, start, addr);
-    print_otool(file, m->next, FALSE);
-    return (SUCCESS);
+    return print_otool(file, m->next);
 }
 
 void add_file_otool(void *data, off_t size, char *argname)
@@ -152,7 +143,7 @@ void add_file_otool(void *data, off_t size, char *argname)
 	if (!err && (err = process_file(file, size)) > SUCCESS)
         error_ot(argname, err, NULL);
     else
-        print_otool(file, file->mach, TRUE);
+        print_otool(file, file->mach);
     free_file(file);
 }
 

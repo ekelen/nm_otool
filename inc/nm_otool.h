@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/04 13:47:30 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/05 09:42:42 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,20 @@
 # define FAT_ANY (FAT_MAGIC & MAGIC_MASK)
 # define SWAP_ANY (SWAP_MAGIC)||(SWAP_FAT)
 
-# define AR_HDR_SIZE sizeof(t_ar_hdr)
+# define AR_HDR_SIZE sizeof(struct ar_hdr)
 # define NLIST_SIZE sizeof(struct nlist)
 # define NLIST_64_SIZE sizeof(struct nlist_64)
+# define MH_SIZE sizeof(struct mach_header)
+
+# define MH_64_SIZE sizeof(struct mach_header_64)
+# define CMD_SIZE sizeof(struct segment_command)
+# define CMD_64_SIZE sizeof(struct segment_command_64)
+# define SEC_SIZE sizeof(struct section)
+# define SEC_64_SIZE sizeof(struct section_64)
+# define FH_SIZE sizeof(struct fat_arch)
+# define FH_64_SIZE sizeof(struct fat_arch_64)
+# define LC_SIZE sizeof(struct load_command)
+# define SYMTAB_SIZE sizeof(struct symtab_command)
 
 typedef unsigned char               t_byte;
 
@@ -231,10 +242,9 @@ int                 handle_32_64(t_file *file, size_t size);
 int handle_archive(t_file *file);
 
 // fat.c
-t_arch init_arch    (t_file *file, t_u_fa f);
+t_arch              init_arch(t_file *file, t_u_fa f);
 t_arch_info         get_arch_info(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 int                 handle_fat(t_file *file);
-const char          *get_archname(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 
 // parse_commands.c
 int parse_seg(t_file *file, t_mach_o *m, const struct load_command *lc);
@@ -258,7 +268,7 @@ int                 init_file(t_file *file, void *data, off_t size, char *argnam
 void                free_file(t_file *file);
 
 //print.c
-void print_nsecs(t_mach_o *m);
+void get_meta_print(t_file *file, t_mach_o *m);
 
 //error.c
 int error(const char *arg, t_e_errs err);

@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 21:22:29 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/04 17:54:38 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/05 09:10:53 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,33 +76,33 @@ static void print_in_order(t_file *file, t_mach_o *m, t_symbol *head, t_symbol *
     print_in_order(file, m, head, current->right);
 }
 
-void print_meta_fat(t_file *file, t_mach_o *m)
-{
-	ft_putendl("");
-    ft_printf("%s (for architecture %s):\n", file->filename, m->arch.arch_info.name);
-}
+// void print_meta_fat(t_file *file, t_mach_o *m)
+// {
+// 	ft_putendl("");
+//     ft_printf("%s (for architecture %s):\n", file->filename, m->arch.arch_info.name);
+// }
 
-static void print_meta_statlib(t_file *file, t_mach_o *m)
-{
-	ft_putendl("");
-    ft_printf("%s(%s):\n", file->filename, m->ofile.name);
-}
+// static void print_meta_statlib(t_file *file, t_mach_o *m)
+// {
+// 	ft_putendl("");
+//     ft_printf("%s(%s):\n", file->filename, m->ofile.name);
+// }
 
-void print_meta_single(t_file *file, t_mach_o *m)
-{
-	(void)file;
-	(void)m;
-}
+// void print_meta_single(t_file *file, t_mach_o *m)
+// {
+// 	(void)file;
+// 	(void)m;
+// }
 
-void get_mach_meta_print_nm(t_file *file, t_mach_o *m)
-{
-	m->print_meta = file->info & IS_FAT && file->info & IS_MULTI
-			? print_meta_fat
-			: (file->info & IS_STATLIB 
-				? print_meta_statlib
-				: print_meta_single);
-	return;
-}
+// void get_mach_meta_print_nm(t_file *file, t_mach_o *m)
+// {
+// 	m->print_meta = file->info & IS_FAT && file->info & IS_MULTI
+// 			? print_meta_fat
+// 			: (file->info & IS_STATLIB 
+// 				? print_meta_statlib
+// 				: print_meta_single);
+// 	return;
+// }
 
 void print_machs(t_file *file, t_mach_o *m)
 {
@@ -110,7 +110,7 @@ void print_machs(t_file *file, t_mach_o *m)
         return;
     else if (m)
     {
-		get_mach_meta_print_nm(file, m);
+		// get_mach_meta_print_nm(file, m);
 		m->print_meta(file, m);
         print_in_order(file, m, m->symbols, m->symbols);
 		free_symbols(m->symbols);
