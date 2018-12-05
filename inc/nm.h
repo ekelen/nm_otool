@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/11/29 18:11:43 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/04 17:54:47 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@
 # define PRINT_PATHNAME 0x20
 
 // print_nm.c
-void print_meta_statlib(t_file *file, t_mach_o *m);
-void print_meta_single(t_file *file, t_mach_o *m);
+// void print_meta_statlib(t_file *file, t_mach_o *m);
+// void print_meta_single(t_file *file, t_mach_o *m);
 void print_meta_fat(t_file *file, t_mach_o *m);
 void print_machs(t_file *file, t_mach_o *m);
 

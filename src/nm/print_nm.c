@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 21:22:29 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/03 11:17:19 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/04 17:54:38 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void print_meta_fat(t_file *file, t_mach_o *m)
     ft_printf("%s (for architecture %s):\n", file->filename, m->arch.arch_info.name);
 }
 
-void print_meta_statlib(t_file *file, t_mach_o *m)
+static void print_meta_statlib(t_file *file, t_mach_o *m)
 {
 	ft_putendl("");
     ft_printf("%s(%s):\n", file->filename, m->ofile.name);
