@@ -8,3 +8,4 @@ ft_otool
 *.txt
 *.diff
 .DS_Store
+*.dSYM/

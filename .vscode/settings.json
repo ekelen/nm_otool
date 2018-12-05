@@ -19,5 +19,7 @@
         "tuple": "c",
         "type_traits": "c"
     },
-    "search.useIgnoreFiles": false
+    "search.useIgnoreFiles": false,
+    "python.pythonPath": "/Users/ekelen/Desktop/brew/bin/python3",
+    "python.linting.pylintEnabled": false
 }

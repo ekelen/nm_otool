@@ -70,9 +70,9 @@ int		init_mach_o(t_file *file, const void *data, size_t size, t_mach_o *m)
 {
 	void 		*mptr;
 
+
 	m->symbols = NULL;
 	m->st = NULL;
-	m->print_meta = NULL;
 	m->next = NULL;
 	m->data = data;
 	m->nsects = 0x00000000;
@@ -83,7 +83,10 @@ int		init_mach_o(t_file *file, const void *data, size_t size, t_mach_o *m)
 		return (ERR_FILE);
 	if (parse_magic(*(uint32_t *)mptr, m) > SUCCESS)
 		return (ERR_FILE);
-	return (fill_mach(file, m));
+	if (fill_mach(file, m) > SUCCESS)
+		return (ERR_FILE);
+	get_meta_print(file, m);
+	return (SUCCESS);
 }
 
 int add_mach(t_mach_o **curr, t_mach_o *new)
