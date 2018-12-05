@@ -1,49 +1,39 @@
-#include <nm_otool.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   error.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/12/05 13:08:58 by ekelen            #+#    #+#             */
+/*   Updated: 2018/12/05 13:10:50 by ekelen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-// TODO: Consistent error codes - enum
-//Combine with below
-int error(const char *arg, t_e_errs err)
+# include <nm_otool.h>
+
+int error(const char *filename, t_e_errs err, const char *msg, bool is_nm)
 {
+	ft_putstr_fd(is_nm ? NM_NAME : OTOOL_NAME, 2);
 	if (err == ERR_USAGE)
 	{
 		ft_putstr_fd("Unknown flag ", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putstr_fd(".  Valid flags:  XXXXX.", 2);
+		ft_putstr_fd(msg, 2);
+		ft_putstr_fd(".  Valid flag(s): ", 2);
+		ft_putstr_fd(is_nm ? NM_FLAGS : OT_FLAGS, 2);
 	}
 	else if (err == ERR_FILE)
 	{
-		ft_putstr_fd("Error reading file ", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putstr_fd(".", 2);
+		ft_putstrcolon_fd(filename, 2, ' ');
+		ft_putstr_fd(msg ? msg : "File is truncated or malformed.", 2);
 	}
 	else if (err == ERR_ALLOCATION)
-		ft_putstr_fd("Error allocating heap space.", 2);
-	else
-		ft_putstr_fd(arg, 2);
-	ft_putendl_fd("", 2);
-	return err;
-}
-
-int error_ot(const char *arg, t_e_errs err, const char *msg)
-{
-	if (arg)
-		ft_putendl_fd(arg, 2);
-	if (err == ERR_USAGE)
 	{
-		ft_putstr_fd("Unknown flag ", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putstr_fd(".  Valid flag: t", 2);
+		ft_putstrcolon_fd(filename, 2, ' ');
+		ft_putstr_fd(msg ? msg : "Error allocating heap space.", 2);
 	}
-	else if (err == ERR_FILE)
-	{
-		ft_putstr_fd("Error reading file ", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putstr_fd(".", 2);
-	}
-	else if (err == ERR_ALLOCATION)
-		ft_putstr_fd("Error allocating heap space.", 2);
-	else if (msg)
+	else if (err == ERR_OTHER && msg)
 		ft_putstr_fd(msg, 2);
 	ft_putendl_fd("", 2);
-	return err;
+	return (err);
 }

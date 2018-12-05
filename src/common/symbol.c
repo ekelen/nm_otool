@@ -96,7 +96,7 @@ static char *get_sym_name(t_mach_o *m, t_symtab_command *st, t_u_nl nl)
         + st->strsize;
 
     if (!(name = (char *)ptr_check_msg(strtab_end, (void *)name_start, 0, "symbol name")))
-		return NULL;
+		return (NULL);
 	return name;
 }
 

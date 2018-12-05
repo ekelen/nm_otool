@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 10:07:15 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/05 13:14:03 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,83 +89,59 @@ static int print_otool(t_file *file, t_mach_o *m)
     return print_otool(file, m->next);
 }
 
-void add_file_otool(void *data, off_t size, char *argname)
+static void add_file_otool(void *p, off_t s, char *av, t_context *c)
 {
-    t_file      *file;
-    int         err;
+    t_file              *file;
+    t_e_errs            err;
 
-    err = 0;
+    err = SUCCESS;
+    file = NULL;
     if (!(file = (t_file *)malloc(sizeof(t_file))))
-        err = ERR_ALLOCATION;
-	if (!err && (err = init_file(file, data, size, argname)) > SUCCESS)
-        err = ERR_FILE;
+    {
+        error(av, ERR_ALLOCATION, NULL, c->is_nm);
+        return;
+    }
+	if ((err = init_file(file, p, s, av)) > SUCCESS)
+    {
+        error(av, err, NULL, c->is_nm);
+        return;
+    }
     file->info |= 0 << 6;
-	if (!err && (err = process_file(file, size)) > SUCCESS)
-        error_ot(argname, err, NULL);
+	if ((err = process_file(file, s)) > SUCCESS)
+        error(av, err, NULL, c->is_nm);
     else
         print_otool(file, file->mach);
     free_file(file);
-}
-
-void read_file_otool(t_context *c, char *av)
-{
-    int     fd;
-    struct  stat buf;
-    void    *ptr;
-
-    // if (c->nfiles > 1)
-    //     ft_printf("\n%s:\n", av);
-    if ((fd = open(av, O_RDONLY)) < 0)
-        c->err = (error_ot(av, 1, NULL));
-    if (!c->err && fstat(fd, &buf) < 0)
-        c->err = (error_ot(av, 1, NULL));
-    if (!c->err && (ptr = mmap(0, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
-        c->err = (error_ot(av, 1, NULL));
-    if (!c->err)
-        add_file_otool(ptr, buf.st_size, av);
     return;
 }
 
-int check_for_flags(int argc, char *argv[], t_context *c)
-{
-    while (--argc > 0)
-    {
-        if (argv[argc][0] == '-')
-        {
-            if (ft_strcmp(argv[argc], "-t"))
-                return(error_ot(argv[argc], ERR_USAGE, NULL));
-        } 
-        else
-            c->nfiles++;
-    }
-    return (EXIT_SUCCESS);
-}
-
-t_context init_context(void)
+static t_context init_context(void)
 {
     t_context c;
     c.is_nm = FALSE;
     c.flags = 0x00000000;
     c.err = 0;
     c.nfiles = 0;
+    c.add = add_file_otool;
+    c.flag_options = OT_FLAGS;
     return c;
 }
 
-int main(int argc, char *argv[])
+int main(int ac, char *av[])
 {
     int             i;
     t_context       c;
 
     c = init_context();
     i = 0;
-    if ((c.err = check_for_flags(argc, argv, &c)) > EXIT_SUCCESS)
-        return (c.err);
-    while (++i < argc)
+    if (verify_flags(ac, av, &c) > SUCCESS)
+        return (0);
+    while (++i < ac)
     {
-        if (argv[i][0] != '-')
-            read_file_otool(&c, argv[i]);
+        if (av[i][0] != '-')
+            read_file(&c, av[i]);
     }
     if (!c.nfiles)
-        error_ot(NULL, 3, "No file.");
+        error(NULL, 3, "No file provided.", FALSE);
     return (0);
 }

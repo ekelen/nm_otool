@@ -7,7 +7,7 @@ import os
 from unittest import TestCase
 import unittest as ut
 
-class bcolors:
+class bc:
 	HEADER = '\033[95m'
 	OKBLUE = '\033[94m'
 	OKGREEN = '\033[92m'
@@ -22,12 +22,17 @@ name_nm = "ft_nm"
 dir_nm = os.path.join(dir_path, "..")
 nm_path = os.path.join(dir_path, "..", name_nm)
 
-# /usr/local/mysql/lib
-
 class Base(TestCase):
 	def setUp(self):
 		self.maxDiff = 10
 		self.test_path = os.path.join(dir_path, "unit_test_files")
+
+	def check_bad_flags(self, test_files, flags=[]):
+		for f in test_files:
+			with self.subTest(f=f):
+				ftnm = subprocess.check_output([nm_path, os.path.join(self.test_path, f)] + flags, stderr=subprocess.STDOUT)
+				print(f'{bc.WARNING}ftnm : {ftnm}{bc.ENDC}')
+				self.assertTrue(ftnm, msg=f'{ftnm}: {f} with flags {flags} not causing error.')
 
 	def compare(self, test_files, flags=[]):
 		for f in test_files:
@@ -53,7 +58,9 @@ class Base(TestCase):
 			with self.subTest(f=f):
 				try:
 					ftnm = subprocess.check_output([nm_path, os.path.join(self.test_path, f)], stderr=subprocess.DEVNULL)
-					self.assertFalse(ftnm, msg=f'{f} returning message on stdout.')
+					if ftnm:
+						print(f'{bc.FAIL}ftnm : {ftnm.decode()}{bc.ENDC}')
+					self.assertFalse(ftnm, msg=f'{f} returning message {bc.FAIL}{ftnm}{bc.ENDC}')
 				except subprocess.CalledProcessError as e:
 					self.assertEqual(e.returncode, 1)
 
@@ -63,6 +70,7 @@ class Base(TestCase):
 			with self.subTest(f=f):
 				try:
 					ftnm = subprocess.check_output([nm_path, os.path.join(self.test_path, f)], stderr=subprocess.STDOUT)
+					print(f'{bc.WARNING}ftnm : {ftnm.decode()}{bc.ENDC}')
 					self.assertTrue(ftnm, msg=f'{f} has no error output.')
 				except subprocess.CalledProcessError as e:
 					self.assertEqual(e.returncode, 1)
@@ -207,6 +215,14 @@ class Easyflags(Base):
 	def test_easy_all(self):
 		""" All."""
 		self.compare(self.files, flags=["-a"])
+
+	def test_easy_reverse_undef(self):
+		""" No undefined."""
+		self.compare(self.files, flags=["-ru"])
+
+	def test_bad_flags(self):
+		""" No undefined."""
+		self.check_bad_flags(self.files, flags=["-ruG"])
 
 	def test_reverse(self):
 		""" Reverse."""

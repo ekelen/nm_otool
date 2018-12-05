@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 09:42:42 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/05 13:37:34 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,9 @@
 # include <mach/machine.h>
 # include <stdbool.h>
 
+# include "nm.h"
+# include "otool.h"
+
 # define IS_64 0x1
 # define IS_SWAP 0x2
 # define IS_SINGLE_MACH 0x4
@@ -41,6 +44,9 @@
 # define TEXT_SECT 0x000000ff
 # define DATA_SECT 0x0000ff00
 # define BSS_SECT 0x00ff0000
+
+# define NM_NAME "ft_nm: "
+# define OTOOL_NAME "ft_otool: "
 
 # define HOST_CPU CPU_TYPE_X86_64
 
@@ -146,7 +152,6 @@ typedef struct s_sec {
 }               t_sec;
 
 struct s_arch {
-    bool                    m64;
     size_t                  offset; // sizeof fat_arch/fat_arch_64
     t_arch_info             arch_info;
     uint64_t                fa_offset;
@@ -213,12 +218,15 @@ struct  s_file {
     // void                    (*print_otool_meta)(t_file *file, t_mach_o *m);
 };
 
-typedef struct  s_context {
+typedef struct  s_context t_context;
+struct          s_context {
     bool                    is_nm;
     uint32_t                flags;
+    const char              *flag_options;
 	int						err;
 	size_t					nfiles;
-}				t_context;
+    void                    (*add)(void *p, off_t s, char *av, t_context *c);
+};
 
 // util.c
 uint32_t nswap32(uint32_t x);
@@ -237,6 +245,8 @@ void                free_machs(t_mach_o *curr);
 // read_file.c
 int                 process_file(t_file *file, size_t size);
 int                 handle_32_64(t_file *file, size_t size);
+void                read_file(t_context *c, char *av);
+int                 verify_flags(int ac, char *av[], t_context *c);
 
 // static_lib.c
 int handle_archive(t_file *file);
@@ -270,9 +280,11 @@ void                free_file(t_file *file);
 //print.c
 void get_meta_print(t_file *file, t_mach_o *m);
 
+//print_nm.c
+void print_machs(t_file *file, t_mach_o *m);
+
 //error.c
-int error(const char *arg, t_e_errs err);
-int error_ot(const char *arg, t_e_errs err, const char *msg);
+int error(const char *filename, t_e_errs err, const char *msg, bool is_nm);
 
 
 #endif

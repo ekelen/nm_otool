@@ -6,16 +6,14 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 08:44:28 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/05 11:42:24 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef NM_H
 #define NM_H
 
-#include "nm_otool.h"
-
-# define STR_FLAGS "AajuUr"
+# define NM_FLAGS "AajuUr"
 
 # define SHOW_VALUE 0x1
 # define SHOW_TYPE 0x2
@@ -32,14 +30,6 @@
 # define NO_UNDEF 0x8
 # define SORT_REVERSE 0x10
 # define PRINT_PATHNAME 0x20
-
-// print_nm.c
-// void print_meta_statlib(t_file *file, t_mach_o *m);
-// void print_meta_single(t_file *file, t_mach_o *m);
-// void print_meta_fat(t_file *file, t_mach_o *m);
-void print_machs(t_file *file, t_mach_o *m);
-
-// init_nm.c
-// int add_file_nm(void *data, off_t size, char *argname, uint32_t flags);
+# define UNKNOWN_FLAG 0x40
 
 #endif

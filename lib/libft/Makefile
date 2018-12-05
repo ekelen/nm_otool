@@ -123,6 +123,9 @@ SRC += ft_itoa_base.c
 SRC += ft_atoi_base.c
 SRC += ft_putnbr_base.c
 
+SRC += ft_putstrcolon_fd.c
+SRC += ft_putstr_upper_fd.c
+
 SRC_FILES = $(addprefix $(PATH_SRC),$(SRC))
 
 OBJ_NAME = $(SRC:.c=.o)
