@@ -191,7 +191,7 @@ class Dylib(Base):
 		files = os.listdir(self.test_path)
 		self.compare(files)
 
-class Easy_Flags(Base):
+class Easyflags(Base):
 	def setUp(self):
 		super().setUp()
 		self.files = ["test_facile", "test_moins_facile", "test_half_obj", "test_wrong_lc_command_size"]

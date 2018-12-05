@@ -6,57 +6,17 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 09:07:24 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/05 10:07:15 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <nm_otool.h>
 #include <limits.h>
 
-static bool get_is_ppc(t_mach_o *m)
+static bool get_print_block(t_mach_o *m)
 {
-    // Blocks
-    return (m->cputype == CPU_TYPE_POWERPC);
+    return (!(m->cputype == CPU_TYPE_I386 || m->cputype == CPU_TYPE_X86_64));
 }
-
-static bool get_is_arm(t_mach_o *m)
-{
-    // Blocks
-    return (m->cputype == CPU_TYPE_ARM || m->cputype == CPU_TYPE_ARM64);
-}
-
-// static void print_meta_text(void)
-// {
-//     ft_printf("Contents of (%s,%s) section\n", SEG_TEXT, SECT_TEXT);
-// }
-
-// static void print_otool_meta_fat(t_file *file, t_mach_o *m)
-// {
-
-//     ft_printf("%s", file->filename);
-//     if ((file->info & IS_MULTI) && m->arch.arch_info.name[0]) // TODO: What condition show ppc?
-//         ft_printf(" (architecture %s)", m->arch.arch_info.name);
-//     ft_printf(":\n");
-//     print_meta_text();
-// }
-
-// static void print_otool_meta_single(t_file *file, t_mach_o *m)
-// {
-//     (void)m;
-//     ft_printf("%s:\n", file->filename);
-//     print_meta_text();
-// }
-
-// static void print_meta_statlib(t_file *file, t_mach_o *m)
-// {
-//     ft_printf("%s(%s):\n", file->filename, m->ofile.name);
-//     print_meta_text();
-// }
-
-// static void print_file_archive_meta(t_file *file)
-// {
-//     ft_printf("Archive : %s\n", file->filename);
-// }
 
 static int get_otool_line(t_mach_o *m, uint64_t size, void *start, void *addr)
 {
@@ -75,10 +35,10 @@ static int get_otool_line(t_mach_o *m, uint64_t size, void *start, void *addr)
             ft_printf("%016llx", (uint64_t)&(addr[i]));
         else
             ft_printf("%08lx", (uint32_t)&(addr[i]));
-        ft_putstr("\t");
+        ft_putchar('\t');
         k = 0;
         j = 0;
-        if (!get_is_arm(m) && !get_is_ppc(m)) // TODO: What conditions?
+        if (!get_print_block(m)) // TODO: What conditions?
         {
             while (j < 16 && i + j < size)
             {

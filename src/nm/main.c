@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 09:48:35 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/05 09:55:59 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,13 @@ uint32_t parse_flags_nm(char *av, int *err, size_t i)
 {
     uint32_t flags;
 
+    flags = 0x00000000;
     if (i == 0 && av[i] == '-')
         return (0);
     else if (i == 0 && av[i] != '-')
         return ((*err = 2) && 0);
     else if (i > 0 && !ft_strchr(STR_FLAGS, av[i]))
         return ((*err = 2) && 0);
-
-    flags = 0x00000000;
     if (av[i] == 'a')
         flags |= ALL;
     else if (av[i] == 'j')
@@ -56,9 +55,13 @@ void add_file_nm(void *data, off_t size, char *argname, t_context *nmc)
     int         err;
 
     err = 0;
+    file = NULL;
     if (!(file = (t_file *)malloc(sizeof(t_file))))
-        err = ERR_ALLOCATION;
-	if (!err && (err = init_file(file, data, size, argname)) > SUCCESS)
+    {
+        error(argname, ERR_ALLOCATION);
+        return;
+    }
+	if ((err = init_file(file, data, size, argname)) > SUCCESS)
         err = ERR_FILE;
     file->flags = nmc->flags;
     file->info |= 1 << 6;
