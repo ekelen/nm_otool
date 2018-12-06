@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 13:56:03 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 15:09:20 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static void get_symbol_sort_nm(t_file *file, uint32_t flags)
 {
-	if (flags & SORT_REVERSE)
-		file->sort = cmp_name_reverse;
+    if (flags & SORT_VALUE)
+        file->sort = cmp_value;
 	else
 		file->sort = cmp_name;
 	return;

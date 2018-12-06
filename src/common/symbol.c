@@ -25,7 +25,7 @@ char parse_section_type(uint64_t nsects, uint8_t n_sect)
 		else
 			return 's';
     }
-    return '?'; // shouldn't happen
+    return '?';
 }
 
 char parse_type(uint64_t nsects, t_symbol *symbol)
@@ -38,7 +38,7 @@ char parse_type(uint64_t nsects, t_symbol *symbol)
         return '-';
     c = c & N_TYPE;
     if (c == N_UNDF)
-        c = symbol->n_value == 0 ? 'u' : 'c'; // local common symbol
+        c = symbol->n_value == 0 ? 'u' : 'c';
     else if (c == N_PBUD)
         c = 'u';
     else if (c == N_ABS)
@@ -48,34 +48,50 @@ char parse_type(uint64_t nsects, t_symbol *symbol)
     else if (c == N_INDR)
         c = 'i';
     else
-        c = 'z';
+        c = '?';
     if (symbol->n_type & N_EXT)
         c -= 32;
 	i = i + 1;
     return (unsigned char)c;
 }
 
-// default
-int cmp_name(t_symbol *sym1, t_symbol *sym2)
+static int cmp_nom(t_symbol *sym1, t_symbol *sym2)
 {
-    int cmp;
-    
-    cmp = ft_strcmp(sym1->nom, sym2->nom);
-    if (cmp == 0)
-        return (sym1->n_value - sym2->n_value);
-    else
-        return cmp;
+    return(ft_strcmp(sym1->nom, sym2->nom));
 }
 
-int cmp_name_reverse(t_symbol *sym1, t_symbol *sym2)
+static int cmp_type(t_symbol *sym1, t_symbol *sym2)
 {
-    int cmp;
-    
-    cmp = ft_strcmp(sym2->nom, sym1->nom);
-    if (cmp == 0)
-        return (sym2->n_value - sym1->n_value);
-    else
-        return cmp;
+    if (ft_strchr("Uu", sym2->type) && ft_strchr("Uu", sym1->type))
+        return(cmp_nom(sym1, sym2));
+    return (ft_strchr("Uu", sym2->type) - ft_strchr("Uu", sym1->type));
+}
+
+int64_t cmp_value(t_symbol *sym1, t_symbol *sym2, bool r)
+{
+    int64_t     cmp;
+    int         cmp_mod;
+
+    cmp_mod = r ? -1 : 1;
+
+    cmp = ((int64_t)sym1->n_value - (int64_t)sym2->n_value);
+    if (cmp != 0)
+        return (cmp * cmp_mod);
+    cmp = (int64_t)cmp_type(sym1, sym2);
+    return (cmp * cmp_mod);
+}
+
+int64_t cmp_name(t_symbol *sym1, t_symbol *sym2, bool r)
+{
+    int64_t     cmp;
+    int         cmp_mod;
+
+    cmp_mod = r ? -1 : 1;
+    cmp = (int64_t)cmp_nom(sym1, sym2);
+    if (cmp != 0)
+        return (cmp * cmp_mod);
+    cmp = ((int64_t)sym1->n_value - (int64_t)(sym2->n_value));
+    return (cmp * cmp_mod);
 }
 
 static char *get_sym_name(t_mach_o *m, t_symtab_command *st, t_u_nl nl)
@@ -100,7 +116,7 @@ static char *get_sym_name(t_mach_o *m, t_symtab_command *st, t_u_nl nl)
 	return name;
 }
 
-void sort_symbol(int (*sort)(t_symbol *s1, t_symbol *s2), t_symbol **curr, t_symbol *new)
+static void sort_symbol(int64_t (*sort)(t_symbol *s1, t_symbol *s2, bool r), t_symbol **curr, t_symbol *new, bool r)
 {
     if (!sort)
         return;
@@ -109,10 +125,10 @@ void sort_symbol(int (*sort)(t_symbol *s1, t_symbol *s2), t_symbol **curr, t_sym
         *curr = new;
         return;
     }
-    if (sort((*curr), new) > 0)
-        return sort_symbol(sort, &(*curr)->left, new);
+    if (sort((*curr), new, r) > 0)
+        return sort_symbol(sort, &(*curr)->left, new, r);
     else
-        return sort_symbol(sort, &(*curr)->right, new);
+        return sort_symbol(sort, &(*curr)->right, new, r);
 }
 
 static int fill_symbol_data(t_mach_o *m, t_symtab_command *st, t_symbol *s)
@@ -146,6 +162,6 @@ int add_symbol(t_file *file, t_mach_o *m, t_symtab_command *st, const void *nptr
         free(s);
 		return (EXIT_FAILURE);
     }
-    sort_symbol(file->sort, &(m->symbols), s);
+    sort_symbol(file->sort, &(m->symbols), s, (file->flags & SORT_REVERSE));
     return (EXIT_SUCCESS);
 }

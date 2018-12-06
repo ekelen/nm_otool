@@ -20,7 +20,7 @@ class Nm(Base):
 		self.ftname = st.name_nm
 		self.nxname = st.nxname_nm
 		self.flags = []
-		self.allowedFlags = ['u', 'U', 'r', 'j', 'A']
+		self.allowedFlags = ['u', 'U', 'r', 'j', 'A', 'n']
 
 class Easy(Nm):
 	def setUp(self):
@@ -170,6 +170,24 @@ class Dylib(Nm):
 	def test_all(self):
 		""" All some fatlib """
 		self.compare(self.files)
+
+class Mixed(Nm):
+	def setUp(self):
+		super().setUp()
+		fats = os.path.join(st.dir_ut, "fat")
+		statlibs = os.path.join(st.dir_ut, "lib_stat")
+		t32 = os.path.join(st.dir_ut, "32")
+		t64 = os.path.join(st.dir_ut, "64")
+		self.subfolders = [fats, statlibs, t32, t64]
+
+	def test_2(self):
+		""" compare 10 random pairs """
+		f1 = self.subfolders[random.randint(0, len(self.subfolders) - 1)]
+		f2 = self.subfolders[random.randint(0, len(self.subfolders) - 1)]
+		file1 = random.sample([os.path.join(f1, p) for p in os.listdir(f1)], 1)
+		file2 = random.sample([os.path.join(f2, p) for p in os.listdir(f2)], 1)
+		self.files = [file1, file2]
+		self.compare_one(*self.files) # todo: actually do 10
 
 if __name__ == '__main__':
 	subprocess.run([*st.make, 'fclean'])

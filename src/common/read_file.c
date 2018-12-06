@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 09:14:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 13:48:51 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 14:21:42 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,9 @@ static uint32_t parse_flags(char *av, size_t i, t_context *c)
         flags |= SORT_REVERSE;
     else if (av[i] == 'A')
         flags |= PRINT_PATHNAME;
+    else if (av[i] == 'n')
+        flags |= SORT_VALUE;
+    
     flags |= parse_flags(av, i - 1, c);
     return flags;
 }

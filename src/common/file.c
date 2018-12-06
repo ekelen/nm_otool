@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 11:29:00 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/03 11:22:22 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 15:14:03 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,5 @@ void	free_file(t_file *file)
 	file->mach = NULL;
 	munmap((void *)file->data, (size_t)(file->length));
 	free(file);
-	// dprintf(2, "freed file\n");
 	return;
 }

@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 08:28:21 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 15:51:28 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,7 @@ struct  s_file {
     uint64_t				(*swap64)(uint64_t x);
     size_t                  offset;
     t_mach_o                *mach; 
-    int                     (*sort)(t_symbol *sym1, t_symbol *sym2);
+    int64_t                 (*sort)(t_symbol *sym1, t_symbol *sym2, bool r);
 };
 
 typedef struct  s_context t_context;
@@ -261,9 +261,9 @@ int parse_symtab(t_file *file, t_mach_o *m, const struct load_command *cmd);
 
 // symbol.c
 int add_symbol(t_file *file, t_mach_o *m, t_symtab_command *st, const void *nptr);
-int cmp_name_reverse(t_symbol *sym1, t_symbol *sym2);
-int cmp_name(t_symbol *sym1, t_symbol *sym2);
+int64_t cmp_name(t_symbol *sym1, t_symbol *sym2, bool r);
 void free_symbols(t_symbol *curr);
+int64_t cmp_value(t_symbol *sym1, t_symbol *sym2, bool r);
 
 
 // section.c
