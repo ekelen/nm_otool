@@ -6,14 +6,14 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 11:42:24 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 13:48:43 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef NM_H
 #define NM_H
 
-# define NM_FLAGS "AajuUr"
+# define NM_FLAGS "AjuUr"
 
 # define SHOW_VALUE 0x1
 # define SHOW_TYPE 0x2

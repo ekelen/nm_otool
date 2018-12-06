@@ -141,5 +141,6 @@ class Dylib(Otool):
 		self.compare(self.files, israndom=True, k=5)
 
 if __name__ == '__main__':
-	subprocess.run(st.make_re)
+	subprocess.run([*st.make, 'fclean'])
+	subprocess.run([*st.make, st.name_otool])
 	ut.main()

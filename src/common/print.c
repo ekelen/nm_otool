@@ -8,6 +8,8 @@ static void print_otool_section(void)
 
 static void print_mach_meta_fat_joined(t_file *file, t_mach_o *m)
 {
+    if (file->flags & PRINT_PATHNAME)
+        return;
     if ((file->info & IS_NM))
 	    ft_putendl("");
     ft_printf("%s", file->filename);
@@ -23,12 +25,13 @@ static void print_mach_meta_fat_joined(t_file *file, t_mach_o *m)
 
 static void print_meta_statlib(t_file *file, t_mach_o *m)
 {
-	if ((file->info & IS_NM))
+	if ((file->info & IS_NM) && !(file->flags & PRINT_PATHNAME))
 	    ft_putendl("");
-    else
+    else if (!(file->info & IS_NM))
         if ((void*)file->mach == (void *)m)
             ft_printf("Archive : %s\n", file->filename);
-    ft_printf("%s(%s):\n", file->filename, m->ofile.name);
+    if (!(file->flags & PRINT_PATHNAME))
+        ft_printf("%s(%s):\n", file->filename, m->ofile.name);
     if (!(file->info & IS_NM))
         print_otool_section();
     return;

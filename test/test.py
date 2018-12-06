@@ -20,7 +20,7 @@ class Nm(Base):
 		self.ftname = st.name_nm
 		self.nxname = st.nxname_nm
 		self.flags = []
-		self.allowedFlags = ['u', 'U', 'r', 'j']
+		self.allowedFlags = ['u', 'U', 'r', 'j', 'A']
 
 class Easy(Nm):
 	def setUp(self):
@@ -172,5 +172,6 @@ class Dylib(Nm):
 		self.compare(self.files)
 
 if __name__ == '__main__':
-	subprocess.run(st.make_re)
+	subprocess.run([*st.make, 'fclean'])
+	subprocess.run([*st.make, st.name_nm])
 	ut.main()

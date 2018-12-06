@@ -76,6 +76,16 @@ all: $(OBJS_COMMON) $(OBJS_NM) $(OBJS_OTOOL)
 	@$(CC) -o $(NAME_NM) $(OBJS_COMMON) $(OBJS_NM) $(LIBS)
 	@$(CC) -o $(NAME_OTOOL) $(OBJS_COMMON) $(OBJS_OTOOL) $(LIBS)
 
+ft_nm: $(OBJS_COMMON) $(OBJS_NM)
+	@echo ""
+	@$(CC) -o $(NAME_NM) $(OBJS_COMMON) $(OBJS_NM) $(LIBS)
+	@echo "[$(GREEN)ft_nm compiled!$(RESET)]"
+
+ft_otool: $(OBJS_COMMON) $(OBJS_OTOOL)
+	@echo ""
+	@$(CC) -o $(NAME_OTOOL) $(OBJS_COMMON) $(OBJS_OTOOL) $(LIBS)
+	@echo "[$(GREEN)ft_otool compiled!$(RESET)]"
+
 libs:
 	@make -C $(PATH_LIBFT) re
 	@make -C $(PATH_LIBFT) clean
@@ -102,7 +112,7 @@ clean:
 fclean: clean
 	@rm -f $(NAME_NM)
 	@rm -f $(NAME_OTOOL)
-	@echo "[$(GREEN)cleaned$(RESET)]" >&2
+	@echo "[$(GREEN)cleaned$(RESET)]"
 
 
 fcleanlibs:

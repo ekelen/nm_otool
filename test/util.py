@@ -30,7 +30,7 @@ nxname_nm = "nm"
 nxname_otool = "otool"
 nm_path = os.path.join(root_path, name_nm)
 otool_path = os.path.join(root_path, name_otool)
-make_re = ["make", "-C", root_path, "re"]
+make = ["make", "-C", root_path]
 
 class Base(TestCase):
 	def setUp(self):

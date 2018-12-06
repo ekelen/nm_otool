@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 21:22:29 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 13:08:57 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 14:13:01 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,10 @@
 static void check_display_2(const uint32_t flags, t_symbol *symbol, uint32_t *print)
 {
 	(void)symbol;
+	if (flags & PRINT_PATHNAME)
+		(*print) |= SHOW_PATHNAME;
     if (flags & SYM_NAME_ONLY)
-        *print &= (~SHOW_VAL_COL & ~SHOW_TYPE);
+        (*print) &= (~SHOW_VAL_COL & ~SHOW_TYPE);
 }
 
 static uint32_t check_display(const uint32_t flags, t_symbol *symbol)
@@ -43,8 +45,6 @@ static uint32_t check_display(const uint32_t flags, t_symbol *symbol)
     if (flags & NO_UNDEF)
         if (ft_strchr("uU", symbol->type))
             print &= ~SHOW_ANY;
-	if (flags & SHOW_PATHNAME)
-		print |= PRINT_PATHNAME;
 	check_display_2(flags, symbol, &print);
     return (print);
 }
@@ -58,6 +58,19 @@ static void print_symbol_value(t_symbol *s, uint32_t print)
 	return;
 }
 
+static void print_pathname(t_file *file, t_mach_o *m, t_symbol *head, t_symbol *current)
+{
+	(void)head;
+	(void)current;
+	if (file->info & IS_SINGLE_MACH || !(file->info & IS_MULTI) \
+		|| ((file->info & IS_FAT) && !(m->arch.arch_info.name[0])))
+		ft_printf("%s: ", file->filename);
+	else if (file->info & IS_STATLIB)
+		ft_printf("%s:%s: ", file->filename, m->ofile.name);
+	else if (file->info & IS_FAT)
+		ft_printf("(for architecture %s):%s: ", m->arch.arch_info.name, file->filename);
+}
+
 static void print_in_order(t_file *file, t_mach_o *m, t_symbol *head, t_symbol *current)
 {
 	uint32_t print;
@@ -69,7 +82,7 @@ static void print_in_order(t_file *file, t_mach_o *m, t_symbol *head, t_symbol *
 	if (print & SHOW_ANY)
 	{
 		if (print & SHOW_PATHNAME)
-			ft_printf("%s: ", file->filename);
+			print_pathname(file, m, head, current);
 		if (print & SHOW_VAL_COL)
 			print_symbol_value(current, print);
 		if (print & SHOW_TYPE)

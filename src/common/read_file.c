@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 09:14:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 10:09:45 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 13:48:51 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,6 @@ static uint32_t parse_flags(char *av, size_t i, t_context *c)
         return (0);
     if (!ft_strchr(c->flag_options, av[i]))
         flags |= UNKNOWN_FLAG;
-    else if (av[i] == 'a')
-        flags |= ALL;
     else if (av[i] == 'j')
         flags |= SYM_NAME_ONLY;
     else if (av[i] == 'u')
