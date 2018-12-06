@@ -64,7 +64,8 @@ class Base(TestCase):
 		nx_out = subprocess.check_output([self.nxname, *flags, *paths], stderr=subprocess.DEVNULL)
 		self.assertEqual(ft_out, nx_out, msg=f'{bc.FAIL}{paths} does not match with {flags}.{bc.ENDC}')
 		if self.verbose:
-			print(f'{bc.OK}{[os.path.basename(p) for p in paths]} {flags} OK{bc.ENDC}')
+			basenames = [os.path.split(p)[1] for p in paths]
+			print(f'{bc.OK}{basenames} {flags} .. OK{bc.ENDC}')
 
 	def compare(self, paths, israndom=False, k=1, flags=[]):
 		if not flags:
