@@ -6,13 +6,20 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 21:22:29 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 10:23:44 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 13:08:57 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <nm_otool.h>
 
-static uint32_t check_display(uint32_t flags, t_symbol *symbol)
+static void check_display_2(const uint32_t flags, t_symbol *symbol, uint32_t *print)
+{
+	(void)symbol;
+    if (flags & SYM_NAME_ONLY)
+        *print &= (~SHOW_VAL_COL & ~SHOW_TYPE);
+}
+
+static uint32_t check_display(const uint32_t flags, t_symbol *symbol)
 {
 	uint32_t print;
 
@@ -38,7 +45,8 @@ static uint32_t check_display(uint32_t flags, t_symbol *symbol)
             print &= ~SHOW_ANY;
 	if (flags & SHOW_PATHNAME)
 		print |= PRINT_PATHNAME;
-    return print;
+	check_display_2(flags, symbol, &print);
+    return (print);
 }
 
 static void print_symbol_value(t_symbol *s, uint32_t print)

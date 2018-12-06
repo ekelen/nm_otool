@@ -20,7 +20,7 @@ class Nm(Base):
 		self.ftname = st.name_nm
 		self.nxname = st.nxname_nm
 		self.flags = []
-		self.allowedFlags = ['u', 'U', 'r']
+		self.allowedFlags = ['u', 'U', 'r', 'j']
 
 class Easy(Nm):
 	def setUp(self):
