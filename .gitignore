@@ -9,3 +9,4 @@ ft_otool
 *.diff
 .DS_Store
 *.dSYM/
+a.out

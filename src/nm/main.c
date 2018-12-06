@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 13:13:19 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 10:25:17 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static void add_file_nm(void *p, off_t s, char *av, t_context *c)
         error(av, err, NULL, c->is_nm);
     else
     {
-        if (c->nfiles > 1)
+        if (c->nfiles > 1 && file->info & IS_SINGLE_MACH)
             ft_printf("\n%s:\n", av);
         print_machs(file, file->mach);
     }

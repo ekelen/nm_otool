@@ -1,26 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_putuint_base.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/03/15 14:51:56 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 15:17:50 by ekelen           ###   ########.fr       */
+/*   Created: 2018/12/05 16:47:24 by ekelen            #+#    #+#             */
+/*   Updated: 2018/12/05 16:47:25 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
-#include <stdint.h>
+#include "libft.h"
 
-int		main(void)
+void	ft_putuint_base(uintmax_t nbr, int base)
 {
-	size_t i;
+	char const *digits = "0123456789abcdef";
 
-	i = -1;
-	while (++i < UINT16_MAX)
-	{
-		ft_printf("%030llx", i);
-	}
-	return (0);
+	if (nbr / base > 1)
+		ft_putuint_base(nbr / base, base);
+	write(1, digits + nbr % base, 1);
 }

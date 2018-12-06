@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/28 09:33:40 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 13:31:44 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 08:32:23 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
+# include <stdbool.h>
 
 typedef	struct	s_list
 {
@@ -82,7 +83,8 @@ void			ft_putendl_fd(char const *s, int fd);
 void			ft_putchar(char c);
 void			ft_putstr(char const *s);
 void			ft_putnbr(int n);
-void	        ft_putnbr_base(intmax_t nbr, int base);
+void	        ft_putuint_base(uintmax_t nbr, int base);
+void	        ft_putuint_base_pad(uintmax_t nbr, int base, size_t w, char c);
 void			ft_putnbr_fd(int n, int fd);
 void			ft_putchar_fd(char c, int fd);
 void			ft_putstr_fd(char const *s, int fd);
@@ -102,5 +104,6 @@ void			ft_putstrmap(char **strmap);
 void			ft_putendlcolor_fd(char const *s, int fd, char *color, int nl);
 void			ft_putstrcolon_fd(char const *s, int fd, char end);
 void			ft_putstr_upper_fd(const char *s, int fd);
+// size_t			ft_numlen_base(uintmax_t n, int base, bool neg);
 
 #endif

@@ -6,88 +6,11 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 13:14:03 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 08:23:04 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <nm_otool.h>
-#include <limits.h>
-
-static bool get_print_block(t_mach_o *m)
-{
-    return (!(m->cputype == CPU_TYPE_I386 || m->cputype == CPU_TYPE_X86_64));
-}
-
-static int get_otool_line(t_mach_o *m, uint64_t size, void *start, void *addr)
-{
-    size_t          i;
-    size_t          j;
-    size_t          k;
-    uint32_t        four_bytes;
-
-    i = 0;
-    j = 0;
-    k = 0;
-    
-    while (i < size)
-    {
-        if (m->m64)
-            ft_printf("%016llx", (uint64_t)&(addr[i]));
-        else
-            ft_printf("%08lx", (uint32_t)&(addr[i]));
-        ft_putchar('\t');
-        k = 0;
-        j = 0;
-        if (!get_print_block(m)) // TODO: What conditions?
-        {
-            while (j < 16 && i + j < size)
-            {
-                ft_printf("%02hhx ", *((uint8_t *)(&start[j])));
-                j++;
-            }
-        }
-        else
-        {
-            while (k < 16 && i + k < size)
-            {
-                four_bytes = m->swap32((*(uint32_t *)(start + k)));
-                ft_printf("%08x ", four_bytes);
-                k += 4;
-            }
-        }
-        ft_putendl("");
-        start = (void *)start + 16;
-        i += 16;
-    }
-    return (SUCCESS);
-}
-
-static int print_otool(t_file *file, t_mach_o *m)
-{
-    uint64_t size;
-    uint32_t offset;
-    void *addr;
-    void *start;
-
-    if (!m || !(m->nsects & TEXT_SECT))
-        return (EXIT_SUCCESS);
-    if (!file || !file->mach)
-        return (EXIT_FAILURE);
-
-    m->print_meta(file, m);
-    addr = (void *)(m->m64 ?
-                m->swap64((*(t_section_64 *)(m->text_sect)).addr)
-                : m->swap32((*(t_section *)(m->text_sect)).addr));
-    size = (uint64_t)(m->m64 ?
-                m->swap64((*(t_section_64 *)(m->text_sect)).size)
-                : (uint64_t)(m->swap32((*(t_section *)(m->text_sect)).size)));
-    offset = (uint64_t)(m->m64 ?
-                m->swap64((*(t_section_64 *)(m->text_sect)).offset)
-                : (uint64_t)(m->swap32((*(t_section *)(m->text_sect)).offset)));
-    start = (void *)m->data + offset;
-    get_otool_line(m, size, start, addr);
-    return print_otool(file, m->next);
-}
 
 static void add_file_otool(void *p, off_t s, char *av, t_context *c)
 {

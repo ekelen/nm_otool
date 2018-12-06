@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 21:22:29 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 13:16:52 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 10:23:44 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ void print_machs(t_file *file, t_mach_o *m)
         return;
     else if (m)
     {
-		// get_mach_meta_print_nm(file, m);
 		m->print_meta(file, m);
         print_in_order(file, m, m->symbols, m->symbols);
 		free_symbols(m->symbols);

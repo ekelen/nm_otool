@@ -1,26 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_putuint_base_pad.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/03/15 14:51:56 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 15:17:50 by ekelen           ###   ########.fr       */
+/*   Created: 2018/12/05 16:47:24 by ekelen            #+#    #+#             */
+/*   Updated: 2018/12/05 17:26:21 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
-#include <stdint.h>
+#include "libft.h"
 
-int		main(void)
+void	ft_putuint_base_pad(uintmax_t nbr, int base, size_t w, char c)
 {
-	size_t i;
+	size_t len;
 
-	i = -1;
-	while (++i < UINT16_MAX)
+	len = ft_numlen_base(nbr, base, FALSE);
+	while (len < w)
 	{
-		ft_printf("%030llx", i);
+		ft_putchar(c);
+		len++;
 	}
-	return (0);
+	ft_putuint_base(nbr, base);
+	return;
 }

@@ -1,22 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putnbr_base.c                                   :+:      :+:    :+:   */
+/*   ft_numlen_base.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/10/19 14:03:05 by ekelen            #+#    #+#             */
-/*   Updated: 2018/10/19 14:07:30 by ekelen           ###   ########.fr       */
+/*   Created: 2018/12/05 16:49:39 by ekelen            #+#    #+#             */
+/*   Updated: 2018/12/05 17:17:05 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_putnbr_base(intmax_t nbr, int base)
+size_t	ft_numlen_base(uintmax_t n, int base, bool neg)
 {
-	char const *digits = "0123456789abcdef";
+	size_t len;
 
-	if (nbr / base > 1)
-		ft_putnbr_base(nbr / base, base);
-	write(1, digits + nbr % base, 1);
+    len = (size_t)neg;
+	if (n == 0)
+		return (1);
+	while (n != 0)
+	{
+		n /= base;
+		len++;
+	}
+	return (len);
 }

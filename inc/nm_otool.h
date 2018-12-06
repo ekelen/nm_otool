@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 13:37:34 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 08:28:21 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,12 +210,8 @@ struct  s_file {
 	uint32_t				(*swap32)(uint32_t x);
     uint64_t				(*swap64)(uint64_t x);
     size_t                  offset;
-
     t_mach_o                *mach; 
-
-    void                    (*print_meta)(t_file *file, t_mach_o *m);
     int                     (*sort)(t_symbol *sym1, t_symbol *sym2);
-    // void                    (*print_otool_meta)(t_file *file, t_mach_o *m);
 };
 
 typedef struct  s_context t_context;
@@ -229,12 +225,12 @@ struct          s_context {
 };
 
 // util.c
-uint32_t nswap32(uint32_t x);
-uint64_t nswap64(uint64_t x);
-uint64_t swap64(uint64_t x);
-uint32_t swap32 (uint32_t x);
-void *ptr_check(const void *addr_max, void *req, size_t req_length);
-void *ptr_check_msg(const void *addr_max, void *req, size_t req_length, const char *msg);
+uint32_t    nswap32(uint32_t x);
+uint64_t    nswap64(uint64_t x);
+uint64_t    swap64(uint64_t x);
+uint32_t    swap32 (uint32_t x);
+void        *ptr_check(const void *addr_max, void *req, size_t req_length);
+void        *ptr_check_msg(const void *addr_max, void *req, size_t req_length, const char *msg);
 
 //mach.c
 int		            init_mach_o(t_file *file, const void *data, size_t size, t_mach_o *m);
@@ -282,6 +278,9 @@ void get_meta_print(t_file *file, t_mach_o *m);
 
 //print_nm.c
 void print_machs(t_file *file, t_mach_o *m);
+
+//print.c (otool)
+void print_otool(t_file *file, t_mach_o *m);
 
 //error.c
 int error(const char *filename, t_e_errs err, const char *msg, bool is_nm);

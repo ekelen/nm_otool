@@ -121,7 +121,9 @@ SRC += ft_putendlcolor_fd.c
 SRC += ft_abs.c
 SRC += ft_itoa_base.c
 SRC += ft_atoi_base.c
-SRC += ft_putnbr_base.c
+SRC += ft_numlen_base.c
+SRC += ft_putuint_base.c
+SRC += ft_putuint_base_pad.c
 
 SRC += ft_putstrcolon_fd.c
 SRC += ft_putstr_upper_fd.c

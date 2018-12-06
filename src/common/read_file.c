@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 09:14:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 13:37:52 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 10:09:45 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void read_file(t_context *c, char *av)
     }
     if ((ptr = mmap(0, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
     {
-        error(av, ERR_ALLOCATION, NULL, c->is_nm);
+        error(av, ERR_ALLOCATION, "Error mapping file.", c->is_nm);
         return;
     }
     c->add(ptr, buf.st_size, av, c);

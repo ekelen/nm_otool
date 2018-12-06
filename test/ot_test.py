@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 from io import StringIO
 import subprocess
@@ -6,192 +7,139 @@ from subprocess import Popen, PIPE
 import os
 from unittest import TestCase
 import unittest as ut
+import random
 
-class bcolors:
-	HEADER = '\033[95m'
-	OKBLUE = '\033[94m'
-	OKGREEN = '\033[92m'
-	WARNING = '\033[93m'
-	FAIL = '\033[91m'
-	ENDC = '\033[0m'
-	BOLD = '\033[1m'
-	UNDERLINE = '\033[4m'
+from util import bc, Base
+import util as st
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-name_otool = "ft_otool"
-dir_otool = os.path.join(dir_path, "..")
-otool_path = os.path.join(dir_path, "..", name_otool)
-
-# /usr/local/mysql/lib
-
-class Base(TestCase):
-	def setUp(self):
-		self.maxDiff = 10
-		self.test_path = os.path.join(dir_path, "unit_test_files")
-
-	def compare(self, test_files, flags=[]):
-		for f in test_files:
-			with self.subTest(f=f):
-				try:
-					ftot = subprocess.check_output([otool_path, os.path.join(self.test_path, f)], stderr=subprocess.DEVNULL)
-					nxot = subprocess.check_output(["otool", "-t", os.path.join(self.test_path, f)], stderr=subprocess.DEVNULL)
-					self.assertEqual(ftot, nxot, msg=f'{f} does not match.')
-				except subprocess.CalledProcessError:
-					ftot = subprocess.check_output([otool_path, os.path.join(self.test_path, f)], stderr=subprocess.STDOUT)
-					self.assertTrue(ftot, msg=f'{f} not causing error.')
-
-	def compare_multiple_valid(self, test_files, flags=[]):
-		for f_pair in list(zip(test_files[:-1], test_files[1:])):
-			with self.subTest(f_pair=f_pair):
-				ftot = subprocess.check_output([otool_path, os.path.join(self.test_path, f_pair[0]), os.path.join(self.test_path, f_pair[1])], stderr=subprocess.DEVNULL)
-				nxot = subprocess.check_output(["otool", "-t", os.path.join(self.test_path, f_pair[0]), os.path.join(self.test_path, f_pair[1])], stderr=subprocess.DEVNULL)
-				self.assertEqual(ftot, nxot, msg=f'{f_pair} does not match.')
-
-	def check_corrupted(self, test_files):
-		for f in test_files:
-			with self.subTest(f=f):
-				try:
-					ftot = subprocess.check_output([otool_path, os.path.join(self.test_path, f)], stderr=subprocess.DEVNULL)
-					self.assertFalse(ftot, msg=f'{f} not causing error.')
-				except subprocess.CalledProcessError as e:
-					self.assertEqual(e.returncode, 1)
-			
-class Easy(Base):
+class Otool(Base):
 	def setUp(self):
 		super().setUp()
-		self.files = ["test_facile", "test_moins_facile", "test_half_obj", "test_wrong_lc_command_size"]
+		self.prgm = st.otool_path
+		self.ftname = st.name_otool
+		self.nxname = st.nxname_otool
+		self.flags = ["-t"]
+		self.allowedFlags = ['t']
+			
+class Easy(Otool):
+	def setUp(self):
+		super().setUp()
+		self.basenames = self.getBasenames()
+		self.files = self.getPaths(self.basenames)
 		self.valids = ["test_facile", "test_moins_facile"]
 		self.invalids = ["test_half_obj", "test_wrong_lc_command_size"]
 
-	def test_easy(self):
+	def test_all(self):
 		""" All the easy ones."""
 		self.compare(self.files)
 
-	def test_multiple_valid(self):
-		""" compare vlaid pairs """
-		self.compare_multiple_valid(self.valids)
+	def test_2(self):
+		""" compare easy pairs """
+		self.compare_multi_random(self.getPaths(self.valids), k=2, n=len(self.files))
 
 	def test_easy_corrupted(self):
-		self.check_corrupted(self.invalids)
+		self.check_corrupted(self.getPaths(self.invalids))
 
-class T32(Base):
+	def test_bad_flags_t(self):
+		self.check_bad_flags(self.files, flags=["-O"])
+
+	def test_bad_flags_twohyphen(self):
+		self.check_bad_flags(self.files, flags=["-t-t"])
+
+class T32(Otool):
 	def setUp(self):
-		self.test_path = os.path.join(dir_path, "unit_test_files", "32")
-		self.files = os.listdir(self.test_path)
+		super().setUp()
+		self.test_path = os.path.join(st.dir_ut, "32")
+		self.basenames = self.getBasenames()
+		self.files = self.getPaths(self.basenames)
 
-	def test_ls_32(self):
-		self.compare(["MachO-OSX-x86-ls"])
+	def test_2(self):
+		""" compare 32-bit pairs """
+		self.compare_multi_random(self.files, k=2, n=len(self.files))
 
-	def test_32_exe_hard(self):
-		self.compare(["32_exe_hard"])
-
-	def test_Helloworld_32(self):
-		self.compare(["MachO-iOS-armv7s-Helloworld"])
-
-	def test_32_openssl(self):
-		self.compare(["MachO-OSX-ppc-openssl-1.0.1h"])
-
-	def test_32_arm117(self):
-		self.compare(["MachO-iOS-arm1176JZFS-bash"])
-
-class T64(Base):
-	def setUp(self):
-		self.test_path = os.path.join(dir_path, "unit_test_files", "64")
-		self.files = os.listdir(self.test_path)
-
-	def test_all_64_otool(self):
-		""" All the 64 ones."""
+	def test_all(self):
+		""" All the 32-bit """
 		self.compare(self.files)
 
-	def test_all_64_otool_multiple(self):
-		""" Multiple 64 at once. """
-		self.compare_multiple_valid(self.files)
-
-class Fat(Base):
-
+class T64(Otool):
 	def setUp(self):
-		self.test_path = os.path.join(dir_path, "unit_test_files", "fat")
+		super().setUp()
+		self.test_path = os.path.join(st.dir_ut, "64")
+		self.basenames = self.getBasenames()
+		self.files = self.getPaths(self.basenames)
 
-	def test_audiodevice_32_multi_arm(self):
-		self.compare(["audiodevice"])
+	def test_2(self):
+		""" compare 32-bit pairs """
+		self.compare_multi_random(self.files, k=2, n=len(self.files))
 
-	def test_appsleep_64_native_CIGAM(self):
-		self.compare(["appsleepd"])
+	def test_all(self):
+		""" All the 32-bit """
+		self.compare(self.files)
 
-	def test_arms_32_hellowworld(self):
-		self.compare(["MachO-iOS-armv7-armv7s-arm64-Helloworld"])
+class Fat(Otool):
+	def setUp(self):
+		super().setUp()
+		self.test_path = os.path.join(st.dir_ut, "fat")
+		self.basenames = self.getBasenames()
+		self.files = self.getPaths(self.basenames)
 
-	# def test_fat_hard(self):
-	# 	self.compare(["fat_hard"])
+	def test_2(self):
+		""" compare fat pairs """
+		self.compare_multi_random(self.files, k=2, n=len(self.files))
 
-	def test_32_ppc_i386_CIGAM(self):
-		self.compare(["MachO-OSX-ppc-and-i386-bash"])
+	def test_3(self):
+		""" compare 3 fat """
+		self.compare_multi_random(self.files, k=3, n=len(self.files))
 
-	def test_all_fat(self):
-		""" All the fat ones."""
-		files = os.listdir(self.test_path)
-		self.compare(files)
+	def test_all(self):
+		""" All the fat """
+		self.compare(self.files)
 	
-class Statlib(Base):
+class Statlib(Otool):
 	def setUp(self):
-		self.test_path = os.path.join(dir_path, "unit_test_files", "lib_stat")
+		super().setUp()
+		self.test_path = os.path.join(st.dir_ut, "lib_stat")
+		self.basenames = self.getBasenames()
+		self.files = self.getPaths(self.basenames)
 
-	def test_libmalloc(self):
-		self.compare(["libmalloc_test.a"])
+	def test_2(self):
+		""" compare statlib pairs """
+		self.compare_multi_random(self.files, k=2, n=len(self.files))
 
-	def test_libft32(self):
-		self.compare(["libft32.a"])
+	def test_3(self):
+		""" compare 3 statlib """
+		self.compare_multi_random(self.files, k=3, n=len(self.files))
 
-	def test_libftprintf32(self):
-		self.compare(["libftprintf32.a"])
+	def test_all(self):
+		""" All the statlib """
+		self.compare(self.files)
 
-	def test_libftprintf64(self):
-		self.compare(["libftprintf.a"])
-
-	def test_all_archive(self):
-		""" All the archives"""
-		files = os.listdir(self.test_path)
-		self.compare(files)
-
-class Corrupt(Base):
-
+class Corrupt(Otool):
 	def setUp(self):
-		self.test_path = os.path.join(dir_path, "unit_test_files", "corrupt")
-
-	def test_hard_32(self):
-		self.compare(["32_exe_hard_corupted"])
-
-	def test_fat_not_fail_except_one_32(self):
-		self.compare(["fat_not_fail_except_one"])
-
-	def test_mega_bad_string(self):
-		self.check_corrupted(["mega_bad_string"])
+		super().setUp()
+		self.test_path = os.path.join(st.dir_ut, "corrupt")
+		self.basenames = self.getBasenames()
+		self.files = self.getPaths(self.basenames)
 
 	def test_all_corrupt(self):
 		""" All the corrupt """
-		files = os.listdir(self.test_path)
-		self.check_corrupted(files)
+		self.check_corrupted(self.files)
 
-class Dylib(Base):
-
+class Dylib(Otool):
 	def setUp(self):
-		self.test_path = os.path.join(dir_path, "unit_test_files", "fat_lib")
+		super().setUp()
+		self.test_path = os.path.join(st.dir_ut, "fat_lib")
+		self.basenames = self.getBasenames()
+		self.files = self.getPaths(self.basenames)
 
-	def test_libAccountPolicyTranslation_dylib(self):
-		self.compare(["libAccountPolicyTranslation.dylib"])
+	def test_2(self):
+		""" compare 1 random fatlib pairs """
+		self.compare_multi_random(self.files, k=2, n=1)
 
-	def test_libpmenergy_dylib(self):
-		self.compare(["libpmenergy.dylib"])
-
-	def test_libpmsample_dylib(self):
-		self.compare(["libpmsample.dylib"])
-
-	def test_all_fat_lib(self):
-		""" All the fat libs ones."""
-		files = os.listdir(self.test_path)[:10]
-		self.compare(files)
+	def test_all_part1(self):
+		""" All some fatlib """
+		self.compare(self.files, israndom=True, k=5)
 
 if __name__ == '__main__':
-	cmd = ["make", "-C", dir_otool, "re"]
-	subprocess.run(cmd)
+	subprocess.run(st.make_re)
 	ut.main()
