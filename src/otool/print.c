@@ -6,11 +6,20 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 14:26:00 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 08:30:14 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 21:35:42 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "nm_otool.h"
+
+static void print_otool_addr(bool m64, void *addr, size_t i)
+{
+    if (m64)
+        ft_putuint_base_pad((uintmax_t)((uint64_t)&(addr[i])), 16, 16, '0');
+    else
+        ft_putuint_base_pad((uintmax_t)((uint32_t)&(addr[i])), 16, 8, '0');
+    ft_putchar('\t');
+}
 
 static void print_otool_spaced(t_mach_o *m, uint64_t size, void *start, void *addr)
 {
@@ -20,15 +29,12 @@ static void print_otool_spaced(t_mach_o *m, uint64_t size, void *start, void *ad
     i = 0;
     while (i < size)
     {
-        if (m->m64)
-            ft_printf("%016llx", (uint64_t)&(addr[i]));
-        else
-            ft_printf("%08lx", (uint32_t)&(addr[i]));
-        ft_putchar('\t');
+        print_otool_addr(m->m64, addr, i);
         j = 0;
 		while (j < 16 && i + j < size)
 		{
-			ft_printf("%02hhx ", *((uint8_t *)(&start[j])));
+            ft_putuint_base_pad((*((uint8_t *)(&start[j]))), 16, 2, '0');
+            ft_putchar(' ');
 			j++;
 		}
         ft_putendl("");
@@ -46,16 +52,13 @@ static void print_otool_block(t_mach_o *m, uint64_t size, void *start, void *add
     i = 0;
     while (i < size)
     {
-        if (m->m64)
-            ft_printf("%016llx", (uint64_t)&(addr[i]));
-        else
-            ft_printf("%08lx", (uint32_t)&(addr[i]));
-        ft_putchar('\t');
+        print_otool_addr(m->m64, addr, i);
         j = 0;
 		while (j < 16 && i + j < size)
 		{
 			block = m->swap32((*(uint32_t *)(start + j)));
-			ft_printf("%08x ", block);
+            ft_putuint_base_pad(block, 16, 8, '0');
+            ft_putchar(' ');
 			j += 4;
 		}
         ft_putendl("");

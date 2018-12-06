@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 21:22:29 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 14:15:58 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 20:10:30 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static void print_pathname(t_file *file, t_mach_o *m, t_symbol *head, t_symbol *
 {
 	(void)head;
 	(void)current;
-	if (file->info & IS_SINGLE_MACH || !(file->info & IS_MULTI) \
+	if ((file->info & IS_SINGLE_MACH) || !(file->info & IS_MULTI) \
 		|| ((file->info & IS_FAT) && !(m->arch.arch_info.name[0])))
 		ft_printf("%s: ", file->filename);
 	else if (file->info & IS_STATLIB)

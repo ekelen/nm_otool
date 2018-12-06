@@ -85,11 +85,11 @@ class Fat(Otool):
 
 	def test_2(self):
 		""" compare fat pairs """
-		self.compare_multi_random(self.files, k=2, n=len(self.files))
+		self.compare_multi_random(self.files, k=2, n=len(self.files)//2)
 
 	def test_3(self):
 		""" compare 3 fat """
-		self.compare_multi_random(self.files, k=3, n=len(self.files))
+		self.compare_multi_random(self.files, k=3, n=len(self.files)//2)
 
 	def test_all(self):
 		""" All the fat """
@@ -138,7 +138,7 @@ class Dylib(Otool):
 
 	def test_all_part1(self):
 		""" All some fatlib """
-		self.compare(self.files, israndom=True, k=5)
+		self.compare(self.files, israndom=True, k=2)
 
 if __name__ == '__main__':
 	subprocess.run([*st.make, 'fclean'])

@@ -6,11 +6,13 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 16:47:24 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 17:26:21 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 21:13:18 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+// #include <assert.h>
+// #include <stdio.h>
 
 void	ft_putuint_base_pad(uintmax_t nbr, int base, size_t w, char c)
 {

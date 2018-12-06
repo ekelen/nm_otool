@@ -17,7 +17,8 @@
         "ratio": "c",
         "system_error": "c",
         "tuple": "c",
-        "type_traits": "c"
+        "type_traits": "c",
+        "stdlib.h": "c"
     },
     "search.useIgnoreFiles": false,
     "python.pythonPath": "/usr/local/bin/python3",

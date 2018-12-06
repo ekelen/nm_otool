@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/28 09:33:40 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 08:32:23 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 20:20:19 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,6 @@ void			ft_putstrmap(char **strmap);
 void			ft_putendlcolor_fd(char const *s, int fd, char *color, int nl);
 void			ft_putstrcolon_fd(char const *s, int fd, char end);
 void			ft_putstr_upper_fd(const char *s, int fd);
-// size_t			ft_numlen_base(uintmax_t n, int base, bool neg);
+size_t			ft_numlen_base(uintmax_t n, int base, bool neg);
 
 #endif
