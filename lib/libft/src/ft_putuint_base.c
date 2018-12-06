@@ -6,12 +6,11 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 16:47:24 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 21:14:42 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/06 21:38:18 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-// #include <stdio.h>
 
 void	ft_putuint_base(uintmax_t nbr, int base)
 {
