@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_toupper_str.c                                   :+:      :+:    :+:   */
+/*   ft_putstr_upper_fd.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/29 19:50:35 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 13:31:42 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/07 12:42:32 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,5 @@ void		ft_putstr_upper_fd(const char *s, int fd)
 	i = -1;
 	while (++i < ft_strlen(s))
 		ft_putchar_fd(ft_toupper(s[i]), fd);
-	return;
+	return ;
 }

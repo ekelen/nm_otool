@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putuint_base_pad.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 16:47:24 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 21:40:41 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/07 12:42:44 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,5 @@ void	ft_putuint_base_pad(uintmax_t nbr, int base, size_t w, char c)
 		len++;
 	}
 	ft_putuint_base(nbr, base);
-	return;
+	return ;
 }

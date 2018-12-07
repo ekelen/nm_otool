@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_uint.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/20 21:13:08 by ekelen            #+#    #+#             */
-/*   Updated: 2018/10/19 13:52:57 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/07 12:41:48 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,11 @@ void			handle_uint(uintmax_t arg_uint, t_arg *tg)
 
 	get_uint_lenmod(tg);
 	if (!ft_strcmp(LN, "l"))
-		arg_uint_str = ft_f_itoa_base((unsigned long int)arg_uint, tg->base, tg);
+		arg_uint_str = ft_f_itoa_base((unsigned long int)arg_uint, \
+		tg->base, tg);
 	else if (!ft_strcmp(LN, "ll"))
-		arg_uint_str = ft_f_itoa_base((unsigned long long)arg_uint, tg->base, tg);
+		arg_uint_str = ft_f_itoa_base((unsigned long long)arg_uint, \
+		tg->base, tg);
 	else if (!ft_strcmp(LN, "h"))
 		arg_uint_str = ft_f_itoa_base((unsigned short)arg_uint, tg->base, tg);
 	if (!ft_strcmp(LN, "hh"))
