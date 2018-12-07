@@ -1,6 +1,6 @@
 #include <nm_otool.h>
 
-int parse_seg(t_file *file, t_mach_o *m, const struct load_command *lc)
+int parse_seg(t_file *file, t_m *m, const struct load_command *lc)
 {
 	t_segment_command 		*seg;
 	t_segment_command_64 	*seg64;

@@ -1,6 +1,6 @@
 #include <nm_otool.h>
 
-static void update_file_section_indexes(t_mach_o *m, const void *ptr, size_t i)
+static void update_file_section_indexes(t_m *m, const void *ptr, size_t i)
 {
     char *segname;
     char *sectname;
@@ -20,7 +20,7 @@ static void update_file_section_indexes(t_mach_o *m, const void *ptr, size_t i)
             m->nsects |= (uint64_t)(i << 16);
 }
 
-int get_secs(t_file *file, t_mach_o *m, void *seg, uint32_t nsects)
+int get_secs(t_file *file, t_m *m, void *seg, uint32_t nsects)
 {
     uint32_t curr_nsects;
     void *ptr;

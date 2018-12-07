@@ -1,7 +1,18 @@
-#include <nm_otool.h>
-#include <assert.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fat.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/12/07 10:23:19 by ekelen            #+#    #+#             */
+/*   Updated: 2018/12/07 10:46:19 by ekelen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-static const t_arch_info arch_list[] = {
+#include <nm_otool.h>
+
+static const t_arch_info		g_arch_list[] = {
 	{"any", CPU_TYPE_ANY, CPU_SUBTYPE_MULTIPLE},
 	{"arm", CPU_TYPE_ARM, CPU_SUBTYPE_ARM_ALL},
 	{"arm64", CPU_TYPE_ARM64, CPU_SUBTYPE_ARM64_ALL},
@@ -62,13 +73,13 @@ t_arch_info    get_arch_info(cpu_type_t cputype, cpu_subtype_t cpusubtype)
     int i;
 
     i = 0;
-    while (arch_list[i].name[0])
+    while (g_arch_list[i].name[0])
     {
-        if (cputype == arch_list[i].cpu_type && cpusubtype == arch_list[i].cpu_subtype)
-            return (arch_list[i]);
+        if (cputype == g_arch_list[i].cpu_type && cpusubtype == g_arch_list[i].cpu_subtype)
+            return (g_arch_list[i]);
         i++;
     }
-    return arch_list[i];
+    return g_arch_list[i];
 }
 
 // Store all the fat_arch info in one place
@@ -89,10 +100,10 @@ t_arch init_arch(t_file *file, t_u_fa f)
 
 static int add_host_cpu_arch(t_file *file, t_arch a)
 {
-	t_mach_o *m;
+	t_m *m;
     int result;
 
-	if (!(m = (t_mach_o *)malloc(sizeof(t_mach_o))))
+	if (!(m = (t_m *)malloc(sizeof(t_m))))
 		return (EXIT_FAILURE);
     if (init_mach_o(file, (void *)file->data + a.fa_offset, a.size, m) > EXIT_SUCCESS)
 	{
@@ -108,10 +119,10 @@ static int add_host_cpu_arch(t_file *file, t_arch a)
 
 static int add_arch(t_file *file, t_arch a)
 {
-    t_mach_o *m;
+    t_m *m;
     int result;
 
-	if (!(m = (t_mach_o *)malloc(sizeof(t_mach_o))))
+	if (!(m = (t_m *)malloc(sizeof(t_m))))
 		return (EXIT_FAILURE);
     if (init_mach_o(file, (void *)file->data + a.fa_offset, a.size, m) == EXIT_FAILURE)
 	{

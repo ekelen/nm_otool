@@ -1,7 +1,7 @@
 #include <nm_otool.h>
 #include <assert.h>
 
-static int handle_symtab_2(t_file *file, t_mach_o *m, t_symtab_command *st)
+static int handle_symtab_2(t_file *file, t_m *m, t_symtab_command *st)
 {
     uint32_t    i;
     void        *ptr;
@@ -24,7 +24,7 @@ static int handle_symtab_2(t_file *file, t_mach_o *m, t_symtab_command *st)
     return (SUCCESS);
 }
 
-int parse_symtab(t_file *file, t_mach_o *m, const struct load_command *cmd)
+int parse_symtab(t_file *file, t_m *m, const struct load_command *cmd)
 {
     t_symtab_command    *st;
     t_symtab_command    st2;

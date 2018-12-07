@@ -25,9 +25,9 @@ static char	    *get_ar_name(const char *name)
 int add_ofile(t_file *file, void *ptr, const void *header)
 {
     t_ofile o;
-    t_mach_o *m;
+    t_m *m;
     
-    if (!(m = (t_mach_o *)malloc(sizeof(t_mach_o))))
+    if (!(m = (t_m *)malloc(sizeof(t_m))))
 		return (EXIT_FAILURE);
     o.hdr = (const t_ar_hdr *)header;
     o.name_size = (size_t)get_size(o.hdr->ar_name);

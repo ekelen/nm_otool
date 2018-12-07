@@ -1,7 +1,7 @@
 #include <nm_otool.h>
 #include <assert.h>
 
-static int	parse_mh(t_file *file, t_mach_o *m, uint32_t *ncmds, struct load_command **lc)
+static int	parse_mh(t_file *file, t_m *m, uint32_t *ncmds, struct load_command **lc)
 {
 	t_u_mh mh;
 	size_t sizeofcmds;
@@ -24,7 +24,7 @@ static int	parse_mh(t_file *file, t_mach_o *m, uint32_t *ncmds, struct load_comm
 }
 
 // Loops thru segments; collects everything we'll need to display
-static int    fill_mach(t_file *file, t_mach_o *m)
+static int    fill_mach(t_file *file, t_m *m)
 {
 	struct load_command 	*lc;
 	uint32_t 				ncmds;
@@ -53,7 +53,7 @@ static int    fill_mach(t_file *file, t_mach_o *m)
     return (SUCCESS);
 }
 
-static int parse_magic(uint32_t magic, t_mach_o *m)
+static int parse_magic(uint32_t magic, t_m *m)
 {
 	m->magic = magic;
 	m->swap = (m->magic & CIGAM_MASK) == SWAP_MAGIC ? 1 : 0;
@@ -66,7 +66,7 @@ static int parse_magic(uint32_t magic, t_mach_o *m)
 	return (SUCCESS);
 }
 
-int		init_mach_o(t_file *file, const void *data, size_t size, t_mach_o *m)
+int		init_mach_o(t_file *file, const void *data, size_t size, t_m *m)
 {
 	void 		*mptr;
 
@@ -89,7 +89,7 @@ int		init_mach_o(t_file *file, const void *data, size_t size, t_mach_o *m)
 	return (SUCCESS);
 }
 
-int add_mach(t_mach_o **curr, t_mach_o *new)
+int add_mach(t_m **curr, t_m *new)
 {
 	if (!new)
 		return (ERR_FILE);
@@ -101,7 +101,7 @@ int add_mach(t_mach_o **curr, t_mach_o *new)
     return add_mach(&(*curr)->next, new);
 }
 
-void remove_mach(t_mach_o *m)
+void remove_mach(t_m *m)
 {
 	if (m->symbols != NULL)
 		free_symbols(m->symbols);
@@ -109,9 +109,9 @@ void remove_mach(t_mach_o *m)
 	return;
 }
 
-void free_machs(t_mach_o *curr)
+void free_machs(t_m *curr)
 {
-    t_mach_o *tmp;
+    t_m *tmp;
 	while (curr)
 	{
 		if (curr->symbols != NULL)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   read_file.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 09:14:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 14:21:42 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/07 10:46:19 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int handle_32_64(t_file *file, size_t size)
 {
-    if (!(file->mach = (t_mach_o *)malloc(sizeof(t_mach_o))))
+    if (!(file->mach = (t_m *)malloc(sizeof(t_m))))
 		return (ERR_ALLOCATION);
     return (init_mach_o(file, file->data, size, file->mach));
 }

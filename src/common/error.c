@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 13:08:58 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/05 13:10:50 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/07 10:23:09 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <nm_otool.h>
+#include <nm_otool.h>
 
-int error(const char *filename, t_e_errs err, const char *msg, bool is_nm)
+int		error(const char *filename, t_e_errs err, const char *msg, bool is_nm)
 {
 	ft_putstr_fd(is_nm ? NM_NAME : OTOOL_NAME, 2);
 	if (err == ERR_USAGE)

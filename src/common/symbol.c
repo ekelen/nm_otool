@@ -1,7 +1,7 @@
 #include <nm_otool.h>
 #include <assert.h>
 
-void free_symbols(t_symbol *curr)
+void free_symbols(t_sym *curr)
 {
     if (!curr)
         return;
@@ -28,7 +28,7 @@ char parse_section_type(uint64_t nsects, uint8_t n_sect)
     return '?';
 }
 
-char parse_type(uint64_t nsects, t_symbol *symbol)
+char parse_type(uint64_t nsects, t_sym *symbol)
 {
 	static int i = 0;
     uint8_t c;
@@ -55,19 +55,19 @@ char parse_type(uint64_t nsects, t_symbol *symbol)
     return (unsigned char)c;
 }
 
-static int cmp_nom(t_symbol *sym1, t_symbol *sym2)
+static int cmp_nom(t_sym *sym1, t_sym *sym2)
 {
     return(ft_strcmp(sym1->nom, sym2->nom));
 }
 
-static int cmp_type(t_symbol *sym1, t_symbol *sym2)
+static int cmp_type(t_sym *sym1, t_sym *sym2)
 {
     if (ft_strchr("Uu", sym2->type) && ft_strchr("Uu", sym1->type))
         return(cmp_nom(sym1, sym2));
     return (ft_strchr("Uu", sym2->type) - ft_strchr("Uu", sym1->type));
 }
 
-int64_t cmp_value(t_symbol *sym1, t_symbol *sym2, bool r)
+int64_t cmp_value(t_sym *sym1, t_sym *sym2, bool r)
 {
     int64_t     cmp;
     int         cmp_mod;
@@ -81,7 +81,7 @@ int64_t cmp_value(t_symbol *sym1, t_symbol *sym2, bool r)
     return (cmp * cmp_mod);
 }
 
-int64_t cmp_name(t_symbol *sym1, t_symbol *sym2, bool r)
+int64_t cmp_name(t_sym *sym1, t_sym *sym2, bool r)
 {
     int64_t     cmp;
     int         cmp_mod;
@@ -94,7 +94,7 @@ int64_t cmp_name(t_symbol *sym1, t_symbol *sym2, bool r)
     return (cmp * cmp_mod);
 }
 
-static char *get_sym_name(t_mach_o *m, t_symtab_command *st, t_u_nl nl)
+static char *get_sym_name(t_m *m, t_symtab_command *st, t_u_nl nl)
 {
     char        *name;
     void        *name_start;
@@ -116,7 +116,7 @@ static char *get_sym_name(t_mach_o *m, t_symtab_command *st, t_u_nl nl)
 	return name;
 }
 
-static void sort_symbol(int64_t (*sort)(t_symbol *s1, t_symbol *s2, bool r), t_symbol **curr, t_symbol *new, bool r)
+static void sort_symbol(int64_t (*sort)(t_sym *s1, t_sym *s2, bool r), t_sym **curr, t_sym *new, bool r)
 {
     if (!sort)
         return;
@@ -131,7 +131,7 @@ static void sort_symbol(int64_t (*sort)(t_symbol *s1, t_symbol *s2, bool r), t_s
         return sort_symbol(sort, &(*curr)->right, new, r);
 }
 
-static int fill_symbol_data(t_mach_o *m, t_symtab_command *st, t_symbol *s)
+static int fill_symbol_data(t_m *m, t_symtab_command *st, t_sym *s)
 {
 	t_u_nl nl;
 
@@ -149,10 +149,10 @@ static int fill_symbol_data(t_mach_o *m, t_symtab_command *st, t_symbol *s)
 	return (SUCCESS);
 }
 
-int add_symbol(t_file *file, t_mach_o *m, t_symtab_command *st, const void *nptr)
+int add_symbol(t_file *file, t_m *m, t_symtab_command *st, const void *nptr)
 {
-	t_symbol *s;
-    if (!(s = malloc(sizeof(t_symbol))))
+	t_sym *s;
+    if (!(s = malloc(sizeof(t_sym))))
         return (EXIT_FAILURE);
 	s->nptr = nptr;
 	s->left = NULL;

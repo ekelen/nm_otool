@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 14:26:00 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 21:57:16 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/07 10:46:19 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void print_otool_addr(bool m64, void *addr, size_t i)
     ft_putchar('\t');
 }
 
-static void print_otool_spaced(t_mach_o *m, uint64_t size, void *start, void *addr)
+static void print_otool_spaced(t_m *m, uint64_t size, void *start, void *addr)
 {
     size_t          i;
     size_t          j;
@@ -43,7 +43,7 @@ static void print_otool_spaced(t_mach_o *m, uint64_t size, void *start, void *ad
     }
 }
 
-static void print_otool_block(t_mach_o *m, uint64_t size, void *start, void *addr)
+static void print_otool_block(t_m *m, uint64_t size, void *start, void *addr)
 {
     size_t          i;
     size_t          j;
@@ -67,7 +67,7 @@ static void print_otool_block(t_mach_o *m, uint64_t size, void *start, void *add
     }
 }
 
-static void print_otool_32(t_mach_o *m, struct section *text_sec)
+static void print_otool_32(t_m *m, struct section *text_sec)
 {
 	uint64_t    size;
     uint32_t    offset;
@@ -82,7 +82,7 @@ static void print_otool_32(t_mach_o *m, struct section *text_sec)
 		print_otool_block(m, size, (void *)m->data + offset, addr);
 }
 
-static void print_otool_64(t_mach_o *m, struct section_64 *text_sec)
+static void print_otool_64(t_m *m, struct section_64 *text_sec)
 {
 	uint64_t    size;
     uint32_t    offset;
@@ -97,7 +97,7 @@ static void print_otool_64(t_mach_o *m, struct section_64 *text_sec)
 		print_otool_block(m, size, (void *)m->data + offset, addr);
 }
 
-void print_otool(t_file *file, t_mach_o *m)
+void print_otool(t_file *file, t_m *m)
 {
 	if (!file || !file->mach || !m || !(m->nsects & TEXT_SECT))
         return;

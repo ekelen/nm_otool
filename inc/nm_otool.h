@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nm_otool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 15:51:28 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/07 11:12:24 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@
 # define IS_STATLIB 0x10
 # define IS_MULTI 0x20
 # define IS_NM 0x40
+# define IS_MULTI_AV 0x80
 
 # define TEXT_SECT 0x000000ff
 # define DATA_SECT 0x0000ff00
@@ -90,10 +91,10 @@ typedef struct symtab_command       t_symtab_command;
 typedef struct ranlib               t_ranlib;
 typedef struct ar_hdr               t_ar_hdr;
 
-typedef struct s_mach_o t_mach_o;
+typedef struct s_m t_m;
 typedef struct s_ofile t_ofile;
 typedef struct s_file t_file;
-typedef struct s_symbol t_symbol;
+typedef struct s_sym t_sym;
 typedef struct s_arch t_arch;
 
 typedef union   u_u_sec {
@@ -132,7 +133,7 @@ enum e_errs {
     ERR_ALLOCATION = 4
 };
 
-struct  s_symbol {
+struct  s_sym {
     char            *nom;
     const void      *nptr;
     char            type;
@@ -140,8 +141,8 @@ struct  s_symbol {
     uint64_t        n_value;
     uint8_t         n_sect;
     bool            m64;
-    t_symbol        *left;
-    t_symbol        *right;
+    t_sym        *left;
+    t_sym        *right;
 };
 
 typedef struct s_sec {
@@ -169,9 +170,9 @@ struct s_ofile {
 };
 
 // TODO: Remove redundant fields
-struct s_mach_o {
+struct s_m {
     uint32_t                magic;
-    t_symbol                *symbols;
+    t_sym                *symbols;
     bool                    m64;
     bool                    swap;
     const void              *data;
@@ -183,7 +184,7 @@ struct s_mach_o {
 
     const void              *end_commands; // end of load commands
 
-    t_mach_o                *next;
+    t_m                *next;
 
     uint64_t                nsects;
     uint8_t                 current_sect;
@@ -195,7 +196,7 @@ struct s_mach_o {
     t_arch                  arch;
     cpu_type_t              cputype;
     t_ofile                 ofile;
-    void                    (*print_meta)(t_file *file, t_mach_o *m);
+    void                    (*print_meta)(t_file *file, t_m *m);
     uint32_t				(*swap32)(uint32_t x);
     uint64_t				(*swap64)(uint64_t x);
 };
@@ -210,8 +211,8 @@ struct  s_file {
 	uint32_t				(*swap32)(uint32_t x);
     uint64_t				(*swap64)(uint64_t x);
     size_t                  offset;
-    t_mach_o                *mach; 
-    int64_t                 (*sort)(t_symbol *sym1, t_symbol *sym2, bool r);
+    t_m                *mach; 
+    int64_t                 (*sort)(t_sym *sym1, t_sym *sym2, bool r);
 };
 
 typedef struct  s_context t_context;
@@ -233,10 +234,10 @@ void        *ptr_check(const void *addr_max, void *req, size_t req_length);
 void        *ptr_check_msg(const void *addr_max, void *req, size_t req_length, const char *msg);
 
 //mach.c
-int		            init_mach_o(t_file *file, const void *data, size_t size, t_mach_o *m);
-int                 add_mach(t_mach_o **curr, t_mach_o *new);
-void                remove_mach(t_mach_o *m);
-void                free_machs(t_mach_o *curr);
+int		            init_mach_o(t_file *file, const void *data, size_t size, t_m *m);
+int                 add_mach(t_m **curr, t_m *new);
+void                remove_mach(t_m *m);
+void                free_machs(t_m *curr);
 
 // read_file.c
 int                 process_file(t_file *file, size_t size);
@@ -253,34 +254,34 @@ t_arch_info         get_arch_info(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 int                 handle_fat(t_file *file);
 
 // parse_commands.c
-int parse_seg(t_file *file, t_mach_o *m, const struct load_command *lc);
+int parse_seg(t_file *file, t_m *m, const struct load_command *lc);
 
 // parse_symtab.c
-int parse_symtab(t_file *file, t_mach_o *m, const struct load_command *cmd);
+int parse_symtab(t_file *file, t_m *m, const struct load_command *cmd);
 
 
 // symbol.c
-int add_symbol(t_file *file, t_mach_o *m, t_symtab_command *st, const void *nptr);
-int64_t cmp_name(t_symbol *sym1, t_symbol *sym2, bool r);
-void free_symbols(t_symbol *curr);
-int64_t cmp_value(t_symbol *sym1, t_symbol *sym2, bool r);
+int add_symbol(t_file *file, t_m *m, t_symtab_command *st, const void *nptr);
+int64_t cmp_name(t_sym *sym1, t_sym *sym2, bool r);
+void free_symbols(t_sym *curr);
+int64_t cmp_value(t_sym *sym1, t_sym *sym2, bool r);
 
 
 // section.c
-int get_secs(t_file *file, t_mach_o *m, void *seg, uint32_t nsects);
+int get_secs(t_file *file, t_m *m, void *seg, uint32_t nsects);
 
 // file.c
 int                 init_file(t_file *file, void *data, off_t size, char *argname);
 void                free_file(t_file *file);
 
 //print.c
-void get_meta_print(t_file *file, t_mach_o *m);
+void get_meta_print(t_file *file, t_m *m);
 
 //print_nm.c
-void print_machs(t_file *file, t_mach_o *m);
+void print_machs(t_file *file, t_m *m);
 
 //print.c (otool)
-void print_otool(t_file *file, t_mach_o *m);
+void print_otool(t_file *file, t_m *m);
 
 //error.c
 int error(const char *filename, t_e_errs err, const char *msg, bool is_nm);
