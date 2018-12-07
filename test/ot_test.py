@@ -140,6 +140,26 @@ class Dylib(Otool):
 		""" All some fatlib """
 		self.compare(self.files, israndom=True, k=2)
 
+class Mixed(Otool):
+	def setUp(self):
+		super().setUp()
+		fats = os.path.join(st.dir_ut, "fat")
+		statlibs = os.path.join(st.dir_ut, "lib_stat")
+		t32 = os.path.join(st.dir_ut, "32")
+		t64 = os.path.join(st.dir_ut, "64")
+		self.subfolders = [fats, statlibs, t32, t64]
+
+	def test_2(self):
+		""" compare 10 random pairs from different folders """
+		for i in range(10):
+			with self.subTest(i=i):
+				f1 = self.subfolders[random.randint(0, len(self.subfolders) - 1)]
+				f2 = self.subfolders[random.randint(0, len(self.subfolders) - 1)]
+				file1 = random.sample([os.path.join(f1, p) for p in os.listdir(f1)], 1)
+				file2 = random.sample([os.path.join(f2, p) for p in os.listdir(f2)], 1)
+				self.files = file1 + file2
+				self.compare_one(self.files)
+
 if __name__ == '__main__':
 	subprocess.run([*st.make, 'fclean'])
 	subprocess.run([*st.make, st.name_otool])
