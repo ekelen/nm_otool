@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/07 11:12:24 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/07 14:44:15 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,7 +254,7 @@ t_arch_info         get_arch_info(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 int                 handle_fat(t_file *file);
 
 // parse_commands.c
-int parse_seg(t_file *file, t_m *m, const struct load_command *lc);
+int    	get_segments(t_file *file, t_m *m);
 
 // parse_symtab.c
 int parse_symtab(t_file *file, t_m *m, const struct load_command *cmd);
