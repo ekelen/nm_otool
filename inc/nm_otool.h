@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/07 14:44:15 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/07 15:25:01 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ struct s_ofile {
 // TODO: Remove redundant fields
 struct s_m {
     uint32_t                magic;
-    t_sym                *symbols;
+    t_sym                   *symbols;
     bool                    m64;
     bool                    swap;
     const void              *data;
@@ -211,7 +211,7 @@ struct  s_file {
 	uint32_t				(*swap32)(uint32_t x);
     uint64_t				(*swap64)(uint64_t x);
     size_t                  offset;
-    t_m                *mach; 
+    t_m                     *mach; 
     int64_t                 (*sort)(t_sym *sym1, t_sym *sym2, bool r);
 };
 
