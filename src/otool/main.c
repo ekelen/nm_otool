@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 13:48:28 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 15:12:53 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ static void			add_file_otool(void *p, off_t s, char *av, t_context *c)
 	}
 	if ((err = init_file(file, p, s, av)) > SUCCESS)
 	{
+		free((void *)file);
 		error(av, err, NULL, c->is_nm);
 		return ;
 	}

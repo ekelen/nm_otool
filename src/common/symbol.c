@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/08 11:13:21 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 14:01:19 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 15:18:33 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,18 +97,19 @@ static int	fill_symbol_data(t_m *m, struct symtab_command *st, t_sym *s)
 int			add_symbol(t_file *file, t_m *m, struct symtab_command *st, \
 	const void *nptr)
 {
-	t_sym *s;
+	t_sym		*s;
+	t_status	res;
 
-	if (!(s = malloc(sizeof(t_sym))))
-		return (EXIT_FAILURE);
+	if (!(s = (t_sym *)malloc(sizeof(t_sym))))
+		return (ERR_ALLOCATION);
 	s->nptr = nptr;
 	s->left = NULL;
 	s->right = NULL;
-	if (fill_symbol_data(m, st, s))
+	if ((res = fill_symbol_data(m, st, s)) > SUCCESS)
 	{
 		free(s);
-		return (EXIT_FAILURE);
+		return (res);
 	}
 	sort_symbol(file->sort, &(m->symbols), s, (file->flags & SORT_REVERSE));
-	return (EXIT_SUCCESS);
+	return (SUCCESS);
 }
