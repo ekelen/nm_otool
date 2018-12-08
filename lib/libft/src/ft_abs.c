@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 13:16:40 by ekelen            #+#    #+#             */
-/*   Updated: 2018/10/19 14:07:33 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/07 12:48:41 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-intmax_t      ft_abs(intmax_t n)
+intmax_t	ft_abs(intmax_t n)
 {
-    return (n < 0 ? n * -1 : n);
+	return (n < 0 ? n * -1 : n);
 }

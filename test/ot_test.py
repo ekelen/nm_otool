@@ -21,7 +21,7 @@ class Otool(Base):
 		self.flags = ["-t"]
 		self.allowedFlags = ['t']
 			
-class Easy(Otool):
+class OtEasy(Otool):
 	def setUp(self):
 		super().setUp()
 		self.basenames = self.getBasenames()
@@ -46,7 +46,7 @@ class Easy(Otool):
 	def test_bad_flags_twohyphen(self):
 		self.check_bad_flags(self.files, flags=["-t-t"])
 
-class T32(Otool):
+class OtT32(Otool):
 	def setUp(self):
 		super().setUp()
 		self.test_path = os.path.join(st.dir_ut, "32")
@@ -61,7 +61,7 @@ class T32(Otool):
 		""" All the 32-bit """
 		self.compare(self.files)
 
-class T64(Otool):
+class OtT64(Otool):
 	def setUp(self):
 		super().setUp()
 		self.test_path = os.path.join(st.dir_ut, "64")
@@ -76,7 +76,7 @@ class T64(Otool):
 		""" All the 32-bit """
 		self.compare(self.files)
 
-class Fat(Otool):
+class OtFat(Otool):
 	def setUp(self):
 		super().setUp()
 		self.test_path = os.path.join(st.dir_ut, "fat")
@@ -95,7 +95,7 @@ class Fat(Otool):
 		""" All the fat """
 		self.compare(self.files)
 	
-class Statlib(Otool):
+class OtStatlib(Otool):
 	def setUp(self):
 		super().setUp()
 		self.test_path = os.path.join(st.dir_ut, "lib_stat")
@@ -114,7 +114,7 @@ class Statlib(Otool):
 		""" All the statlib """
 		self.compare(self.files)
 
-class Corrupt(Otool):
+class OtCorrupt(Otool):
 	def setUp(self):
 		super().setUp()
 		self.test_path = os.path.join(st.dir_ut, "corrupt")
@@ -125,7 +125,7 @@ class Corrupt(Otool):
 		""" All the corrupt """
 		self.check_corrupted(self.files)
 
-class Dylib(Otool):
+class OtDylib(Otool):
 	def setUp(self):
 		super().setUp()
 		self.test_path = os.path.join(st.dir_ut, "fat_lib")
@@ -140,7 +140,7 @@ class Dylib(Otool):
 		""" All some fatlib """
 		self.compare(self.files, israndom=True, k=2)
 
-class Mixed(Otool):
+class OtMixed(Otool):
 	def setUp(self):
 		super().setUp()
 		fats = os.path.join(st.dir_ut, "fat")

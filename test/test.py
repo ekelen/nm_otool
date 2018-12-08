@@ -22,7 +22,7 @@ class Nm(Base):
 		self.flags = []
 		self.allowedFlags = ['u', 'U', 'r', 'j', 'A', 'n']
 
-class Easy(Nm):
+class NmEasy(Nm):
 	def setUp(self):
 		super().setUp()
 		self.basenames = self.getBasenames()
@@ -53,7 +53,7 @@ class Easy(Nm):
 			with self.subTest(d=d):
 				self.compare_one(self.getPaths(self.valids), flags=[d])
 
-class T32(Nm):
+class NmT32(Nm):
 	def setUp(self):
 		super().setUp()
 		self.test_path = os.path.join(st.dir_ut, "32")
@@ -74,7 +74,7 @@ class T32(Nm):
 			with self.subTest(d=d):
 				self.compare_one(random.sample(self.files, 1), flags=[d])
 
-class T64(Nm):
+class NmT64(Nm):
 	def setUp(self):
 		super().setUp()
 		self.test_path = os.path.join(st.dir_ut, "64")
@@ -95,7 +95,7 @@ class T64(Nm):
 			with self.subTest(d=d):
 				self.compare_one(random.sample(self.files, 1), flags=[d])
 
-class Fat(Nm):
+class NmFat(Nm):
 	def setUp(self):
 		super().setUp()
 		self.test_path = os.path.join(st.dir_ut, "fat")
@@ -120,7 +120,7 @@ class Fat(Nm):
 			with self.subTest(d=d):
 				self.compare_one(random.sample(self.files, 1), flags=[d])
 	
-class Statlib(Nm):
+class NmStatlib(Nm):
 	def setUp(self):
 		super().setUp()
 		self.test_path = os.path.join(st.dir_ut, "lib_stat")
@@ -145,7 +145,7 @@ class Statlib(Nm):
 		""" All the statlib """
 		self.compare(self.files)
 
-class Corrupt(Nm):
+class NmCorrupt(Nm):
 	def setUp(self):
 		super().setUp()
 		self.test_path = os.path.join(st.dir_ut, "corrupt")
@@ -156,7 +156,7 @@ class Corrupt(Nm):
 		""" All the corrupt """
 		self.check_corrupted(self.files)
 
-class Dylib(Nm):
+class NmDylib(Nm):
 	def setUp(self):
 		super().setUp()
 		self.test_path = os.path.join(st.dir_ut, "fat_lib")
@@ -171,7 +171,7 @@ class Dylib(Nm):
 		""" All some fatlib """
 		self.compare(self.files)
 
-class Mixed(Nm):
+class NmMixed(Nm):
 	def setUp(self):
 		super().setUp()
 		fats = os.path.join(st.dir_ut, "fat")

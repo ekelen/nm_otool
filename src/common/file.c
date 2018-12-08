@@ -3,32 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   file.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 11:29:00 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 15:14:03 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 11:34:12 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <nm_otool.h>
-#include <assert.h>
+#include "nm_otool.h"
 
-size_t		file_offset(uint32_t info)
+size_t			file_offset(uint32_t info)
 {
 	if (info & IS_FAT)
 		return (sizeof(struct fat_header));
 	else if (info & IS_STATLIB)
 		return ((size_t)SARMAG);
 	else
-		return ((info & IS_64) ? sizeof(struct mach_header_64) : sizeof(struct mach_header));
+		return ((info & IS_64) ? sizeof(struct mach_header_64)
+			: sizeof(struct mach_header));
 }
 
-static uint32_t 	parse_hdr_type(uint32_t magic, void *data, uint32_t (*uswap32)(uint32_t x))
+static uint32_t	parse_hdr_type(uint32_t magic, void *data, \
+	uint32_t (*uswap32)(uint32_t x))
 {
-	uint32_t type;
-	int is_fat;
-	int is_statlib;
-	int is_single_mach;
+	uint32_t	type;
+	int			is_fat;
+	int			is_statlib;
+	int			is_single_mach;
 
 	type = 0x0000;
 	is_statlib = (int)(!ft_strncmp((const char*)data, ARMAG, SARMAG));
@@ -38,15 +39,15 @@ static uint32_t 	parse_hdr_type(uint32_t magic, void *data, uint32_t (*uswap32)(
 	type |= (is_fat << 3);
 	type |= (is_statlib << 4);
 	type |= ((!is_single_mach) << 5);
-	return type;
+	return (type);
 }
 
-static uint32_t 	parse_magic(uint32_t magic, void *data)
+static uint32_t	parse_magic(uint32_t magic, void *data)
 {
-	uint32_t info;
-	int is_64;
-	int is_swap;
-	uint32_t (*uswap32)(uint32_t x);
+	uint32_t	info;
+	int			is_64;
+	int			is_swap;
+	uint32_t	(*uswap32)(uint32_t x);
 
 	info = 0x0000;
 	is_swap = (magic & CIGAM_MASK) == SWAP_ANY;
@@ -55,10 +56,10 @@ static uint32_t 	parse_magic(uint32_t magic, void *data)
 	info |= parse_hdr_type(magic, data, uswap32);
 	is_64 = (int)((uswap32(magic) & 1) || (info & IS_STATLIB));
 	info |= is_64;
-	return info;
+	return (info);
 }
 
-int init_file(t_file *file, void *data, off_t size, char *argname)
+int				init_file(t_file *file, void *data, off_t size, char *argname)
 {
 	void *ptr;
 
@@ -76,17 +77,15 @@ int init_file(t_file *file, void *data, off_t size, char *argname)
 	file->swap64 = file->info & IS_SWAP ? swap64 : nswap64;
 	file->offset = file_offset(file->info);
 	file->sort = NULL;
-    return (SUCCESS);
+	return (SUCCESS);
 }
 
-void	free_file(t_file *file)
+void			free_file(t_file *file)
 {
 	if (file->mach)
-	{
 		free_machs(file->mach);
-	}
 	file->mach = NULL;
 	munmap((void *)file->data, (size_t)(file->length));
 	free(file);
-	return;
+	return ;
 }
