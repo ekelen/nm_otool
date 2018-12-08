@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nm_otool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/07 15:25:01 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/07 19:06:27 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,12 +91,6 @@ typedef struct symtab_command       t_symtab_command;
 typedef struct ranlib               t_ranlib;
 typedef struct ar_hdr               t_ar_hdr;
 
-typedef struct s_m t_m;
-typedef struct s_ofile t_ofile;
-typedef struct s_file t_file;
-typedef struct s_sym t_sym;
-typedef struct s_arch t_arch;
-
 typedef union   u_u_sec {
     t_section      *sc32;
     t_section_64   *sc64;
@@ -117,23 +111,21 @@ typedef union   u_u_mh {
     t_mach_header_64   *mh64;
 }               t_u_mh;
 
-typedef struct s_arch_info t_arch_info;
-struct s_arch_info {
+typedef struct s_arch_info {
     const char *name;
     cpu_type_t cpu_type;
     cpu_subtype_t cpu_subtype;
-};
+}				t_arch_info;
 
-typedef enum e_errs t_e_errs;
-enum e_errs {
+typedef enum 	e_status {
     SUCCESS = 0,
     ERR_FILE = 1,
     ERR_USAGE = 2,
     ERR_OTHER = 3,
     ERR_ALLOCATION = 4
-};
+}				t_status;
 
-struct  s_sym {
+typedef struct  s_sym {
     char            *nom;
     const void      *nptr;
     char            type;
@@ -141,62 +133,47 @@ struct  s_sym {
     uint64_t        n_value;
     uint8_t         n_sect;
     bool            m64;
-    t_sym        *left;
-    t_sym        *right;
-};
+    struct s_sym	*left;
+    struct s_sym	*right;
+}				t_sym;
 
-typedef struct s_sec {
-    size_t                  index;
-    const void              *sec;
-    t_u_sec                 sc;
-    struct s_sec            *next;
-}               t_sec;
-
-struct s_arch {
+typedef struct s_arch {
     size_t                  offset; // sizeof fat_arch/fat_arch_64
     t_arch_info             arch_info;
     uint64_t                fa_offset;
     uint64_t                size;
-};
+}				t_arch;
 
-// ofile.h
-// TODO: Too verbose
-struct s_ofile {
-    const char *addr;      	    /* pointer to the member contents */
-    uint32_t size;           /* actual size of the member (not rounded)*/
-    const t_ar_hdr *hdr;   /* pointer to the ar_hdr for this member */
-    const char *name;		            /* name of this member */
-    uint32_t name_size;      /* size of the member name */
-};
+typedef struct s_ofile {
+    const char 		*addr;
+    uint32_t 		size;
+    const 			t_ar_hdr *hdr;
+    const char 		*name;
+    uint32_t 		name_size;
+}				t_ofile;
 
-// TODO: Remove redundant fields
+typedef struct s_file t_file;
+typedef struct s_m t_m;
+
 struct s_m {
     uint32_t                magic;
     t_sym                   *symbols;
     bool                    m64;
     bool                    swap;
-    const void              *data;
-
-    size_t                  offset; // from mach header
+    void              		*data;
+    size_t                  offset;
     size_t                  nsyms;
-
-    void                    *end; // data + length
-
-    const void              *end_commands; // end of load commands
-
-    t_m                *next;
-
+    void					*end;
+    const void              *end_commands;
+    t_m                		*next;
     uint64_t                nsects;
     uint8_t                 current_sect;
-
     t_symtab_command        *st;
-
-    const void              *text_sect;
-
+    void              		*text_sect;
     t_arch                  arch;
     cpu_type_t              cputype;
     t_ofile                 ofile;
-    void                    (*print_meta)(t_file *file, t_m *m);
+    void                    (*print_meta)(struct s_file *file, struct s_m *m);
     uint32_t				(*swap32)(uint32_t x);
     uint64_t				(*swap64)(uint64_t x);
 };
@@ -211,19 +188,19 @@ struct  s_file {
 	uint32_t				(*swap32)(uint32_t x);
     uint64_t				(*swap64)(uint64_t x);
     size_t                  offset;
-    t_m                     *mach; 
+	struct s_m				*mach; 
     int64_t                 (*sort)(t_sym *sym1, t_sym *sym2, bool r);
 };
 
-typedef struct  s_context t_context;
-struct          s_context {
+
+typedef struct			s_context {
     bool                    is_nm;
     uint32_t                flags;
     const char              *flag_options;
 	int						err;
 	size_t					nfiles;
-    void                    (*add)(void *p, off_t s, char *av, t_context *c);
-};
+    void                    (*add)(void *p, off_t s, char *av, struct s_context *c);
+}						t_context;
 
 // util.c
 uint32_t    nswap32(uint32_t x);
@@ -284,7 +261,7 @@ void print_machs(t_file *file, t_m *m);
 void print_otool(t_file *file, t_m *m);
 
 //error.c
-int error(const char *filename, t_e_errs err, const char *msg, bool is_nm);
+int error(const char *filename, t_status err, const char *msg, bool is_nm);
 
 
 #endif

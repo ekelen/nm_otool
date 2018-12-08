@@ -22,5 +22,7 @@
     },
     "search.useIgnoreFiles": false,
     "python.pythonPath": "/usr/local/bin/python3",
-    "python.linting.pylintEnabled": false
+	"python.linting.pylintEnabled": false,
+	"editor.detectIndentation": false,
+	"editor.insertSpaces": false
 }

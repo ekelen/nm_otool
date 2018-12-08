@@ -10,7 +10,7 @@ static void update_file_section_indexes(t_m *m, const void *ptr, size_t i)
 
     if (!ft_strncmp(segname, SEG_TEXT, 16) && \
         !ft_strncmp(sectname, SECT_TEXT, 16) && \
-        ((m->text_sect = ptr)))
+        ((m->text_sect = (void *)ptr)))
             m->nsects |= i;
     else if (!ft_strncmp(segname, SEG_DATA, 16) && \
         !ft_strncmp(sectname, SECT_DATA, 16))

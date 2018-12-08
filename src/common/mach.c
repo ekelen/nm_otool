@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mach.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/07 14:31:29 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/07 15:25:23 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/07 18:59:55 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,10 @@ int			init_mach_o(t_file *file, const void *data, size_t size, t_m *m)
 	m->symbols = NULL;
 	m->st = NULL;
 	m->next = NULL;
-	m->data = data;
+	m->data = (void *)data;
 	m->nsects = 0x00000000;
 	m->current_sect = 1;
+	m->m64 = FALSE;
 	if (!(m->end = ptr_check_msg(file->end, (void *)data + size, \
 		0, "mach-o end")))
 		return (ERR_FILE);

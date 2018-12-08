@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fat.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/07 10:23:19 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/07 14:30:54 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/07 18:43:52 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,7 @@ int			handle_fat(t_file *file)
 {
 	struct fat_header	*hdr;
 	size_t				nfat_arch;
-	t_e_errs			err;
+	t_status			err;
 
 	if (!(hdr = (struct fat_header *)ptr_check_msg(file->end, \
 		(void *)file->data, file->offset, "fat header")))

@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:49:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 08:23:04 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/07 18:43:52 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static void add_file_otool(void *p, off_t s, char *av, t_context *c)
 {
     t_file              *file;
-    t_e_errs            err;
+    t_status            err;
 
     err = SUCCESS;
     file = NULL;
