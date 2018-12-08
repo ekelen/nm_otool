@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/08 11:34:24 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 11:38:10 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 11:39:12 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,11 @@ static int	parse_symtab_2(t_file *file, t_m *m, t_symtab_command *st)
 
 int			parse_symtab(t_file *file, t_m *m, const struct load_command *cmd)
 {
-	t_symtab_command	*st;
-	t_symtab_command	st2;
-	void				*strtab;
+	struct symtab_command	*st;
+	struct symtab_command	st2;
+	void					*strtab;
 
-	if (!(st = (t_symtab_command *)ptr_check_msg(m->end, (void *)cmd, \
+	if (!(st = (struct symtab_command *)ptr_check_msg(m->end, (void *)cmd, \
 		SYMTAB_SIZE, "symtab command")))
 		return (ERR_FILE);
 	st2.strsize = m->swap32(st->strsize);
