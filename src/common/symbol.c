@@ -6,13 +6,13 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/08 11:13:21 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 13:00:03 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 14:01:19 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "nm_otool.h"
 
-char		parse_section_type(uint64_t nsects, uint8_t n_sect)
+static char	parse_section_type(uint64_t nsects, uint8_t n_sect)
 {
 	if (n_sect == NO_SECT)
 		return ('u');
@@ -30,7 +30,7 @@ char		parse_section_type(uint64_t nsects, uint8_t n_sect)
 	return ('?');
 }
 
-char		parse_type(uint64_t nsects, t_sym *symbol)
+static char	parse_type(uint64_t nsects, t_sym *symbol)
 {
 	static int	i = 0;
 	uint8_t		c;

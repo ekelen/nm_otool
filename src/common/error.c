@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 13:08:58 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/07 18:43:52 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 13:48:12 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <nm_otool.h>
+#include "nm_otool.h"
 
 int		error(const char *filename, t_status err, const char *msg, bool is_nm)
 {

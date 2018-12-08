@@ -6,12 +6,15 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/08 13:14:57 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 13:26:13 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 13:49:07 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CONSTANTS_H
 # define CONSTANTS_H
+
+# include "nm.h"
+# include "otool.h"
 
 # include <ar.h>
 # include <mach-o/loader.h>
