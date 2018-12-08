@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/08 11:13:21 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 12:58:11 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 13:00:03 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ char		parse_type(uint64_t nsects, t_sym *symbol)
 	return (unsigned char)c;
 }
 
-static char	*get_sym_name(t_m *m, t_symtab_command *st, t_u_nl nl)
+static char	*get_sym_name(t_m *m, struct symtab_command *st, t_u_nl nl)
 {
 	void		*name_start;
 	void		*strtab_end;
@@ -75,7 +75,7 @@ static char	*get_sym_name(t_m *m, t_symtab_command *st, t_u_nl nl)
 		0, "symbol name"));
 }
 
-static int	fill_symbol_data(t_m *m, t_symtab_command *st, t_sym *s)
+static int	fill_symbol_data(t_m *m, struct symtab_command *st, t_sym *s)
 {
 	t_u_nl nl;
 
@@ -94,7 +94,7 @@ static int	fill_symbol_data(t_m *m, t_symtab_command *st, t_sym *s)
 	return (SUCCESS);
 }
 
-int			add_symbol(t_file *file, t_m *m, t_symtab_command *st, \
+int			add_symbol(t_file *file, t_m *m, struct symtab_command *st, \
 	const void *nptr)
 {
 	t_sym *s;

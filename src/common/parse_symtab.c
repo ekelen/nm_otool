@@ -6,13 +6,13 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/08 11:34:24 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 11:39:12 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 13:00:03 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "nm_otool.h"
 
-static int	parse_symtab_2(t_file *file, t_m *m, t_symtab_command *st)
+static int	parse_symtab_2(t_file *file, t_m *m, struct symtab_command *st)
 {
 	uint32_t	i;
 	void		*ptr;

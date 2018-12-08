@@ -6,15 +6,15 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 12:58:56 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 13:03:54 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef NM_OTOOL_H
-#define NM_OTOOL_H
+# define NM_OTOOL_H
 
-#include <libft.h>
-#include <ft_printf.h>
+# include <libft.h>
+# include <ft_printf.h>
 
 # include "nm.h"
 # include "otool.h"
@@ -75,11 +75,6 @@
 # define SYMTAB_SIZE sizeof(struct symtab_command)
 # define T_LC struct load_command
 
-typedef struct load_command         t_load_command;
-typedef struct symtab_command       t_symtab_command;
-typedef struct ranlib               t_ranlib;
-typedef struct ar_hdr               t_ar_hdr;
-
 typedef union   u_u_sec {
     struct section      *sc32;
     struct section_64   *sc64;
@@ -134,11 +129,11 @@ typedef struct s_arch {
 }				t_arch;
 
 typedef struct s_ofile {
-    const char 		*addr;
-    uint32_t 		size;
-    const 			t_ar_hdr *hdr;
-    const char 		*name;
-    uint32_t 		name_size;
+    const char 				*addr;
+    uint32_t 				size;
+    const struct ar_hdr 	*hdr;
+    const char 				*name;
+    uint32_t 				name_size;
 }				t_ofile;
 
 typedef struct s_file t_file;
@@ -156,7 +151,7 @@ struct s_m {
     t_m                		*next;
     uint64_t                nsects;
     uint8_t                 current_sect;
-    t_symtab_command        *st;
+    struct symtab_command        *st;
     void              		*text_sect;
     t_arch                  arch;
     cpu_type_t              cputype;
@@ -227,7 +222,7 @@ int parse_symtab(t_file *file, t_m *m, const struct load_command *cmd);
 
 // symbol.c
 void free_symbols(t_sym *curr);
-int add_symbol(t_file *file, t_m *m, t_symtab_command *st, const void *nptr);
+int add_symbol(t_file *file, t_m *m, struct symtab_command *st, const void *nptr);
 
 // symbol_sort.c
 int64_t cmp_name(t_sym *sym1, t_sym *sym2, bool r);

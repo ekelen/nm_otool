@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/08 11:39:40 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 11:54:03 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 13:01:19 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,12 @@ int			add_ofile(t_file *file, void *ptr, const void *header)
 
 	if (!(m = (t_m *)malloc(sizeof(t_m))))
 		return (ERR_ALLOCATION);
-	o.hdr = (const t_ar_hdr *)header;
+	o.hdr = (const struct ar_hdr *)header;
 	o.name_size = (size_t)get_size(o.hdr->ar_name);
 	o.size = (uint32_t)ft_atoi(o.hdr->ar_size);
 	o.name = (const char *)get_ar_name(o.hdr->ar_name);
 	o.addr = ptr
-		+ sizeof(t_ar_hdr)
+		+ AR_HDR_SIZE
 		+ o.name_size;
 	if ((res = init_mach_o(file, o.addr, o.size - o.name_size, m)) > SUCCESS)
 	{
