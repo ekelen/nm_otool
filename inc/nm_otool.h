@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 11:19:29 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 11:52:52 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,7 +222,7 @@ void                read_file(t_context *c, char *av);
 int                 verify_flags(int ac, char *av[], t_context *c);
 
 // static_lib.c
-int handle_archive(t_file *file);
+int handle_statlib(t_file *file);
 
 // fat.c
 t_arch              init_arch(t_file *file, t_u_fa f);

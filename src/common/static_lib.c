@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/08 11:39:40 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 11:52:00 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 11:54:03 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,10 @@ int			add_ofile(t_file *file, void *ptr, const void *header)
 }
 
 /*
-** parse static lib header (see ar.h)
+** parse static lib/archive header (see ar.h)
 */
 
-static int	check_archive_ptrs(t_file *file, void **ptr, struct ar_hdr **hdr, \
+static int	parse_statlib_hdr(t_file *file, void **ptr, struct ar_hdr **hdr, \
 	size_t *ar_size)
 {
 	t_status	res;
@@ -87,10 +87,10 @@ static int	check_archive_ptrs(t_file *file, void **ptr, struct ar_hdr **hdr, \
 }
 
 /*
-** initial parse of static library (see ar.h)
+** initial parse of static library/archive (see ar.h)
 */
 
-int			handle_archive(t_file *file)
+int			handle_statlib(t_file *file)
 {
 	struct ar_hdr	*header;
 	void			*ptr;
@@ -107,7 +107,7 @@ int			handle_archive(t_file *file)
 		return (ERR_FILE);
 	while (ptr < file->end)
 	{
-		if ((res = check_archive_ptrs(file, &ptr, &header, &ar_size)) > SUCCESS)
+		if ((res = parse_statlib_hdr(file, &ptr, &header, &ar_size)) > SUCCESS)
 			return (res);
 		if (!(ptr = ptr_check_msg(file->end, ptr + ar_size + AR_HDR_SIZE, 0, \
 			"new ptr")))

@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 09:14:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 11:29:27 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 11:52:52 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int				process_file(t_file *file, size_t size)
 	if (file->info & IS_FAT)
 		return (handle_fat(file));
 	else if (file->info & IS_STATLIB)
-		return (handle_archive(file));
+		return (handle_statlib(file));
 	else if (file->info & IS_SINGLE_MACH)
 		return (handle_32_64(file, size));
 	else
