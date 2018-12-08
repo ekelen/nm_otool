@@ -4,18 +4,18 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        {
-            "name": "(lldb) Launch",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/ft_otool",
-            "args": ["${workspaceFolder}/test/unit_test_files/test_facile"],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": true,
-            "MIMode": "lldb"
-        },
+        // {
+        //     "name": "(lldb) Launch",
+        //     "type": "cppdbg",
+        //     "request": "launch",
+        //     "program": "${workspaceFolder}/ft_otool",
+        //     "args": ["${workspaceFolder}/test/unit_test_files/test_facile"],
+        //     "stopAtEntry": false,
+        //     "cwd": "${workspaceFolder}",
+        //     "environment": [],
+        //     "externalConsole": true,
+        //     "MIMode": "lldb"
+        // },
         // {
         //     "name": "(lldb) Launch",
         //     "type": "cppdbg",
@@ -65,18 +65,18 @@
         //     "externalConsole": true,
         //     "MIMode": "lldb"
         // }
-        // {
-        //     "name": "(lldb) Launch",
-        //     "type": "cppdbg",
-        //     "request": "launch",
-        //     "program": "${workspaceFolder}/ft_nm",
-        //     "args": ["${workspaceFolder}/test/unit_test_files/fat/audiodevice"],
-        //     "stopAtEntry": false,
-        //     "cwd": "${workspaceFolder}",
-        //     "environment": [],
-        //     "externalConsole": true,
-        //     "MIMode": "lldb"
-        // }
+        {
+            "name": "(lldb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/ft_otool",
+            "args": ["${workspaceFolder}/test/unit_test_files/fat/appsleepd"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "lldb"
+        }
         // {
         //     "name": "(lldb) Launch",
         //     "type": "cppdbg",

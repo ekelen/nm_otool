@@ -37,6 +37,7 @@ INC = -I$(PATH_INC) -I$(PATH_LIBFT)/inc -I$(PATH_PRINTF)/includes
 CC = clang
 CFLAGS = -Werror -Wextra -Wall -g $(INC)
 
+SRC_COMMON += arch_info.c
 SRC_COMMON += error.c
 SRC_COMMON += fat.c
 SRC_COMMON += file.c
@@ -50,7 +51,6 @@ SRC_COMMON += parse_commands.c
 SRC_COMMON += parse_symtab.c
 SRC_COMMON += print.c
 
-SRC_NM += init_nm.c
 SRC_NM += main.c
 SRC_NM += print_nm.c
 

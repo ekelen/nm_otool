@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nm_otool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/07 19:06:27 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 10:18:14 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 #include <libft.h>
 #include <ft_printf.h>
+
+# include "nm.h"
+# include "otool.h"
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -30,8 +33,7 @@
 # include <mach/machine.h>
 # include <stdbool.h>
 
-# include "nm.h"
-# include "otool.h"
+
 
 # define IS_64 0x1
 # define IS_SWAP 0x2
@@ -156,9 +158,8 @@ typedef struct s_file t_file;
 typedef struct s_m t_m;
 
 struct s_m {
-    uint32_t                magic;
     t_sym                   *symbols;
-    bool                    m64;
+	bool                    m64;
     bool                    swap;
     void              		*data;
     size_t                  offset;

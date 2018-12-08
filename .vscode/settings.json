@@ -21,7 +21,7 @@
         "stdlib.h": "c"
     },
     "search.useIgnoreFiles": false,
-    "python.pythonPath": "/usr/local/bin/python3",
+	"python.pythonPath": "/Users/ekelen/Desktop/brew/bin/python3",
 	"python.linting.pylintEnabled": false,
 	"editor.detectIndentation": false,
 	"editor.insertSpaces": false
