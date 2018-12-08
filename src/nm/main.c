@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/07 18:43:52 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 13:08:46 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ int					main(int argc, char *argv[])
 	i = 0;
 	if (verify_flags(argc, argv, &nmc) > SUCCESS)
 		return (0);
-
 	while (++i < argc)
 	{
 		if (argv[i][0] != '-')

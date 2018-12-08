@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 21:22:29 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/07 11:00:41 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 13:08:21 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,8 @@ static uint32_t		check_display(const uint32_t flags, t_sym *symbol)
 	print = SHOW_DEFAULT;
 	if (symbol->n_type & N_STAB && !(flags & ALL))
 		print &= ~SHOW_ANY;
-
 	if (!symbol->n_value && ft_strchr("Uu", symbol->type))
 		print &= ~SHOW_VALUE;
-
 	if (flags & UNDEF_ONLY)
 	{
 		if (!ft_strchr("uU", symbol->type))

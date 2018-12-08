@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   nm.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/06 15:12:09 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 13:07:40 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef NM_H
-#define NM_H
+# define NM_H
 
 # define NM_FLAGS "AjuUrn"
 
@@ -22,7 +22,7 @@
 # define SHOW_VAL_COL 0x10
 # define SHOW_ANY 0x20
 # define SHOW_PATHNAME 0x40
-# define SHOW_DEFAULT (SHOW_VALUE | SHOW_TYPE | SHOW_NAME | SHOW_VAL_COL | SHOW_ANY)
+# define SHOW_DEFAULT (SHOW_VALUE|SHOW_TYPE|SHOW_NAME|SHOW_VAL_COL|SHOW_ANY)
 
 # define ALL 0x1
 # define SYM_NAME_ONLY 0x2
