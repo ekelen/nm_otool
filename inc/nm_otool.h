@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 14:04:16 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 14:06:52 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,10 +150,10 @@ void		print_machs(t_file *file, t_m *m);
 int			error(const char *filename, t_status err, const char *msg, \
 	bool is_nm);
 
-//print.c (otool)
-void print_otool(t_file *file, t_m *m);
+/*
+** print_otool.c
+*/
 
-
-
+void		print_otool(t_file *file, t_m *m);
 
 #endif
