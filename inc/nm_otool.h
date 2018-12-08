@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 11:52:52 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 12:58:56 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,42 +73,31 @@
 # define FH_64_SIZE sizeof(struct fat_arch_64)
 # define LC_SIZE sizeof(struct load_command)
 # define SYMTAB_SIZE sizeof(struct symtab_command)
+# define T_LC struct load_command
 
-typedef unsigned char               t_byte;
-
-typedef struct mach_header          t_mach_header;
-typedef struct mach_header_64       t_mach_header_64;
-typedef struct segment_command      t_segment_command;
-typedef struct segment_command_64   t_segment_command_64;
-typedef struct section              t_section;
-typedef struct section_64           t_section_64;
-typedef struct nlist                t_nlist;
-typedef struct nlist_64             t_nlist_64;
-typedef struct fat_arch             t_fat_arch;
-typedef struct fat_arch_64          t_fat_arch_64;
 typedef struct load_command         t_load_command;
 typedef struct symtab_command       t_symtab_command;
 typedef struct ranlib               t_ranlib;
 typedef struct ar_hdr               t_ar_hdr;
 
 typedef union   u_u_sec {
-    t_section      *sc32;
-    t_section_64   *sc64;
+    struct section      *sc32;
+    struct section_64   *sc64;
 }               t_u_sec;
 
 typedef union   u_u_fa {
-    t_fat_arch      *fa32;
-    t_fat_arch_64   *fa64;
+    struct fat_arch      *fa32;
+    struct fat_arch_64   *fa64;
 }               t_u_fa;
 
 typedef union   u_u_nl {
-    t_nlist      *nl32;
-    t_nlist_64   *nl64;
+    struct nlist      *nl32;
+    struct nlist_64   *nl64;
 }               t_u_nl;
 
 typedef union   u_u_mh {
-    t_mach_header      *mh32;
-    t_mach_header_64   *mh64;
+    struct mach_header      *mh32;
+    struct mach_header_64   *mh64;
 }               t_u_mh;
 
 typedef struct s_arch_info {
@@ -163,7 +152,7 @@ struct s_m {
     size_t                  offset;
     size_t                  nsyms;
     void					*end;
-    const void              *end_commands;
+    const void              *end_cmds;
     t_m                		*next;
     uint64_t                nsects;
     uint8_t                 current_sect;

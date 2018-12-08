@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/08 11:13:21 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 11:17:23 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 12:58:11 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,9 @@ static int	fill_symbol_data(t_m *m, t_symtab_command *st, t_sym *s)
 
 	s->m64 = m->m64;
 	if (s->m64)
-		nl.nl64 = (t_nlist_64 *)(s->nptr);
+		nl.nl64 = (struct nlist_64 *)(s->nptr);
 	else
-		nl.nl32 = (t_nlist *)(s->nptr);
+		nl.nl32 = (struct nlist *)(s->nptr);
 	if (!(s->nom = get_sym_name(m, st, nl)))
 		return (ERR_FILE);
 	s->n_value = s->m64 ? m->swap64(nl.nl64->n_value)

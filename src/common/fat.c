@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/07 10:23:19 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 10:30:41 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 12:58:43 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,11 @@ static t_u_fa	check_fa(t_file *file, uint32_t nfat_arch, int i)
 	t_u_fa f;
 
 	if (file->info & IS_64)
-		f.fa64 = (t_fat_arch_64 *)ptr_check_msg(file->end, \
+		f.fa64 = (struct fat_arch_64 *)ptr_check_msg(file->end, \
 			(void *)file->data + file->offset + FH_64_SIZE * i, \
 			FH_64_SIZE * nfat_arch, "fat arch 64");
 	else
-		f.fa32 = (t_fat_arch *)ptr_check_msg(file->end, \
+		f.fa32 = (struct fat_arch *)ptr_check_msg(file->end, \
 			(void *)file->data + file->offset + FH_SIZE * i, \
 			FH_SIZE, "fat arch 32");
 	return (f);
@@ -99,7 +99,7 @@ int				handle_fat_2(t_file *file, uint32_t nfat_arch)
 	return (EXIT_SUCCESS);
 }
 
-int			handle_fat(t_file *file)
+int				handle_fat(t_file *file)
 {
 	struct fat_header	*hdr;
 	size_t				nfat_arch;
