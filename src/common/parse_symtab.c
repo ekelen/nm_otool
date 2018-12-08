@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/08 11:34:24 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 11:37:09 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 11:38:10 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,20 @@ static int	parse_symtab_2(t_file *file, t_m *m, t_symtab_command *st)
 	uint32_t	i;
 	void		*ptr;
 
-	ptr = m->m64 
-		? ptr_check_msg(m->end, (void *)m->data + st->symoff, NLIST_64_SIZE * st->nsyms, "nlists 64")
-		: ptr_check_msg(m->end, (void *)m->data + st->symoff, NLIST_SIZE * st->nsyms, "nlists");
+	ptr = m->m64
+		? ptr_check_msg(m->end, (void *)m->data + st->symoff, \
+			NLIST_64_SIZE * st->nsyms, "nlists 64")
+		: ptr_check_msg(m->end, (void *)m->data + st->symoff, \
+			NLIST_SIZE * st->nsyms, "nlists");
 	i = -1;
 	while (++i < st->nsyms)
 	{
 		if (i > 0)
 			ptr = m->m64
-				? ptr_check_msg(m->end, ptr + NLIST_64_SIZE, NLIST_64_SIZE, "next nlist 64")
-				: ptr_check_msg(m->end, ptr + NLIST_SIZE, NLIST_SIZE, "next nlist");
+				? ptr_check_msg(m->end, ptr + NLIST_64_SIZE, NLIST_64_SIZE, \
+					"next nlist 64")
+				: ptr_check_msg(m->end, ptr + NLIST_SIZE, NLIST_SIZE, \
+					"next nlist");
 		if (!ptr)
 			return (ERR_FILE);
 		if ((add_symbol(file, m, st, ptr)) > SUCCESS)
