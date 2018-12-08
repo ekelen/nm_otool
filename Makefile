@@ -73,7 +73,9 @@ OBJS_OTOOL = $(addprefix $(PATH_OBJ)/$(PATH_OTOOL)/,$(OBJ_OTOOL))
 
 LIBS = -L$(PATH_LIBFT)/ -lft -L$(PATH_PRINTF)/ -lftprintf
 
-all: $(OBJS_COMMON) $(OBJS_NM) $(OBJS_OTOOL)
+OBJS = $(OBJS_COMMON) $(OBJS_NM) $(OBJS_OTOOL)
+
+all: $(OBJS)
 	@echo ""
 	@$(CC) -o $(NAME_NM) $(OBJS_COMMON) $(OBJS_NM) $(LIBS)
 	@$(CC) -o $(NAME_OTOOL) $(OBJS_COMMON) $(OBJS_OTOOL) $(LIBS)
@@ -107,9 +109,7 @@ $(OBJS_OTOOL): $(PATH_OBJ)/$(PATH_OTOOL)/%.o: $(PATH_SRC)/$(PATH_OTOOL)/%.c
 	@printf .
 
 clean:
-	@rm -f $(OBJS_COMMON)
-	@rm -f $(OBJS_NM)
-	@rm -f $(OBS_OTOOL)
+	@rm -f $(OBJS)
 
 fclean: clean
 	@rm -f $(NAME_NM)
