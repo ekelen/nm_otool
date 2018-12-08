@@ -6,11 +6,11 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:48:36 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 13:08:46 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 13:48:21 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <nm_otool.h>
+#include "nm_otool.h"
 
 static void			get_symbol_sort_nm(t_file *file, uint32_t flags)
 {

@@ -1,20 +1,9 @@
-# ----------------------------------------------------------------------------
-# COLORS |
-# ----------------------------------------------------------------------------
 RESET=\033[0m
-DARK=\033[132m
-RED=\033[31m
 GREEN=\033[32m
-YELLOW=\033[33m
 BLUE=\033[34m
 MAGENTA=\033[35m
 CYAN=\033[36m
-WHITE=\033[37m
-BOLDBLACK=\033[1m\033[30m
-BOLDRED=\033[1m\033[31m
-BOLDWHITE=\033[1m\033[37m
- 
-NAME = nm_otool
+
 NAME_NM = ft_nm
 NAME_OTOOL = ft_otool
 
@@ -25,8 +14,6 @@ PATH_OBJ = obj
 PATH_NM = nm
 PATH_OTOOL = otool
 PATH_COMMON = common
-
-PATH_TEST = test
 
 PATH_LIB = lib
 PATH_LIBFT = $(PATH_LIB)/libft
@@ -57,33 +44,34 @@ SRC_NM += main.c
 SRC_NM += print_nm.c
 
 SRC_OTOOL += main.c
-SRC_OTOOL += print.c
+SRC_OTOOL += print_otool.c
 
+OPATH_COMMON = $(PATH_OBJ)/$(PATH_COMMON)
 SRCS_COMMON = $(addprefix $(PATH_SRC)/$(PATH_COMMON)/,$(SRC_COMMON))
 OBJ_COMMON = $(notdir $(SRCS_COMMON:.c=.o))
 OBJS_COMMON = $(addprefix $(PATH_OBJ)/$(PATH_COMMON)/,$(OBJ_COMMON))
 
+OPATH_NM = $(PATH_OBJ)/$(PATH_NM)
 SRCS_NM = $(addprefix $(PATH_SRC)/$(PATH_NM)/,$(SRC_NM))
 OBJ_NM = $(notdir $(SRCS_NM:.c=.o))
-OBJS_NM = $(addprefix $(PATH_OBJ)/$(PATH_NM)/,$(OBJ_NM))
+OBJS_NM = $(addprefix $(OPATH_NM)/,$(OBJ_NM))
 
+OPATH_OTOOL = $(PATH_OBJ)/$(PATH_OTOOL)
 SRCS_OTOOL = $(addprefix $(PATH_SRC)/$(PATH_OTOOL)/,$(SRC_OTOOL))
 OBJ_OTOOL = $(notdir $(SRCS_OTOOL:.c=.o))
-OBJS_OTOOL = $(addprefix $(PATH_OBJ)/$(PATH_OTOOL)/,$(OBJ_OTOOL))
+OBJS_OTOOL = $(addprefix $(OPATH_OTOOL)/,$(OBJ_OTOOL))
 
 LIBS = -L$(PATH_LIBFT)/ -lft -L$(PATH_PRINTF)/ -lftprintf
 
-all: $(OBJS_COMMON) $(OBJS_NM) $(OBJS_OTOOL)
+all: ft_nm ft_otool
 	@echo ""
-	@$(CC) -o $(NAME_NM) $(OBJS_COMMON) $(OBJS_NM) $(LIBS)
-	@$(CC) -o $(NAME_OTOOL) $(OBJS_COMMON) $(OBJS_OTOOL) $(LIBS)
 
-ft_nm: $(OBJS_COMMON) $(OBJS_NM)
+ft_nm: folders $(OBJS_COMMON) $(OBJS_NM)
 	@echo ""
 	@$(CC) -o $(NAME_NM) $(OBJS_COMMON) $(OBJS_NM) $(LIBS)
 	@echo "[$(GREEN)ft_nm compiled!$(RESET)]"
 
-ft_otool: $(OBJS_COMMON) $(OBJS_OTOOL)
+ft_otool: folders $(OBJS_COMMON) $(OBJS_OTOOL)
 	@echo ""
 	@$(CC) -o $(NAME_OTOOL) $(OBJS_COMMON) $(OBJS_OTOOL) $(LIBS)
 	@echo "[$(GREEN)ft_otool compiled!$(RESET)]"
@@ -93,6 +81,11 @@ libs:
 	@make -C $(PATH_LIBFT) clean
 	@make -C $(PATH_PRINTF) re
 	@make -C $(PATH_PRINTF) clean
+
+folders:
+	@mkdir -p $(OPATH_COMMON)
+	@mkdir -p $(OPATH_OTOOL)
+	@mkdir -p $(OPATH_NM)
 
 $(OBJS_COMMON): $(PATH_OBJ)/$(PATH_COMMON)/%.o: $(PATH_SRC)/$(PATH_COMMON)/%.c
 	@$(CC) $(CFLAGS) -c $< -o $@
@@ -107,19 +100,15 @@ $(OBJS_OTOOL): $(PATH_OBJ)/$(PATH_OTOOL)/%.o: $(PATH_SRC)/$(PATH_OTOOL)/%.c
 	@printf .
 
 clean:
-	@rm -f $(OBJS_COMMON)
-	@rm -f $(OBJS_NM)
-	@rm -f $(OBS_OTOOL)
+	@rm -rf $(PATH_OBJ)
 
 fclean: clean
 	@rm -f $(NAME_NM)
 	@rm -f $(NAME_OTOOL)
 	@echo "[$(GREEN)cleaned$(RESET)]"
 
-
 fcleanlibs:
 	@make -C $(PATH_LIBFT) fclean
 	@make -C $(PATH_PRINTF) fclean
 
 re: fclean all
-	@echo "[$(GREEN)$(NAME) compiled$(RESET)]" >&2

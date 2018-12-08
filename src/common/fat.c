@@ -6,11 +6,11 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/07 10:23:19 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 12:58:43 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 13:57:29 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <nm_otool.h>
+#include "nm_otool.h"
 
 t_arch			init_arch(t_file *file, t_u_fa f)
 {

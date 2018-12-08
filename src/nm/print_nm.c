@@ -6,11 +6,11 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 21:22:29 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 13:08:21 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 13:48:17 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <nm_otool.h>
+#include "nm_otool.h"
 
 static uint32_t		check_display(const uint32_t flags, t_sym *symbol)
 {

@@ -6,13 +6,13 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/19 11:29:00 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 11:34:12 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 14:02:29 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "nm_otool.h"
 
-size_t			file_offset(uint32_t info)
+static size_t	file_offset(uint32_t info)
 {
 	if (info & IS_FAT)
 		return (sizeof(struct fat_header));
