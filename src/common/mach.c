@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   mach.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/07 14:31:29 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/07 18:59:55 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 11:06:59 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <nm_otool.h>
-#include <assert.h>
+#include "nm_otool.h"
 
 static int	parse_magic(uint32_t magic, t_m *m)
 {
@@ -21,7 +20,7 @@ static int	parse_magic(uint32_t magic, t_m *m)
 	if ((m->swap32(magic) & MAGIC_MASK) != MH_ANY)
 		return (ERR_FILE);
 	m->m64 = m->swap32(magic) & 1;
-	m->offset = m->m64 ? sizeof(t_mach_header_64) : sizeof(t_mach_header);
+	m->offset = m->m64 ? MH_64_SIZE : MH_SIZE;
 	return (SUCCESS);
 }
 

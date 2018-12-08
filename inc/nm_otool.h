@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 10:18:14 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/08 10:54:18 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,10 +239,15 @@ int parse_symtab(t_file *file, t_m *m, const struct load_command *cmd);
 
 
 // symbol.c
-int add_symbol(t_file *file, t_m *m, t_symtab_command *st, const void *nptr);
-int64_t cmp_name(t_sym *sym1, t_sym *sym2, bool r);
 void free_symbols(t_sym *curr);
+int add_symbol(t_file *file, t_m *m, t_symtab_command *st, const void *nptr);
+
+// symbol_sort.c
+int64_t cmp_name(t_sym *sym1, t_sym *sym2, bool r);
 int64_t cmp_value(t_sym *sym1, t_sym *sym2, bool r);
+void	sort_symbol(int64_t (*sort)(t_sym *s1, t_sym *s2, bool r), \
+	t_sym **curr, \
+	t_sym *new, bool r);
 
 
 // section.c
