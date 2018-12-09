@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   otool.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ekelen <ekelen@student.42.us.org>          +#+  +:+       +#+        */
+/*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/05 10:49:43 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/07 18:49:35 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/09 11:38:03 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef OTOOL_H
-#define OTOOL_H
+# define OTOOL_H
 
 # define OT_FLAGS "t"
 

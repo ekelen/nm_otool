@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/08 10:48:45 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 11:08:04 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/09 11:31:50 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,6 @@ void			sort_symbol(int64_t (*sort)(t_sym *s1, t_sym *s2, bool r), \
 	t_sym **curr, \
 	t_sym *new, bool r)
 {
-	if (!sort)
-		return ;
 	if (!*curr)
 	{
 		*curr = new;

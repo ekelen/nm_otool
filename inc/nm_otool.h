@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/18 10:47:06 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/08 14:06:52 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/09 11:38:24 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ uint64_t	nswap64(uint64_t x);
 uint64_t	swap64(uint64_t x);
 uint32_t	swap32 (uint32_t x);
 
-
 /*
 ** util_mem.c
 */
@@ -50,7 +49,6 @@ void		*ptr_check(const void *end, void *req, size_t len);
 void		*ptr_check_msg(const void *end, void *req, size_t len, \
 	const char *msg);
 void		free_symbols(t_sym *curr);
-
 
 /*
 ** mach.c
@@ -62,6 +60,7 @@ int			add_mach(t_m **curr, t_m *new);
 void		remove_mach(t_m *m);
 void		free_machs(t_m *curr);
 
+void		free_machs_2(t_file *file, t_m *curr);
 
 /*
 ** read_file.c
@@ -92,13 +91,11 @@ int			handle_fat(t_file *file);
 
 int			get_segments(t_file *file, t_m *m);
 
-
 /*
 ** parse_symtab.c
 */
 
 int			parse_symtab(t_file *file, t_m *m, const struct load_command *cmd);
-
 
 /*
 ** symbol.c
@@ -116,7 +113,6 @@ int64_t		cmp_value(t_sym *sym1, t_sym *sym2, bool r);
 void		sort_symbol(int64_t (*sort)(t_sym *s1, t_sym *s2, bool r), \
 	t_sym **curr, \
 	t_sym *new, bool r);
-
 
 /*
 ** section.c
