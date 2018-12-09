@@ -63,7 +63,7 @@ OBJS_OTOOL = $(addprefix $(OPATH_OTOOL)/,$(OBJ_OTOOL))
 
 LIBS = -L$(PATH_LIBFT)/ -lft -L$(PATH_PRINTF)/ -lftprintf
 
-all: ft_nm ft_otool
+all: libs ft_nm ft_otool
 	@echo ""
 
 ft_nm: folders $(OBJS_COMMON) $(OBJS_NM)
@@ -99,6 +99,10 @@ $(OBJS_OTOOL): $(PATH_OBJ)/$(PATH_OTOOL)/%.o: $(PATH_SRC)/$(PATH_OTOOL)/%.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@printf .
 
+fcleanlibs:
+	@make -C $(PATH_LIBFT) fclean
+	@make -C $(PATH_PRINTF) fclean
+
 clean:
 	@rm -rf $(PATH_OBJ)
 
@@ -106,9 +110,5 @@ fclean: clean
 	@rm -f $(NAME_NM)
 	@rm -f $(NAME_OTOOL)
 	@echo "[$(GREEN)cleaned$(RESET)]"
-
-fcleanlibs:
-	@make -C $(PATH_LIBFT) fclean
-	@make -C $(PATH_PRINTF) fclean
 
 re: fclean all
