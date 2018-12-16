@@ -11,3 +11,4 @@ ft_otool
 *.dSYM/
 a.out
 .vscode/
+__pycache__
