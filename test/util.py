@@ -82,7 +82,7 @@ class Base(TestCase):
 				nx_out = subprocess.check_output([self.nxname, *flags, f], stderr=subprocess.DEVNULL)
 				self.assertEqual(ft_out, nx_out, msg=f'{bc.FAIL}{f} does not match with {flags}.{bc.ENDC}')
 				if self.verbose:
-					print(f'{bc.OK}{[self.prgm, *flags, f]} OK {bc.ENDC}')
+					print(f'{bc.OK}{[self.prgm, *flags, f]} .. OK {bc.ENDC}')
 
 	def compare_multi_random(self, test_files, flags=[], k=2, n=4):
 		if not flags:
@@ -95,6 +95,8 @@ class Base(TestCase):
 				ft_out = subprocess.check_output([self.prgm, *flags, *f], stderr=subprocess.DEVNULL)
 				nx_out = subprocess.check_output([self.nxname, *flags, *f], stderr=subprocess.DEVNULL)
 				self.assertEqual(ft_out, nx_out, msg=f'\n{bc.FAIL}{self.ftname}: {f} does not match.{bc.ENDC}')
+				if self.verbose:
+					print(f'{bc.OK}{[self.prgm, *flags, f]} .. OK {bc.ENDC}')
 
 	def ensure_no_stdout_for_corrupted(self, test_files, flags=[]):
 		for f in test_files:

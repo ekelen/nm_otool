@@ -25,10 +25,8 @@ class Nm(Base):
 class NmEasy(Nm):
 	def setUp(self):
 		super().setUp()
-		self.basenames = self.getBasenames()
+		self.basenames = ["test_facile", "test_moins_facile"]
 		self.files = self.getPaths(self.basenames)
-		self.valids = ["test_facile", "test_moins_facile"]
-		self.invalids = ["test_half_obj", "test_wrong_lc_command_size"]
 
 	def test_all(self):
 		""" All the easy ones."""
@@ -36,10 +34,7 @@ class NmEasy(Nm):
 
 	def test_2(self):
 		""" compare easy pairs """
-		self.compare_multi_random(self.getPaths(self.valids), k=2, n=len(self.files))
-
-	def test_easy_corrupted(self):
-		self.check_corrupted(self.getPaths(self.invalids))
+		self.compare_multi_random(self.getPaths(self.files), k=2, n=len(self.files))
 
 	def test_bad_flags_t(self):
 		self.check_bad_flags(self.files, flags=["-t"])
@@ -51,7 +46,7 @@ class NmEasy(Nm):
 		allowedFlags = self.getValidFlagCombinations()
 		for d in allowedFlags:
 			with self.subTest(d=d):
-				self.compare_one(self.getPaths(self.valids), flags=[d])
+				self.compare_one(self.getPaths(self.files), flags=[d])
 
 class NmT32(Nm):
 	def setUp(self):

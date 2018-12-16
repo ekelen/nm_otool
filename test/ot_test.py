@@ -24,9 +24,9 @@ class Otool(Base):
 class OtEasy(Otool):
 	def setUp(self):
 		super().setUp()
-		self.basenames = self.getBasenames()
+		self.basenames = ["test_facile", "test_moins_facile"]
 		self.files = self.getPaths(self.basenames)
-		self.valids = ["test_facile", "test_moins_facile"]
+		self.valids = self.files
 		self.invalids = ["test_half_obj", "test_wrong_lc_command_size"]
 
 	def test_all(self):
