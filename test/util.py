@@ -60,8 +60,8 @@ class Base(TestCase):
 	def compare_one(self, paths=[], flags=[]):
 		if not flags:
 			flags = self.flags
-		ft_out = subprocess.check_output([self.prgm, *flags, *paths], stderr=subprocess.DEVNULL)
-		nx_out = subprocess.check_output([self.nxname, *flags, *paths], stderr=subprocess.DEVNULL)
+		ft_out = subprocess.check_output([self.prgm, *flags, *paths], stderr=subprocess.STDOUT)
+		nx_out = subprocess.check_output([self.nxname, *flags, *paths], stderr=subprocess.STDOUT)
 		self.assertEqual(ft_out, nx_out, msg=f'{bc.FAIL}{paths} does not match with {flags}.{bc.ENDC}')
 		if self.verbose:
 			basenames = [os.path.split(p)[1] for p in paths]

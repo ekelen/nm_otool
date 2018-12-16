@@ -6,7 +6,7 @@
 /*   By: ekelen <ekelen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/07 14:31:29 by ekelen            #+#    #+#             */
-/*   Updated: 2018/12/09 11:36:19 by ekelen           ###   ########.fr       */
+/*   Updated: 2018/12/16 13:26:43 by ekelen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ int			add_mach(t_m **curr, t_m *new)
 		return (ERR_FILE);
 	if (!*curr)
 	{
-		dprintf(2, "adding mach-o\n");
 		*curr = new;
 		return (SUCCESS);
 	}
