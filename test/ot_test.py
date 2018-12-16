@@ -162,5 +162,5 @@ class OtMixed(Otool):
 
 if __name__ == '__main__':
 	subprocess.run([*st.make, 'fclean'])
-	subprocess.run([*st.make, st.name_otool])
+	subprocess.run([*st.make, 'all'])
 	ut.main()

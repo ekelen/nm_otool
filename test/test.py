@@ -193,5 +193,5 @@ class NmMixed(Nm):
 
 if __name__ == '__main__':
 	subprocess.run([*st.make, 'fclean'])
-	subprocess.run([*st.make, 'ft_nm'])
+	subprocess.run([*st.make, 'all'])
 	ut.main()
