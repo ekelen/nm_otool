@@ -1,5 +1,5 @@
 *.o
-*.a
+lib/**/*.a
 *.exe
 
 ft_nm
@@ -10,3 +10,4 @@ ft_otool
 .DS_Store
 *.dSYM/
 a.out
+.vscode/
