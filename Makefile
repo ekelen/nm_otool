@@ -22,7 +22,7 @@ PATH_PRINTF = $(PATH_LIB)/printf
 INC = -I$(PATH_INC) -I$(PATH_LIBFT)/inc -I$(PATH_PRINTF)/includes
 
 CC = clang
-CFLAGS = -Werror -Wextra -Wall -g $(INC)
+CFLAGS = -Werror -Wextra -Wall $(INC)
 
 SRC_COMMON += arch_info.c
 SRC_COMMON += error.c
@@ -77,10 +77,8 @@ ft_otool: folders $(OBJS_COMMON) $(OBJS_OTOOL)
 	@echo "[$(GREEN)ft_otool compiled!$(RESET)]"
 
 libs:
-	@make -C $(PATH_LIBFT) re
-	@make -C $(PATH_LIBFT) clean
-	@make -C $(PATH_PRINTF) re
-	@make -C $(PATH_PRINTF) clean
+	@make -C $(PATH_LIBFT)
+	@make -C $(PATH_PRINTF)
 
 folders:
 	@mkdir -p $(OPATH_COMMON)
